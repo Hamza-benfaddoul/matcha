@@ -1,0 +1,38 @@
+version: '2.30.1'
+
+services:
+  frontend:
+    image: power-to-x-frontend
+    container_name: power-to-x-frontend
+    build:
+      context: .
+      dockerfile: apps/docker/frontend/Dockerfile
+    volumes:
+      - ./apps/frontend/:/app/frontend
+      - node_modules-data:/app/frontend/node_modules
+    networks:
+      - power-to-x-network
+
+  nginx:
+    image: power-to-x-nginx
+    container_name: power-to-x-nginx
+    build:
+      context: .
+      dockerfile: apps/docker/nginx/Dockerfile
+    networks:
+      - power-to-x-network
+    ports:
+      - 80:80
+
+volumes:
+  node_modules-data:
+    name: node_modules-data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./apps/frontend/node_modules
+
+networks:
+  power-to-x-network:
+    driver: bridge
