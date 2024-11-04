@@ -1,6 +1,8 @@
 all: build up
 
 up:
+	mkdir -p apps/frontend/node_modules
+	mkdir -p apps/backend/node_modules
 	docker compose -f docker-compose.yml up -d
 
 build:
