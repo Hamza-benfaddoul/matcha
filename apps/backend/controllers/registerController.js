@@ -16,7 +16,7 @@ const handleNewUser = async (req, res) => {
     res.status(400).send({
       error: 'The name is required and sould be minimum 3 characters.',
     })
-    return
+    return;
   }
 
   const ifUserExists = await findUserByEmail(value.email)

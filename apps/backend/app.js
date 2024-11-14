@@ -14,7 +14,6 @@ const port    =       process.env.PORT | 5000
 const corsOptions =   require('./conf/corsOrigins');
 const credentials = require('./middleware/credentials');
 
-
 // custom middleware logger
 app.use(logger);
 

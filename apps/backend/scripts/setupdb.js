@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS users (
   fame_rating INTEGER DEFAULT 0,
   location_latitude DECIMAL(9,6),
   location_longitude DECIMAL(9,6),
+  isProfileComplete BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )

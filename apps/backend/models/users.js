@@ -94,6 +94,8 @@ const  updateRefreshToken = async (refershToken, userId ) => {
 }
 
 
+
+
 const updateProfile = async (userId, profileData) => {
   const updateProfileQuery = `
     UPDATE users
