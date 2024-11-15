@@ -1,22 +1,19 @@
+require('dotenv').config();
+ 
 const pg = require('pg')
 const { Client } = pg
-/* 
-const client = new Client({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASS,
-  port: process.env.DB_PORT,
-})
-*/
+
+
 
 const client = new Client({
-  user: "postgres",
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: "password",
-  port: process.env.DB_PORT,
+  user: process.env.DB_USER || "postgres",
+  host: process.env.DB_HOST || "localhost",
+  database: process.env.DB_NAME || "matcha_db",
+  password: process.env.DB_PASS || "password",
+  port: process.env.DB_PORT || 5432,
 })
+
+console.log("client", client)
 
 
 // const UserTableQuery =`
@@ -117,6 +114,7 @@ expires TIMESTAMP
 const createTables =  async () => {
   try {
   await client.connect();
+  console.log('Connected to database');
   await client.query(UserTableQuery);
   await client.query(VerificationTokenTableQuery);
   await client.query(UserPhotosTableQuery);

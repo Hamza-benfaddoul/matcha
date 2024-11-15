@@ -1,37 +1,56 @@
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import Profile from './pages/Profile.tsx';
-import React from 'react';
-import Home from './pages/Home.tsx';
-import UserProfileForm from './pages/CompleteProfile.tsx';
+import {
+  createBrowserRouter,
+  RouterProvider
 
+} from "react-router-dom"
+import LoginPage from './auth/login/page.tsx'
+import RegisterPage from './auth/register/page.tsx'
+import ResetPage from './auth/reset/page.tsx'
+import { AuthProvider } from './context/AuthProvider.tsx'
+import ProtectedRoute from './components/protected-route.tsx'
+import LandingPage from './home/home.tsx'
 
-
+// Or use plain objects
 const router = createBrowserRouter([
   {
-    path: '/',
-    element:  
-              <Home />
+    path: "/",
+    element:
+      <App />,
+  },
+
+  {
+    path: "/protected",
+    element: (<ProtectedRoute element={<LandingPage />} />),
 
   },
   {
-    path: '/profile/',
-    element:  
-              <Profile />
+    path: "/login",
+    element: <LoginPage />,
   },
   {
-    path: '/complete-profile',
+    path: "/register",
     element:
-      <UserProfileForm />
-  }
+      <div className='h-screen w-full  flex justify-center items-center ' >
+        <RegisterPage />
+      </div>,
+  },
+  {
+    path: "/reset",
+    element:
+      <div className='h-screen w-full  flex justify-center items-center ' >
+        <ResetPage />
+      </div>
+  },
 ]);
 
-createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <AuthProvider>
       <RouterProvider router={router} />
-
-      <App />
-  </React.StrictMode>
+    </AuthProvider>,
+  </StrictMode>,
 )
