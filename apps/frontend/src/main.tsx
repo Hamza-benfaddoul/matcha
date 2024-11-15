@@ -13,6 +13,8 @@ import ResetPage from './auth/reset/page.tsx'
 import { AuthProvider } from './context/AuthProvider.tsx'
 import ProtectedRoute from './components/protected-route.tsx'
 import LandingPage from './home/home.tsx'
+import Profile from './pages/Profile.tsx'
+import CompleteProfile from './pages/CompleteProfile.tsx'
 
 // Or use plain objects
 const router = createBrowserRouter([
@@ -32,11 +34,20 @@ const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
+    path: "/complete-profile",
+    element: <CompleteProfile />,
+    // element: (<ProtectedRoute element={<CompleteProfile />} />),
+  },
+  {
     path: "/register",
     element:
       <div className='h-screen w-full  flex justify-center items-center ' >
         <RegisterPage />
       </div>,
+  },
+  {
+    path: "/profile",
+    element: (<ProtectedRoute element={<Profile />} />),
   },
   {
     path: "/reset",

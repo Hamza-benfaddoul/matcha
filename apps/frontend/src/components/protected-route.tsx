@@ -30,7 +30,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
 
   if (loading) return <div>Loading...</div>; // or a spinner component
 
-  return auth?.accessToken ? element : <Navigate to="/login" />;
+  
+  console.log('auth ------> ', auth);
+  if (auth?.accessToken) {
+    if (auth?.user.isprofilecomplete === true)
+      return element;
+    else
+      return <Navigate to="/complete-profile" />;
+  }
+  else
+    return <Navigate to="/login" />;
+
+  // return auth?.accessToken ? element : <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;

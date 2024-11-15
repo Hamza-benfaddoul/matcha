@@ -1,4 +1,4 @@
-'use client'
+// 'use client'
 
 import { useState } from 'react'
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Badge } from "@/components/ui/badge"
 import { X } from 'lucide-react'
 
-export default function UserProfileForm() {
+export default function CompleteProfile() {
+  console.log("i am here inside the complete profile")
   const [interests, setInterests] = useState<string[]>([])
   const [interestInput, setInterestInput] = useState('')
   const [images, setImages] = useState<File[]>([])
