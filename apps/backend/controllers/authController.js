@@ -10,15 +10,15 @@ const {
 const handleLogin = async (req, res) => {
   try {
     const { error, value } = validateLoginUser(req.body)
-    if (error) return res.status(400).send({ message: 'Email or password is not valid.' }); // 400 Bad requiset
+    if (error) return res.status(400).send({ error: 'Email or password is not valid.' }); // 400 Bad requiset
 
     const user = await findUserByEmail(value.email)
-    if (!user) return res.status(401).send({ message: 'Email is not registered.' });  // 401 Unauthorized
+    if (!user) return res.status(401).send({ error: 'Email is not registered.' });  // 401 Unauthorized
 
     const passwordsMatch = await bcrypt.compare(value.password, user.password)
-    if (!passwordsMatch) return res.status(401).send({ message: 'password is incorrect.' }); // 401 Unauthorized
+    if (!passwordsMatch) return res.status(401).send({ error: 'password is incorrect.' }); // 401 Unauthorized
 
-    if (!user.isemailverified) return res.status(401).send({ message: 'Email is not verified.' }); // 401 Unauthorized
+    if (!user.isemailverified) return res.status(401).send({ error: 'Email is not verified.' }); // 401 Unauthorized
 
     const { password, ...rest } = user
 
@@ -49,8 +49,8 @@ const handleLogin = async (req, res) => {
       'jwt',
       refreshToken,
       {
-        httpOnly: true, 
-        sameSite: 'Lax',  
+        httpOnly: true,
+        sameSite: 'Lax',
         path: '/',
         secure: false,
         maxAge: 24 * 60 * 60 * 1000 // 1 day
@@ -58,7 +58,7 @@ const handleLogin = async (req, res) => {
     );
     res.json({ accessToken, user: rest })
   } catch (error) {
-    res.status(500).json({ message: 'Login failed' })
+    res.status(500).json({ error: 'Login failed' })
   }
 }
 
