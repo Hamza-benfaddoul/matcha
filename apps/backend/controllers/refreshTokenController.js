@@ -22,15 +22,7 @@ const handleRefreshToken = async (req, res) => {
       { expiresIn: '10m' }
     );
 
-    return res.json({
-      user:
-      {
-        firstName: user.firstname,
-        lastName: user.lastname,
-        email: user.email,
-      }
-      , accessToken
-    });
+    return res.json({ accessToken });
   } catch (err) {
     if (err.name === 'TokenExpiredError' || err.name === 'JsonWebTokenError') {
       return res.sendStatus(403); // Forbidden
