@@ -93,6 +93,35 @@ const  updateRefreshToken = async (refershToken, userId ) => {
   }
 }
 
+const completeProfile = async (userId, profileData) => {
+  const completeProfileQuery = `
+    UPDATE users
+    SET gender = $1,
+        sexual_preferences = $2,
+        biography = $3,
+        fame_rating = $4,
+        location_latitude = $5,
+        location_longitude = $6
+    WHERE id = $7
+    RETURNING id, first_name, last_name, email, gender, sexual_preferences, biography, fame_rating, location_latitude, location_longitude;
+  `;
+  try {
+    const res = await db.query(completeProfileQuery, [
+      profileData.gender,
+      profileData.sexualPreferences,
+      profileData.biography,
+      profileData.fameRating || 0,
+      profileData.locationLatitude,
+      profileData.locationLongitude,
+      userId
+    ]);
+    return res.rows[0];
+  } catch (err) {
+    console.error('ERROR: COMPLETE PROFILE\n', err);
+    return null;
+  }
+};
+
 
 
 
@@ -137,5 +166,6 @@ module.exports = {
   findUserByName,
   validateLoginUser,
   updateRefreshToken,
-  updateProfile
+  updateProfile,
+  completeProfile
 }

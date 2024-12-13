@@ -29,11 +29,23 @@ router.get('/:userId',async (req, res) => {
 
 // Route to complete user profile
 router.post('/profile/complete', verifyToken, async (req, res) => {
-  
+  const userId = req.user.userId;
+  const profileData = req.body;
+  // const { name, age, bio } = profileData;
+  try {
+    const updatedUser = await updateProfile(userId, profileData);
+    if (updatedUser) {
+      res.status(200).json({ message: 'Profile completed successfully', user: updatedUser });
+    } else {
+      res.status(400).json({ error: 'Profile completion failed' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
 })
 
 // Update user profile
-router.post('/profile', verifyToken, async (req, res) => {
+router.post('/update-profile', verifyToken, async (req, res) => {
   const userId = req.user.userId; // Get user ID from JWT token
   const profileData = req.body; // Get profile data from request body
 

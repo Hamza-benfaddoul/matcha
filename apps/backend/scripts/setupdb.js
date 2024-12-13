@@ -1,31 +1,16 @@
-require('dotenv').config();
- 
+require('dotenv').config(); 
 const pg = require('pg')
 const { Client } = pg
 
-
+console.log(process.env)
 
 const client = new Client({
   user: process.env.DB_USER || "postgres",
-  host: process.env.DB_HOST || "localhost",
-  database: process.env.DB_NAME || "matcha_db",
+  host: process.env.DB_HOST || "db",
+  database: process.env.DB_NAME || "db",
   password: process.env.DB_PASS || "password",
   port: process.env.DB_PORT || 5432,
 })
-
-console.log("client", client)
-
-
-// const UserTableQuery =`
-// CREATE TABLE IF NOT EXISTS users (
-// id SERIAL PRIMARY KEY,
-// firstName VARCHAR(255) NOT NULL,
-// lastName VARCHAR(255) NOT NULL,
-// refreshToken VARCHAR(255) ,
-// isEmailVerified BOOLEAN DEFAULT FALSE,
-// email VARCHAR(255) NOT NULL,
-// password VARCHAR(255) NOT NULL
-// )`
 
 const UserTableQuery = `
 CREATE TABLE IF NOT EXISTS users (
@@ -48,15 +33,30 @@ CREATE TABLE IF NOT EXISTS users (
 )
 `;
 
+const UserTagssTableQuery = `
+  CREATE TABLE IF NOT EXISTS tags (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    tag VARCHAR(50) NOT NULL,
+    UNIQUE(user_id, tag)
+  );
+`;
+
 const UserPhotosTableQuery = `
-CREATE TABLE IF NOT EXISTS photos (
+  CREATE TABLE IF NOT EXISTS images (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  file_path VARCHAR(255) NOT NULL,
-  is_profile_picture BOOLEAN DEFAULT FALSE,
-  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  image_url VARCHAR(255) NOT NULL,
+  is_profile_picture BOOLEAN DEFAULT FALSE
 );
 `;
+// CREATE TABLE IF NOT EXISTS photos (
+//   id SERIAL PRIMARY KEY,
+//   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+//   file_path VARCHAR(255) NOT NULL,
+//   is_profile_picture BOOLEAN DEFAULT FALSE,
+//   uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+// );
 
 const InterestsTableQuery = `
 CREATE TABLE IF NOT EXISTS interests (
