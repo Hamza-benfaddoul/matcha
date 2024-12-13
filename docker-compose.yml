@@ -1,5 +1,3 @@
-version: '2.30.1'
-
 services:
   frontend:
     image: matcha-frontend
@@ -27,43 +25,19 @@ services:
       - ./apps/backend/:/app/backend
       - node_modules-data2:/app/backend/node_modules
     depends_on:
-      - database
+      - db
     networks:
       - matcha-network
 
-
-  database:
+  db:
+    container_name: matcha-db
     image: postgres:16
-    container_name: database
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: matcha_db
-    ports:
-      - "5432:5432"
+    env_file:
+      - .env-db
+    networks:
+      - matcha-network
     volumes:
       - matcha-db-data:/var/lib/postgresql/data
-    networks:
-      - matcha-network
-
-
-  # db:
-  #   # container_name: matcha-db
-  #   image: postgres:16
-  #   env_file:
-  #     - .env-db
-  #   networks:
-  #     - matcha-network
-  #   volumes:
-  #     - matcha-db-data:/var/lib/postgresql/data
-
-  adminer:
-    image: adminer
-    container_name: matcha-adminer
-    networks:
-      - matcha-network
-    ports:
-      - 8080:8080
 
   nginx:
     image: matcha-nginx
@@ -75,6 +49,14 @@ services:
       - matcha-network
     ports:
       - 80:80
+
+  adminer:
+    image: adminer
+    container_name: matcha-adminer
+    networks:
+      - matcha-network
+    ports:
+      - 8080:8080
 
 volumes:
   matcha-db-data:
