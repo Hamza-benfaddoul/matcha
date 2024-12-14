@@ -12,12 +12,14 @@ import * as z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
+import useAuth from '@/hooks/useAuth'
 
 
 export default function CompleteProfile() {
   const [interests, setInterests] = useState<string[]>([])
   const [interestInput, setInterestInput] = useState('')
   const [images, setImages] = useState<File[]>([])
+  const {auth, setAuth} = useAuth();
   const [profileImageIndex, setProfileImageIndex] = useState<number | null>(null)
 
   const form = useForm<z.infer<typeof CompleteProfileSchema>>({
@@ -28,7 +30,7 @@ export default function CompleteProfile() {
       biography: '',
       interests: [],
       images: [],
-      profileImageIndex: null
+      profileImageIndex: 0
     },
   })
 
@@ -43,17 +45,20 @@ export default function CompleteProfile() {
     formData.append('biography', values.biography || '');
     values.interests.forEach((interest) => formData.append('interests', interest));
     values.images.forEach((image) => formData.append('images', image));
-    if (values.profileImageIndex !== null) {
-      formData.append('profileImageIndex', values.profileImageIndex.toString());
-    }
+    formData.append('profileImageIndex', values?.profileImageIndex?.toString() || '');
+    
 
     try {
       const response = await axios.post('/api/complete-profile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${auth.accessToken}`
         },
+        withCredentials: true,
       });
-      console.log('Profile updated successfully:', response.data);
+      console.log('Profile updated successfully:', response.data.user);
+      // setAuth({accessToken: auth.accessToken, user: response.data.user});
+      setAuth({ user: response.data.user, accessToken: auth.accessToken });
     } catch (error) {
       console.error('Error updating profile:', error);
     }

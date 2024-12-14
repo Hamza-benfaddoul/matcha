@@ -94,6 +94,8 @@ const  updateRefreshToken = async (refershToken, userId ) => {
 }
 
 const completeProfile = async (userId, profileData) => {
+  console.log('PROFILE DATA: ', profileData)
+  console.log('USER ID: ', userId)
   const completeProfileQuery = `
     UPDATE users
     SET gender = $1,
@@ -101,9 +103,10 @@ const completeProfile = async (userId, profileData) => {
         biography = $3,
         fame_rating = $4,
         location_latitude = $5,
-        location_longitude = $6
-    WHERE id = $7
-    RETURNING id, first_name, last_name, email, gender, sexual_preferences, biography, fame_rating, location_latitude, location_longitude;
+        location_longitude = $6,
+        isprofilecomplete = $7
+    WHERE id = $8
+    RETURNING id, firstname, lastname, email, gender, sexual_preferences, biography, fame_rating, location_latitude, location_longitude, isprofilecomplete;
   `;
   try {
     const res = await db.query(completeProfileQuery, [
@@ -111,13 +114,14 @@ const completeProfile = async (userId, profileData) => {
       profileData.sexualPreferences,
       profileData.biography,
       profileData.fameRating || 0,
-      profileData.locationLatitude,
-      profileData.locationLongitude,
+      profileData.locationLatitude || 0,
+      profileData.locationLongitude || 0,
+      true,
       userId
     ]);
     return res.rows[0];
   } catch (err) {
-    console.error('ERROR: COMPLETE PROFILE\n', err);
+    console.error('ERROR: COMPLETE PROFILE QUERY : --> \n', err);
     return null;
   }
 };

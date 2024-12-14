@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS users (
   isEmailVerified BOOLEAN DEFAULT FALSE,
   gender VARCHAR(10),
   sexual_preferences VARCHAR(50),
+  profile_picture VARCHAR(255) DEFAULT NULL,
   biography TEXT,
   fame_rating INTEGER DEFAULT 0,
   location_latitude DECIMAL(9,6),
@@ -50,28 +51,7 @@ const UserPhotosTableQuery = `
   is_profile_picture BOOLEAN DEFAULT FALSE
 );
 `;
-// CREATE TABLE IF NOT EXISTS photos (
-//   id SERIAL PRIMARY KEY,
-//   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-//   file_path VARCHAR(255) NOT NULL,
-//   is_profile_picture BOOLEAN DEFAULT FALSE,
-//   uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-// );
 
-const InterestsTableQuery = `
-CREATE TABLE IF NOT EXISTS interests (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(50) UNIQUE NOT NULL
-);
-`;
-
-const UserInterestsTableQuery = `
-CREATE TABLE IF NOT EXISTS user_interests (
-  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  interest_id INTEGER REFERENCES interests(id) ON DELETE CASCADE,
-  PRIMARY KEY (user_id, interest_id)
-);
-`;
 
 const ViewsTableQuery = `
 CREATE TABLE IF NOT EXISTS views (
@@ -118,10 +98,9 @@ const createTables =  async () => {
   await client.query(UserTableQuery);
   await client.query(VerificationTokenTableQuery);
   await client.query(UserPhotosTableQuery);
-  await client.query(InterestsTableQuery);
-  await client.query(UserInterestsTableQuery);
   await client.query(ViewsTableQuery);
   await client.query(LikeTableQuery);
+  await client.query(UserTagssTableQuery);
   console.log('Tables created successfully');
   }catch(err){
     console.log(err);

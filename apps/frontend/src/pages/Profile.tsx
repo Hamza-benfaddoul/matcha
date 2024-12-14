@@ -45,32 +45,24 @@ const renderContent = (activeTab: string) => {
   }
 };
 
-
 function Profile() {
   const {auth} = useAuth();
   const user = auth.user;
-  console.log("user: ", auth)
-  // get the user id from the url
-  const [activeTab, setActiveTab] = useState('photos'); // Default is 'videos'
+  const [activeTab, setActiveTab] = useState('photos'); // Default is 'photos'
   const handleTabClick = (tab: any) => {
     setActiveTab(tab);
   };
-  // const user = {
-  //       "fullName": "John Doe",
-  //       "image": "https://picsum.photos/id/83/300/320"
-  //   };
 
   return (
       <div className="pt-[90px] flex justify-center">
         <div className="flex flex-col w-[calc(100%-150px)] ">
          <div className="w-full min-h-[200px] bg-gradient-to-b from-white to-[#F02C56]"/>
-            {/* the profile content [image - global details] */}
           <div className="w-full flex justify-between px-4 relative py-8">
-            <img src="https://picsum.photos/id/83/300/320" alt="profile" className="absolute -top-14 left-4 w-[200px] h-[200px] rounded-3xl" />
+            <img src={`/api${user.profile_picture}`} alt="profile" className="absolute -top-14 left-4 w-[200px] h-[200px] rounded-3xl" />
               {/* <div className="flex"> */}
                 <div className="ml-60">
-                  <div className="text-[24px] font-semibold">{user.firstName} {user?.lastName}</div>
-                  <div className="text-[17px] text-gray-500">UI/UX Designer</div>
+                  <div className="text-[24px] font-semibold">{user.firstname} {user?.lastname}</div>
+                  <div className="text-[17px] text-gray-500">{user?.biography}</div>
                   <div className="my-3">
                     <button className="bg-[#F02C56] text-white px-4 py-2 rounded-md mr-2">Follow</button>
                     <button className="bg-blue-600 text-white px-4 py-2 rounded-md"> Edit Profile</button>

@@ -36,7 +36,7 @@ const router = createBrowserRouter([
   {
     path: "/complete-profile",
     element: <CompleteProfile />,
-    // element: (<ProtectedRoute element={<CompleteProfile />} />),
+    // element: <CompleteProfile />,
   },
   {
     path: "/register",

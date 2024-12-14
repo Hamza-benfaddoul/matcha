@@ -29,13 +29,10 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
 }
 
-app.use(express.urlencoded({ extended: true })); // For URL-encoded data
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded files
-
-
-
-
 app.use(cookieparser());
+
+app.use(express.urlencoded({ extended: true })); // For URL-encoded data
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //routes
 app.use('/api/login', require('./routes/api/auth/login'));
@@ -43,13 +40,12 @@ app.use("/api/register", require('./routes/api/auth/register'));
 app.use('/api/logout', require('./routes/api/auth/logout'));
 app.use('/api/refresh', require('./routes/api/auth/refresh'));
 
-// profile routes
-app.use('/api/complete-profile', profileRoutes);
 
 
 // protected routes
 app.use(verifyJWT);
 app.use('/api/users', require('./routes/api/user/user'));
+app.use('/api/complete-profile', profileRoutes);
 
 
 app.use((err, req, res, next) => {

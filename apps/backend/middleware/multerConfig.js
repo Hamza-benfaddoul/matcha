@@ -4,7 +4,7 @@ const path = require('path');
 // Set storage engine
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, 'uploads')); // Directory to save files
+    cb(null, path.join(__dirname, '..', 'uploads')); // Directory to save files
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;

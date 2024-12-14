@@ -23,13 +23,13 @@ const handleRefreshToken = async (req, res) => {
     );
 
     return res.json({
-      user:
-      {
-        firstName: user.firstname,
-        lastName: user.lastname,
-        email: user.email,
-        isProfileCompleted: user.isprofilecomplete,
-      }
+      user: user
+      // {
+      //   firstName: user.firstname,
+      //   lastName: user.lastname,
+      //   email: user.email,
+      //   isProfileCompleted: user.isprofilecomplete,
+      // }
       , accessToken
     });
   } catch (err) {
