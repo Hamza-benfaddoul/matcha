@@ -1,6 +1,7 @@
 const db =  require('../../db/db');
 const findUserByEmail = require('../../models/users').findUserByEmail;
 const completeProfile = require('../../models/users').completeProfile;
+const findOne = require('../../models/users').findOne;
 const path = require('path');
 const { updateProfile } = require('../../models/users');
 
@@ -51,4 +52,14 @@ exports.completeProfile = async (req, res) => {
     console.error('Error completing profile:', error);
     res.status(500).json({ error: 'Failed to complete profile.' });
   }
+};
+
+
+exports.getUserImages = async (req, res) => {
+  const userId = req.params.userId;
+  console.log('getUserImages called ---->  ', req.params);
+  const user = await findOne(userId);
+  console.log('user ---->  ', user);
+  const images = await db.query('SELECT * FROM images WHERE user_id = $1', [user.id]);
+  res.json(images.rows);
 };

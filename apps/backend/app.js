@@ -46,7 +46,7 @@ app.use('/api/refresh', require('./routes/api/auth/refresh'));
 app.use(verifyJWT);
 app.use('/api/users', require('./routes/api/user/user'));
 app.use('/api/complete-profile', profileRoutes);
-
+app.use('/api/images', profileRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack)

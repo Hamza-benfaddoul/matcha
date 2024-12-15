@@ -2,31 +2,16 @@
 import { FaStar } from "react-icons/fa";
 import { useState } from "react";
 import useAuth from "@/hooks/useAuth";
+import ProfilePicture from "@/components/ProfilePicture";
 
 // bg-[#F02C56]
-
-function Photos() {
-    return (
-        <div className="flex w-full justify-between">
-          <div className=" p-8">
-            <img src="https://picsum.photos/id/83/300/320" alt="photo" />
-          </div>
-          <div className=" p-8">
-            <img src="https://picsum.photos/id/84/300/320" alt="photo" />
-          </div>
-          <div className=" p-8">
-            <img src="https://picsum.photos/id/85/300/320" alt="photo" />
-          </div>
-        </div>
-    )
-}
 
 
 const renderContent = (activeTab: string) => {
   switch (activeTab) {
     case 'photos':
       return (
-        <Photos />
+        <ProfilePicture />
       );
     case 'liked':
       return (

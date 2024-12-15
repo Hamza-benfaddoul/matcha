@@ -13,6 +13,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import useAuth from '@/hooks/useAuth'
+import { Navigate } from 'react-router-dom';
+
 
 
 export default function CompleteProfile() {
@@ -59,6 +61,7 @@ export default function CompleteProfile() {
       console.log('Profile updated successfully:', response.data.user);
       // setAuth({accessToken: auth.accessToken, user: response.data.user});
       setAuth({ user: response.data.user, accessToken: auth.accessToken });
+      <Navigate to="/profile" />
     } catch (error) {
       console.error('Error updating profile:', error);
     }
