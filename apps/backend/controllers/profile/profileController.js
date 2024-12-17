@@ -57,9 +57,7 @@ exports.completeProfile = async (req, res) => {
 
 exports.getUserImages = async (req, res) => {
   const userId = req.params.userId;
-  console.log('getUserImages called ---->  ', req.params);
   const user = await findOne(userId);
-  console.log('user ---->  ', user);
   const images = await db.query('SELECT * FROM images WHERE user_id = $1', [user.id]);
   res.json(images.rows);
 };

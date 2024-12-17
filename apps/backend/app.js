@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const profileRoutes = require('./routes/api/profile/profileRoutes');
+const images = require('./routes/api/user/images.js');
 const { sendVerificationEmail } = require('./lib/mail.js');
 const { logger } = require('./middleware/logEvent.js')
 const verifyJWT = require('./middleware/verifyJWT');
@@ -24,10 +24,10 @@ app.use(cors(corsOptions))
 app.use(express.json());
 
 // Ensure the uploads directory exists
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
-}
+// const uploadsDir = path.join(__dirname, 'uploads');
+// if (!fs.existsSync(uploadsDir)) {
+//   fs.mkdirSync(uploadsDir);
+// }
 
 app.use(cookieparser());
 
@@ -45,8 +45,12 @@ app.use('/api/refresh', require('./routes/api/auth/refresh'));
 // protected routes
 app.use(verifyJWT);
 app.use('/api/users', require('./routes/api/user/user'));
-app.use('/api/complete-profile', profileRoutes);
-app.use('/api/images', profileRoutes);
+app.use('/api/complete-profile', images);
+app.use('/api/images', images);
+app.use('/api/user/views', require('./routes/api/user/views'));
+app.use('/api/user/likes', require('./routes/api/user/likes'));
+app.use('/api/user/tags', require('./routes/api/user/tags'));
+
 
 app.use((err, req, res, next) => {
   console.error(err.stack)

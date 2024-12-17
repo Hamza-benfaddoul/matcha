@@ -15,6 +15,7 @@ import ProtectedRoute from './components/protected-route.tsx'
 import LandingPage from './home/home.tsx'
 import Profile from './pages/Profile.tsx'
 import CompleteProfile from './pages/CompleteProfile.tsx'
+import NotFoundPage from './pages/404.tsx'
 
 // Or use plain objects
 const router = createBrowserRouter([
@@ -46,7 +47,7 @@ const router = createBrowserRouter([
       </div>,
   },
   {
-    path: "/profile",
+    path: "/profile/:id",
     element: (<ProtectedRoute element={<Profile />} />),
   },
   {
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
         <ResetPage />
       </div>
   },
+  {
+    path: "/404",
+    element: <NotFoundPage />
+  }
 ]);
 
 createRoot(document.getElementById('root')!).render(

@@ -1,6 +1,8 @@
 'use client'
 
+// @ts-ignore
 import { create } from 'zustand'
+// @ts-ignore
 import { createJSONStorage, persist } from 'zustand/middleware'
 
 type User = {
@@ -18,7 +20,7 @@ export interface UserActions {
 
 export const useUserStore = create<UserActions>()(
   persist(
-    (set) => ({
+    (set: any) => ({
       user: undefined,
       setUser: (user: User) => {
         console.log('Setting user:', user) // Debug log

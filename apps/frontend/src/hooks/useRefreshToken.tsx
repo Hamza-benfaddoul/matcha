@@ -1,4 +1,5 @@
 import { useAuth } from '@/hooks/useAuth';
+// @ts-ignore
 import axios from '@/api/axios';
 
 interface RefreshResponse {
@@ -18,12 +19,6 @@ const useRefreshToken = () => {
         user: response.data.user,
         accessToken: response.data.accessToken,
       });
-      // setAuth((prev) => ({
-      //   ...prev,
-      //   user: response.data.user,
-      //   accessToken: response.data.accessToken,
-      // }));
-      console.log('user after refresh: ', response.data.user);
       return response.data.accessToken;
     } catch (err) {
       console.error('Failed to refresh token:', err);

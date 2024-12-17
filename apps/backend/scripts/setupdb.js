@@ -34,6 +34,13 @@ CREATE TABLE IF NOT EXISTS users (
 )
 `;
 
+const TagsListTableQuery = `
+CREATE TABLE IF NOT EXISTS tags_list (
+  id SERIAL PRIMARY KEY,
+  tag VARCHAR(50) NOT NULL UNIQUE
+);
+`;
+
 const UserTagssTableQuery = `
   CREATE TABLE IF NOT EXISTS tags (
     id SERIAL PRIMARY KEY,
@@ -101,6 +108,7 @@ const createTables =  async () => {
   await client.query(ViewsTableQuery);
   await client.query(LikeTableQuery);
   await client.query(UserTagssTableQuery);
+  await client.query(TagsListTableQuery);
   console.log('Tables created successfully');
   }catch(err){
     console.log(err);

@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Badge } from "@/components/ui/badge"
 import { X } from 'lucide-react'
 import { Form } from '@/components/ui/form'
 import { CompleteProfileSchema } from '@/schemas'
@@ -13,16 +12,24 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import useAuth from '@/hooks/useAuth'
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import TagSelector from "@/components/TagSelector";
+
 
 
 
 export default function CompleteProfile() {
-  const [interests, setInterests] = useState<string[]>([])
-  const [interestInput, setInterestInput] = useState('')
+  const navigate = useNavigate();
   const [images, setImages] = useState<File[]>([])
   const {auth, setAuth} = useAuth();
+  const [tags, setTags] = useState([]);
+  const [existingTags, setExistingTags] = useState<string[]>([]);
   const [profileImageIndex, setProfileImageIndex] = useState<number | null>(null)
+
+  const handleTagsChange = (selectedTags: any) => {
+    setTags(selectedTags);
+    console.log("Selected Tags:", selectedTags); // Log or send this to the backend
+  };
 
   const form = useForm<z.infer<typeof CompleteProfileSchema>>({
     resolver: zodResolver(CompleteProfileSchema),
@@ -37,19 +44,18 @@ export default function CompleteProfile() {
   })
 
   const onSubmit = async (values: z.infer<typeof CompleteProfileSchema>) => {
-    values.interests = interests
+    const formData = new FormData();
+
     values.images = images
     values.profileImageIndex = profileImageIndex
 
-    const formData = new FormData();
     formData.append('gender', values.gender);
     formData.append('sexualPreferences', values.sexualPreferences);
     formData.append('biography', values.biography || '');
-    values.interests.forEach((interest) => formData.append('interests', interest));
+    tags.forEach((tag) => formData.append('interests', tag));
     values.images.forEach((image) => formData.append('images', image));
     formData.append('profileImageIndex', values?.profileImageIndex?.toString() || '');
     
-
     try {
       const response = await axios.post('/api/complete-profile', formData, {
         headers: {
@@ -58,20 +64,10 @@ export default function CompleteProfile() {
         },
         withCredentials: true,
       });
-      console.log('Profile updated successfully:', response.data.user);
-      // setAuth({accessToken: auth.accessToken, user: response.data.user});
       setAuth({ user: response.data.user, accessToken: auth.accessToken });
-      <Navigate to="/profile" />
+      navigate('/profile');
     } catch (error) {
       console.error('Error updating profile:', error);
-    }
-  }
-
-  const handleInterestSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (interestInput && !interests.includes(interestInput)) {
-      setInterests([...interests, interestInput])
-      setInterestInput('')
     }
   }
 
@@ -84,6 +80,20 @@ export default function CompleteProfile() {
       }
     }
   }
+
+  const fetchTags = async () => {
+    try {
+      const response = await axios.get('/api/user/tags/tagslist');
+      setExistingTags([]);
+      setExistingTags(response.data.tags.map((item: any) => item.tag));
+    } catch (error) {
+      console.error('Error fetching tags:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchTags()
+  }, [])
 
   return (
     <div className="max-w-md mt-10 mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -136,30 +146,8 @@ export default function CompleteProfile() {
           </div>
 
           <div>
-            <Label htmlFor="interests">Interests</Label>
-            <div className="flex space-x-2">
-              <Input
-                id="interests"
-                value={interestInput}
-                onChange={(e) => setInterestInput(e.target.value)}
-                placeholder="Add an interest (e.g. vegan)"
-                className="border-[#F02C56] focus:ring-[#F02C56]"
-              />
-              <Button onClick={handleInterestSubmit} type="button" className="bg-[#F02C56] hover:bg-[#d02548]">Add</Button>
-            </div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {interests.map((interest, index) => (
-                <Badge key={index} variant="secondary" className="text-sm !bg-[#F02C56] text-white">
-                  #{interest}
-                  <button
-                    onClick={() => setInterests(interests.filter((_, i) => i !== index))}
-                    className="ml-2 text-xs"
-                  >
-                    <X size={12} />
-                  </button>
-                </Badge>
-              ))}
-            </div>
+            <Label>Interests (Tags):</Label>
+            <TagSelector existingTags={existingTags} onTagsChange={handleTagsChange} />
           </div>
 
           <div>
@@ -209,4 +197,5 @@ export default function CompleteProfile() {
       </form>
     </div>
   )
+
 }
