@@ -14,7 +14,7 @@ import { AuthProvider } from './context/AuthProvider.tsx'
 import ProtectedRoute from './components/protected-route.tsx'
 import LandingPage from './home/home.tsx'
 import Profile from './pages/Profile.tsx'
-import CompleteProfile from './pages/CompleteProfile.tsx'
+import CompleteProfile from './components/CompleteProfile.tsx'
 import NotFoundPage from './pages/404.tsx'
 
 // Or use plain objects

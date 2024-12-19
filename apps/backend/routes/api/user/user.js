@@ -5,8 +5,23 @@ const verifyToken = require('../../../middleware/authMiddleware');
 const { findAll, findOne, updateProfile } = require('../../../models/users');
 const multer = require('multer');
 const path = require('path');
-const upload = multer({ dest: path.join(__dirname, '../uploads') }); // Adjust path as needed
+const upload = multer({ dest: path.join('./uploads') }); // Adjust path as needed
+const { completeProfile } = require('../../../controllers/profile/profileController');
 
+
+// Complete Profile Route
+router.post(
+  '/complete',
+  upload.array('images', 5), // Upload up to 5 images
+  completeProfile
+);
+
+// Complete Profile Route
+router.post(
+  '/update',
+  upload.array('images', 5), // Upload up to 5 images
+  completeProfile
+);
 
 router.get('/', async (req, res) => {
   const users = await findAll();
@@ -26,26 +41,9 @@ router.get('/:id',async (req, res) => {
     // 404 Not found
     console.log("User not found")
     res.status(404).send('The user with the given ID was not found!')
+    return;
   }
   res.send(user);
-});
-
-
-// Update user profile
-router.post('/update-profile', verifyToken, async (req, res) => {
-  const userId = req.user.userId; // Get user ID from JWT token
-  const profileData = req.body; // Get profile data from request body
-
-  try {
-    const updatedUser = await updateProfile(userId, profileData);
-    if (updatedUser) {
-      res.status(200).json({ message: 'Profile updated successfully', user: updatedUser });
-    } else {
-      res.status(400).json({ error: 'Profile update failed' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: 'Server error' });
-  }
 });
 
 

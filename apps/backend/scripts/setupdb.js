@@ -46,7 +46,7 @@ const UserTagssTableQuery = `
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     tag VARCHAR(50) NOT NULL,
-    UNIQUE(user_id, tag)
+    UNIQUE(user_id)
   );
 `;
 
@@ -97,6 +97,22 @@ token VARCHAR(255),
 expires TIMESTAMP 
 )`
 
+
+const insertDefaultTags = async (client) => {
+  const tags = ['#vegan', '#sport', '#music', '#movies'];
+  // in case of the tag is already in the table the [ON CONFLICT (tag) DO NOTHING] do nothing :)
+  const insertTagQuery = 'INSERT INTO tags_list (tag) VALUES ($1) ON CONFLICT (tag) DO NOTHING';
+
+  try {
+    for (const tag of tags) {
+      await client.query(insertTagQuery, [tag]);
+    }
+    console.log('Default tags inserted successfully');
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // crate user table 
 const createTables =  async () => {
   try {
@@ -109,6 +125,9 @@ const createTables =  async () => {
   await client.query(LikeTableQuery);
   await client.query(UserTagssTableQuery);
   await client.query(TagsListTableQuery);
+
+  // always keep this line at the end :)
+  await insertDefaultTags(client)
   console.log('Tables created successfully');
   }catch(err){
     console.log(err);

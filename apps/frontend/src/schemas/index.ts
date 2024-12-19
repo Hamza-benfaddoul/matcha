@@ -31,10 +31,12 @@ export const RegisterSchema = z.object({
 });
 
 export const CompleteProfileSchema = z.object({
-  // gender: z.string().min(1, { message: "Gender is required" }),
-  // sexualPreferences: z.string().min(1, { message: "Sexual preference is required" }),
-  gender: z.enum(['female', 'male', 'other'], { message: "Gender is required" }),
-  sexualPreferences: z.enum(['heterosexual', 'homosexual', 'bisexual', 'other'], { message: "Sexual preference is required" }),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  // gender: z.enum(['female', 'male', 'other'], { message: "Gender is required" }),
+  gender: z.string().nonempty("Gender is required"),
+  sexualPreferences: z.string().nonempty("Sexual preferences are required"),
+  // sexualPreferences: z.enum(['heterosexual', 'homosexual', 'bisexual', 'other'], { message: "Sexual preference is required" }),
   biography: z.string().optional(),
   interests: z.array(z.string()).optional(),
   images: z.array(z.instanceof(File)).optional(),

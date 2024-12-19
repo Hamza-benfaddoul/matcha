@@ -5,6 +5,12 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import ProfileSectionContent from "@/components/ProfileSectionContent";
+// @ts-ignore
+import Modal from "react-modal";
+import UpdateProfileModal from "@/components/UpdateProfile";
+// Bind modal to your app root element (important for accessibility)
+Modal.setAppElement("#root");
+
 
 function Profile() {
   const { auth } = useAuth();
@@ -15,6 +21,11 @@ function Profile() {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+
+   // Open and close modal handlers
+   const openModal = () => setIsOpen(true);
+   const closeModal = () => setIsOpen(false);
 
   const handleUpdateModal = () => {
     setIsUpdateModalOpen(!isUpdateModalOpen);
@@ -38,6 +49,7 @@ function Profile() {
   }
 
   useEffect(() => {
+    closeModal();
     if (id != user.id) {
       axios.get(`/api/users/${id}`)
         .then(response => {
@@ -73,8 +85,16 @@ function Profile() {
                 }
                 {isMyProfile &&
                   <>
-                    {isUpdateModalOpen && <UpdateProfileModal user={user} closeModal={handleUpdateModal} />}
-                    <button onClick={() => handleUpdateModal()} className="bg-[#ff6b4e] text-white px-4 py-2 rounded-md"> Edit Profile</button>
+                    <button onClick={openModal} className="bg-[#ff6b4e] text-white px-4 py-2 rounded-md"> Edit Profile</button>
+                    <Modal
+                      isOpen={isOpen}
+                      onRequestClose={closeModal}
+                      contentLabel="Update Profile Modal"
+                      overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                      className="bg-white rounded-lg overflow-x-auto max-h-[600px] shadow-lg w-11/12 max-w-md"
+                    >
+                      <UpdateProfileModal closeModal={closeModal} />
+                    </Modal>
                   </>
                 }
               </div>

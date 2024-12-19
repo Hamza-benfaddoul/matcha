@@ -94,8 +94,6 @@ const  updateRefreshToken = async (refershToken, userId ) => {
 }
 
 const completeProfile = async (userId, profileData) => {
-  console.log('PROFILE DATA: ', profileData)
-  console.log('USER ID: ', userId)
   const completeProfileQuery = `
     UPDATE users
     SET gender = $1,
@@ -132,18 +130,22 @@ const completeProfile = async (userId, profileData) => {
 const updateProfile = async (userId, profileData) => {
   const updateProfileQuery = `
     UPDATE users
-    SET gender = $1,
-        sexual_preferences = $2,
-        biography = $3,
-        fame_rating = $4,
-        location_latitude = $5,
-        location_longitude = $6
-    WHERE id = $7
-    RETURNING id, first_name, last_name, email, gender, sexual_preferences, biography, fame_rating, location_latitude, location_longitude;
+    SET firstName = $1,
+        lastName = $2,
+        gender = $3,
+        sexual_preferences = $4,
+        biography = $5,
+        fame_rating = $6,
+        location_latitude = $7,
+        location_longitude = $8
+    WHERE id = $9
+    RETURNING id, firstname, lastname, email, gender, sexual_preferences, biography, fame_rating, location_latitude, location_longitude;
   `;
 
   try {
     const res = await db.query(updateProfileQuery, [
+      profileData.firstName,
+      profileData.lastName,
       profileData.gender,
       profileData.sexualPreferences,
       profileData.biography,

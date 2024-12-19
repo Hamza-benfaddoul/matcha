@@ -32,7 +32,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
 
   
   if (auth?.accessToken) {
-    console.log("user in protected route: ", auth.user);
     if (auth?.user.isprofilecomplete === true)
     {
       return element;
