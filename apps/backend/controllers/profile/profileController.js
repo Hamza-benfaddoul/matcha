@@ -32,6 +32,7 @@ exports.completeProfile = async (req, res) => {
     if (interests) {
       const deleteTagsQuery = 'DELETE FROM tags WHERE user_id = $1';
       const deleted = await db.query(deleteTagsQuery, [user.id]);
+      
 
       console.log('Deleted tags: ', deleted);
 

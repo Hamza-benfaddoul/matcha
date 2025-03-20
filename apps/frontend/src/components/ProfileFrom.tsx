@@ -120,7 +120,7 @@ const ProfileForm = ({ initialData = {
         console.log("response: --> ", response);
         setAuth({ user: response.data.user, accessToken: auth.accessToken });
         // if (initialData.id)
-        //     closeModal && closeModal();
+        closeModal && closeModal();
         navigate(`/profile/${auth.user?.id}`);
         // location.href = `/profile/${auth.user?.id}`;
       } catch (error) {

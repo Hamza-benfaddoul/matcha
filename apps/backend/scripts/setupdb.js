@@ -45,8 +45,7 @@ const UserTagssTableQuery = `
   CREATE TABLE IF NOT EXISTS tags (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    tag VARCHAR(50) NOT NULL,
-    UNIQUE(user_id)
+    tag VARCHAR(50) NOT NULL
   );
 `;
 
