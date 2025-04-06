@@ -33,9 +33,8 @@ const sendPasswordResetEmail = async (email, token) => {
 
 const sendVerificationEmail = async (email, token) => {
   const confirmLink = `${process.env.CLIENT_URL}/new-verification?token=${token}`;
-
   await transporter.sendMail({
-    from: "benfaddoul01@gmail.com",
+    from: "benfaddoul09@gmail.com",
     to: email,
     subject: "Confirm your email",
     html: `<p>Click <a href="${confirmLink}">here</a> to confirm email`,

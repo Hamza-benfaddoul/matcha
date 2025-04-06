@@ -1,4 +1,4 @@
-version: '2.30.1'
+version: "2.30.1"
 
 services:
   frontend:
@@ -40,6 +40,8 @@ services:
       - matcha-network
     volumes:
       - matcha-db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
 
   nginx:
     image: matcha-nginx
