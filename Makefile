@@ -16,3 +16,4 @@ clean: down
 	docker compose -f docker-compose.yml --rmi all
 
 re: down all
+
