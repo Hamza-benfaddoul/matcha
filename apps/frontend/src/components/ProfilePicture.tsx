@@ -30,8 +30,8 @@ const ProfilePicture = ({id} : ProfilePictureProps) => {
     return (
         <div className={`flex w-full  gap-4 p-4 flex-wrap max-sm:flex-col max-sm:items-center max-sm:justify-center`}>
             {images.map((image, index) => (
-            <div key={index} onClick={() => setSelectedImage(`http://localhost/api${image.image_url}`)}>
-                <img className="w-52 h-52 cursor-pointer" src={`http://localhost/api${image.image_url}`} alt="photo" />
+            <div key={index} onClick={() => setSelectedImage(`http://localhost:8080/api${image.image_url}`)}>
+                <img className="w-52 h-52 cursor-pointer" src={`http://localhost:8080/api${image.image_url}`} alt="photo" />
             </div>
             ))}
             {selectedImage && (

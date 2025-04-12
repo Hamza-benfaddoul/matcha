@@ -27,3 +27,4 @@ poetry.lock
 .env*
 # backend logs file
 apps/backend/logs/*
+apps/backend/uploads

@@ -29,7 +29,7 @@ const Likes = ({ id }: LikesProps) => {
             { users.length == 0 ? <p className="p-4">No likes yet</p> :
                 users.map((user, index) => (
                 <div key={index} className="flex items-center w-full p-2 border-b cursor-pointer hover:bg-gray-100" onClick={() => window.location.href = `/profile/${user.id}`}>
-                    <img src={`http://localhost/api${user.profile_picture}`} alt={`${user.firstname} ${user.lastname}`} className="w-12 h-12 rounded-full mr-4" />
+                    <img src={`http://localhost:8080/api${user.profile_picture}`} alt={`${user.firstname} ${user.lastname}`} className="w-12 h-12 rounded-full mr-4" />
                     <div className="flex flex-col">
                     <span className="font-bold">{user.firstname} {user.lastname}</span>
                     <span className="text-gray-600">Gender: {user?.gender}</span>
