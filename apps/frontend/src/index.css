@@ -68,3 +68,24 @@
     @apply bg-background text-foreground;
   }
 }
+
+.ripple {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(240, 44, 86, 0.5);
+  animation: ripple-animation 2s infinite;
+  position: absolute;
+  transform: scale(0);
+}
+
+@keyframes ripple-animation {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(8);
+    opacity: 0;
+  }
+}

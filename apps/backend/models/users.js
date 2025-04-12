@@ -88,6 +88,7 @@ const updateRefreshToken = async (refershToken, userId) => {
       refershToken,
       userId,
     ]);
+    console.log("ROWS", res.rows[0]);
     return res.rows[0];
   } catch (err) {
     console.error("ERROR: UPDATE REFERSH TOKEN\n", err);
@@ -95,16 +96,67 @@ const updateRefreshToken = async (refershToken, userId) => {
   }
 };
 
-const updateNewVerificationToken = async (email) => {
+const completeProfile = async (userId, profileData) => {
+  const completeProfileQuery = `
+    UPDATE users
+    SET gender = $1,
+        sexual_preferences = $2,
+        biography = $3,
+        fame_rating = $4,
+        location_latitude = $5,
+        location_longitude = $6,
+        isprofilecomplete = $7
+    WHERE id = $8
+    RETURNING id, firstname, lastname, email, gender, sexual_preferences, biography, fame_rating, location_latitude, location_longitude, isprofilecomplete;
+  `;
   try {
-    const res = await db.query(
-      "UPDATE users SET isemailverified=$1 WHERE email=$2",
-      [true, email],
-    );
-
+    const res = await db.query(completeProfileQuery, [
+      profileData.gender,
+      profileData.sexualPreferences,
+      profileData.biography,
+      profileData.fameRating || 0,
+      profileData.locationLatitude || 0,
+      profileData.locationLongitude || 0,
+      true,
+      userId,
+    ]);
     return res.rows[0];
   } catch (err) {
-    console.error("ERROR: UPDATE NEW VERIFICATION TOKEN\n", err);
+    console.error("ERROR: COMPLETE PROFILE QUERY : --> \n", err);
+    return null;
+  }
+};
+
+const updateProfile = async (userId, profileData) => {
+  const updateProfileQuery = `
+    UPDATE users
+    SET firstName = $1,
+        lastName = $2,
+        gender = $3,
+        sexual_preferences = $4,
+        biography = $5,
+        fame_rating = $6,
+        location_latitude = $7,
+        location_longitude = $8
+    WHERE id = $9
+    RETURNING id, firstname, lastname, email, gender, sexual_preferences, biography, fame_rating, location_latitude, location_longitude;
+  `;
+
+  try {
+    const res = await db.query(updateProfileQuery, [
+      profileData.firstName,
+      profileData.lastName,
+      profileData.gender,
+      profileData.sexualPreferences,
+      profileData.biography,
+      profileData.fameRating || 0,
+      profileData.locationLatitude,
+      profileData.locationLongitude,
+      userId,
+    ]);
+    return res.rows[0];
+  } catch (err) {
+    console.error("ERROR: UPDATE PROFILE\n", err);
     return null;
   }
 };
@@ -118,5 +170,6 @@ module.exports = {
   findUserByName,
   validateLoginUser,
   updateRefreshToken,
-  updateNewVerificationToken,
+  updateProfile,
+  completeProfile,
 };

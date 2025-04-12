@@ -1,4 +1,4 @@
-import { Children, StrictMode } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
@@ -9,7 +9,9 @@ import ResetPage from "./auth/reset/page.tsx";
 import { AuthProvider } from "./context/AuthProvider.tsx";
 import ProtectedRoute from "./components/protected-route.tsx";
 import LandingPage from "./home/home.tsx";
-import NewVerificationPage from "./auth/new-verification/page.tsx";
+import Profile from "./pages/Profile.tsx";
+import CompleteProfile from "./components/CompleteProfile.tsx";
+import NotFoundPage from "./pages/404.tsx";
 
 // Or use plain objects
 const router = createBrowserRouter([
@@ -27,12 +29,21 @@ const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
+    path: "/complete-profile",
+    element: <CompleteProfile />,
+    // element: <CompleteProfile />,
+  },
+  {
     path: "/register",
     element: (
       <div className="h-screen w-full  flex justify-center items-center ">
         <RegisterPage />
       </div>
     ),
+  },
+  {
+    path: "/profile/:id",
+    element: <ProtectedRoute element={<Profile />} />,
   },
   {
     path: "/reset",
@@ -43,12 +54,8 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/new-verification",
-    element: (
-      <div className="h-screen w-full  flex justify-center items-center ">
-        <NewVerificationPage />
-      </div>
-    ),
+    path: "/404",
+    element: <NotFoundPage />,
   },
 ]);
 

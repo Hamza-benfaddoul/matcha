@@ -43,7 +43,6 @@ const RegisterForm = () => {
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     setError("");
     setSuccess("");
-    console.log(values);
     axios
       .post("/register", {
         ...values,

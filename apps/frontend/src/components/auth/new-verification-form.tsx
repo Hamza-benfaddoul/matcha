@@ -1,6 +1,7 @@
+"use client";
+
 // import { BeatLoader } from 'react-spinners'
-import axios from "@/api/axios.js";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "next/navigation";
 
 import CardWrapper from "./card-wrapper";
 import { useCallback, useEffect, useState } from "react";
@@ -12,29 +13,15 @@ const NewVerificationForm = () => {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
 
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit = useCallback(() => {
     if (success || error) return;
 
     if (!token) {
       setError("Missing token");
       return;
-    }
-
-    try {
-      setError("");
-      setSuccess("");
-      const response = await axios.post("/new-verification-token", { token });
-      console.log("login respornse", response);
-
-      // Redirect to protected route after successful login
-      //navigate('/protected');  // Replace '/prote
-      setSuccess(response.data.success);
-      setError(response.data.error);
-    } catch (error) {
-      setError("Something went wrong!");
     }
     /*
         newVerification(token)

@@ -23,12 +23,14 @@ const handleLogin = async (req, res) => {
     const { password, ...rest } = user
 
     //creating a access token
+    console.log('------> ', user.isProfileComplete);
     const accessToken = jwt.sign(
       {
         'userInfo': {
           fristName: user.username,
           lastName: user.lastname,
-          email: user.email
+          email: user.email,
+          isProfileCompleted: user.isProfileComplete,
         }
       },
       process.env.ACCESS_TOKEN_SECRET,

@@ -23,11 +23,7 @@ const handleRefreshToken = async (req, res) => {
     );
 
     return res.json({
-      user: {
-        firstName: user.firstname,
-        lastName: user.lastname,
-        email: user.email,
-      },
+      user: user,
       accessToken,
     });
   } catch (err) {

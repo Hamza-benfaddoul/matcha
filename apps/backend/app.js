@@ -1,18 +1,17 @@
 const express = require("express");
 const app = express();
-
+const images = require("./routes/api/user/images.js");
+const user = require("./routes/api/user/user.js");
 const { sendVerificationEmail } = require("./lib/mail.js");
-
 const { logger } = require("./middleware/logEvent.js");
-
 const verifyJWT = require("./middleware/verifyJWT");
-
 const cookieparser = require("cookie-parser");
 const cors = require("cors");
-
 const port = process.env.PORT | 5000;
 const corsOptions = require("./conf/corsOrigins");
 const credentials = require("./middleware/credentials");
+const path = require("path");
+const fs = require("fs");
 
 // custom middleware logger
 app.use(logger);
@@ -25,21 +24,32 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
+// Ensure the uploads directory exists in the root folder
+const uploadsDir = path.join("./uploads");
+console.log("uploadsDir: ", uploadsDir, __dirname);
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
+
 app.use(cookieparser());
+
+app.use(express.urlencoded({ extended: true })); // For URL-encoded data
+app.use("/api/uploads", express.static(uploadsDir));
 
 //routes
 app.use("/api/login", require("./routes/api/auth/login"));
 app.use("/api/register", require("./routes/api/auth/register"));
 app.use("/api/logout", require("./routes/api/auth/logout"));
 app.use("/api/refresh", require("./routes/api/auth/refresh"));
-app.use(
-  "/api/new-verification-token",
-  require("./routes/api/auth/new-verification-token"),
-);
 
 // protected routes
 app.use(verifyJWT);
-app.use("/api/users", require("./routes/api/user/user"));
+app.use("/api/users", user);
+app.use("/api/profile", user);
+app.use("/api/images", images);
+app.use("/api/user/views", require("./routes/api/user/views"));
+app.use("/api/user/likes", require("./routes/api/user/likes"));
+app.use("/api/user/tags", require("./routes/api/user/tags"));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
