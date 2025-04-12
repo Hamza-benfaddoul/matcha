@@ -1,7 +1,7 @@
-import useAuth from '@/hooks/useAuth';
-import useRefreshToken from '@/hooks/useRefreshToken';
-import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import useAuth from "@/hooks/useAuth";
+import useRefreshToken from "@/hooks/useRefreshToken";
+import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
   element: React.ReactElement;
@@ -9,15 +9,13 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
   const { auth } = useAuth();
-  const { refresh } = useRefreshToken();  // Ensure that refresh is a function
+  const { refresh } = useRefreshToken(); // Ensure that refresh is a function
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const verifyToken = async () => {
-      const response = await refresh();  // Call the refresh function
-      if (response) {
-        setLoading(false);  // Stop loading after refreshing token
-      }
+      await refresh(); // Call the refresh function
+      setLoading(false); // Stop loading after refreshing token
     };
 
     if (!auth?.accessToken) {
@@ -27,22 +25,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
     }
   }, [auth, loading, refresh]);
 
-
   if (loading) return <div>Loading...</div>; // or a spinner component
 
-  
   if (auth?.accessToken) {
-    if (auth?.user.isprofilecomplete === true)
-    {
+    if (auth?.user.isprofilecomplete === true) {
       return element;
-    }
-    else
-      return <Navigate to="/complete-profile" />;
-  }
-  else
-    return <Navigate to="/login" />;
-
+    } else return <Navigate to="/complete-profile" />;
+  } else return <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;
-
