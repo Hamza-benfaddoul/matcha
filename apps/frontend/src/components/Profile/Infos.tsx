@@ -23,7 +23,7 @@ const Info = ({id, user}: InfoProps) => {
       useEffect(() => {
             fetchTags()
             // setImages(initialData.images || []);
-  
+            console.log("user in infos: ", user);
       }, [id]);
       
     return (

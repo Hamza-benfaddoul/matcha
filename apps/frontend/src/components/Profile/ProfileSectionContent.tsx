@@ -1,7 +1,7 @@
-import Infos from "@/components/Infos";
-import Likes from "@/components/Likes";
-import Views from "@/components/Views";
-import ProfilePicture from "@/components/ProfilePicture";
+import Infos from "@/components/Profile/Infos";
+import Likes from "@/components/Profile/Likes";
+import Views from "@/components/Profile/Views";
+import ProfilePicture from "@/components/Profile/ProfilePicture";
 import { useState } from "react";
 
 interface ProfileSectionContentProps {

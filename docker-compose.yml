@@ -54,6 +54,16 @@ services:
     ports:
       - 8080:80
 
+  adminer:
+    container_name: matcha-adminer
+    image: adminer:latest
+    networks:
+      - matcha-network
+    ports:
+      - 8081:8080
+    depends_on:
+      - db
+
 volumes:
   matcha-db-data:
   node_modules-data:

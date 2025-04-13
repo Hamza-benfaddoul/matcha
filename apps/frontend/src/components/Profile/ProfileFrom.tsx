@@ -13,7 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import useAuth from '@/hooks/useAuth'
 import { useNavigate } from 'react-router-dom';
-import TagSelector from "@/components/TagSelector";
+import TagSelector from "@/components/Profile/TagSelector";
 import { User } from '@/types/User'
 
 
@@ -117,7 +117,7 @@ const ProfileForm = ({ initialData = {
           },
           withCredentials: true,
         });
-        console.log("response: --> ", response);
+        console.log("response update: --> ", response);
         setAuth({ user: response.data.user, accessToken: auth.accessToken });
         // if (initialData.id)
         closeModal && closeModal();

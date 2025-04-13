@@ -29,27 +29,51 @@ exports.addLikeProfile = async (req, res) => {
       await db.query('INSERT INTO likes (liker_id, liked_id) VALUES ($1, $2)', [likerId, likedId]);
   
       // Update fame rating (calculateFameRating is called)
-      const fameRating = await calculateFameRating(likedId);
+      // const fameRating = await calculateFameRating(likedId);
   
-      res.status(200).json({ message: 'Profile liked successfully', fameRating });
+      // res.status(200).json({ message: 'Profile liked successfully', fameRating });
+      res.status(200).json({ message: 'Profile liked successfully' });
     } catch (error) {
       console.error('Error liking profile:', error);
       res.status(500).json({ message: 'Error liking profile' });
     }
 }
 
+exports.isLiked = async (req, res) => {
+  const likerId = req.userId;
+  const likedId = req.query.likedId; // Profile being liked
+    try {
+      // Record the like in the database
+      const existingLike = await db.query('SELECT * FROM likes WHERE liker_id = $1 AND liked_id = $2', [likerId, likedId]);
+      let isLikedVar = false;
+      if (existingLike.rows.length > 0) {
+        isLikedVar = true;
+      }
+      return res.status(200).json({ message: 'You have already liked this profile', isLiked: isLikedVar });
+
+    } catch (error) {
+      console.error('Error liking profile:', error);
+      res.status(500).json({ message: 'Error liking profile' });
+    }
+}
+
+
+
 exports.removeLikeProfile = async (req, res) => {
     const likerId = req.userId;
-    const { likedId } = req.body; // ID of the profile being unliked
-  
+    const { likedId } = req.body; // Profile being liked
+
+    console.log("likerid and likedid: ", likerId, likedId);
     try {
       // Remove the like
       await db.query('DELETE FROM likes WHERE liker_id = $1 AND liked_id = $2', [likerId, likedId]);
-  
+      // Optionally, you can also remove the like from the likes table
+      
       // Recalculate fame rating
-      const fameRating = await calculateFameRating(likedId);
+      // const fameRating = await calculateFameRating(likedId);
   
-      res.status(200).json({ message: 'Profile unliked', fameRating });
+      res.status(200).json({ message: 'Profile unliked' });
+      // res.status(200).json({ message: 'Profile unliked', fameRating });
     } catch (error) {
       console.error('Error unliking profile:', error);
       res.status(500).json({ message: 'Error unliking profile' });

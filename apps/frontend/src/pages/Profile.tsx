@@ -4,10 +4,10 @@ import useAuth from "@/hooks/useAuth";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import ProfileSectionContent from "@/components/ProfileSectionContent";
+import ProfileSectionContent from "@/components/Profile/ProfileSectionContent";
 // @ts-ignore
 import Modal from "react-modal";
-import UpdateProfileModal from "@/components/UpdateProfile";
+import UpdateProfileModal from "@/components/Profile/UpdateProfile";
 // Bind modal to your app root element (important for accessibility)
 Modal.setAppElement("#root");
 
@@ -19,6 +19,7 @@ function Profile() {
   const [viewsCount, setViewsCount] = useState(0);
   const [likesCount, setLikesCount] = useState(0);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +31,15 @@ function Profile() {
   const handleUpdateModal = () => {
     setIsUpdateModalOpen(!isUpdateModalOpen);
   };
+
+  const isLikedFunc = async () => {
+    try {
+      const response = await axios.get(`/api/user/likes/isLiked/`, { params: { likedId: id } });
+      setIsLiked(response.data.isLiked);
+    } catch (error) {
+      console.error("Error checking if user is liked:", error);
+    }
+  }
 
   const fetchCountViews = async () => {
     try {
@@ -48,24 +58,51 @@ function Profile() {
     }
   }
 
+  const addLike = async () => {
+    try {
+      await axios.post(`/api/user/likes/`, { likedId: id });
+      fetchCountLikes();
+      isLikedFunc();
+    } catch (error) {
+      console.error("Error liking user:", error);
+    }
+  }
+
+  const removeLikefunc = async () => {
+    try {
+      await axios.post(`/api/user/likes/remove/`,  { likedId: id });
+      fetchCountLikes();
+      isLikedFunc();
+      console.log("unlike user with id: ", id);
+    } catch (error) {
+      console.error("Error unliking user:", error);
+    }
+  }
+
+
+//isLiked
   useEffect(() => {
-    closeModal();
-    if (id != user.id) {
-      axios.get(`/api/users/${id}`)
-        .then(response => {
-          setUser(response.data);
-          setIsMyProfile(false);
-        })
-        .catch(error => {
-          console.error("Error fetching user:", error);
-          navigate('/404');
-        });
+    axios.get(`/api/users/${id}`)
+      .then(response => {
+        console.log("user in fetch with id: ", response.data);
+        setUser(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching user:", error);
+        navigate('/404');
+      });
+
+
+    if (id != auth.user.id) {
+      setIsMyProfile(false);
     }
     else
       setIsMyProfile(true);
     fetchCountViews();
     fetchCountLikes();
-  }, [id, user.id]);
+    isLikedFunc();
+    closeModal();
+  }, [id, user.id, auth.user]);
 
   return (
     <div className="flex w-full justify-center">
@@ -80,9 +117,12 @@ function Profile() {
               <div className="text-[24px] font-semibold">{user.firstname} {user?.lastname}</div>
               <div className="text-[17px] text-gray-500">{user?.email}</div>
               <div className="my-3">
-                {!isMyProfile &&
-                  <button className="bg-[#F02C56] text-white px-4 py-2 rounded-md mr-2">Like</button>
-                }
+                {!isMyProfile ? (
+                  isLiked ? 
+                  <button onClick={removeLikefunc} className="bg-[#F02C56] text-white px-4 py-2 rounded-md mr-2">Unlike</button> 
+                  : 
+                  <button onClick={addLike} className="bg-[#F02C56] text-white px-4 py-2 rounded-md mr-2">Like</button>
+                ) : null}
                 {isMyProfile &&
                   <>
                     <button onClick={openModal} className="bg-[#ff6b4e] text-white px-4 py-2 rounded-md"> Edit Profile</button>
