@@ -1,6 +1,6 @@
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from "@/hooks/useAuth";
 // @ts-ignore
-import axios from '@/api/axios';
+import axios from "@/api/axios";
 
 interface RefreshResponse {
   user: any;
@@ -12,7 +12,7 @@ const useRefreshToken = () => {
 
   const refresh = async (): Promise<string | undefined> => {
     try {
-      const response = await axios.get<RefreshResponse>('refresh', {
+      const response = await axios.get<RefreshResponse>("refresh", {
         withCredentials: true,
       });
       setAuth({
@@ -21,13 +21,12 @@ const useRefreshToken = () => {
       });
       return response.data.accessToken;
     } catch (err) {
-      console.error('Failed to refresh token:', err);
+      console.error("Failed to refresh token:", err);
       return undefined;
     }
   };
 
-  return { refresh };  // Ensure you're returning the function in an object
+  return { refresh }; // Ensure you're returning the function in an object
 };
 
 export default useRefreshToken;
-
