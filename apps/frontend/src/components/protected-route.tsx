@@ -13,7 +13,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
   const [loading, setLoading] = useState(true);
 
   const { pathname } = useLocation();
-  console.log("pathname", pathname);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -36,7 +35,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
       )
     )
       return <Navigate to="/protected" />;
-    if (auth?.user.isprofilecomplete === true) {
+    if (
+      auth?.user.isprofilecomplete === true ||
+      pathname == "/complete-profile"
+    ) {
       return element;
     } else return <Navigate to="/complete-profile" />;
   } else return <Navigate to="/login" />;
