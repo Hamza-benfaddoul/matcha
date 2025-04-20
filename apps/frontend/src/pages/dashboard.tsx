@@ -1,5 +1,7 @@
 "use client";
 
+import MatchingProfiles from "@/components/browsing/matching-profiles";
+
 import { useNavigate } from "react-router-dom";
 import {
   Bell,
@@ -365,202 +367,16 @@ export default function DashboardPage({ onLogout }: DashboardPageProps) {
                         Recent Messages
                       </TabsTrigger>
                     </TabsList>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Filter className="h-4 w-4" />
-                      <span>Filter</span>
-                    </Button>
+                    {/* <Button variant="outline" size="sm" className="gap-2"> */}
+                    {/*   <Filter className="h-4 w-4" /> */}
+                    {/*   <span>Filter</span> */}
+                    {/* </Button> */}
                   </div>
 
                   {/* Matches Tab Content */}
                   <TabsContent value="matches" className="mt-4">
-                    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                      {/* Match Card 1 */}
-                      <Card className="overflow-hidden">
-                        <div className="relative aspect-[3/4]">
-                          <img
-                            src="/placeholder.svg?height=400&width=300"
-                            alt="Profile"
-                            className="h-full w-full object-cover"
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h3 className="font-bold">Emma, 28</h3>
-                                <div className="flex items-center gap-1 text-xs">
-                                  <MapPin className="h-3 w-3" />
-                                  <span>2 miles away</span>
-                                </div>
-                              </div>
-                              <Badge className="bg-rose-500">92% Match</Badge>
-                            </div>
-                          </div>
-                        </div>
-                        <CardFooter className="flex justify-between p-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <Heart className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <MessageCircle className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <User className="h-4 w-4" />
-                          </Button>
-                        </CardFooter>
-                      </Card>
-
-                      {/* Match Card 2 */}
-                      <Card className="overflow-hidden">
-                        <div className="relative aspect-[3/4]">
-                          <img
-                            src="/placeholder.svg?height=400&width=300"
-                            alt="Profile"
-                            className="h-full w-full object-cover"
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h3 className="font-bold">Michael, 30</h3>
-                                <div className="flex items-center gap-1 text-xs">
-                                  <MapPin className="h-3 w-3" />
-                                  <span>5 miles away</span>
-                                </div>
-                              </div>
-                              <Badge className="bg-rose-500">85% Match</Badge>
-                            </div>
-                          </div>
-                        </div>
-                        <CardFooter className="flex justify-between p-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <Heart className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <MessageCircle className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <User className="h-4 w-4" />
-                          </Button>
-                        </CardFooter>
-                      </Card>
-
-                      {/* Match Card 3 */}
-                      <Card className="overflow-hidden">
-                        <div className="relative aspect-[3/4]">
-                          <img
-                            src="/placeholder.svg?height=400&width=300"
-                            alt="Profile"
-                            className="h-full w-full object-cover"
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h3 className="font-bold">Sophia, 26</h3>
-                                <div className="flex items-center gap-1 text-xs">
-                                  <MapPin className="h-3 w-3" />
-                                  <span>3 miles away</span>
-                                </div>
-                              </div>
-                              <Badge className="bg-rose-500">78% Match</Badge>
-                            </div>
-                          </div>
-                        </div>
-                        <CardFooter className="flex justify-between p-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <Heart className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <MessageCircle className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <User className="h-4 w-4" />
-                          </Button>
-                        </CardFooter>
-                      </Card>
-
-                      {/* Match Card 4 */}
-                      <Card className="overflow-hidden">
-                        <div className="relative aspect-[3/4]">
-                          <img
-                            src="/placeholder.svg?height=400&width=300"
-                            alt="Profile"
-                            className="h-full w-full object-cover"
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h3 className="font-bold">David, 32</h3>
-                                <div className="flex items-center gap-1 text-xs">
-                                  <MapPin className="h-3 w-3" />
-                                  <span>7 miles away</span>
-                                </div>
-                              </div>
-                              <Badge className="bg-rose-500">75% Match</Badge>
-                            </div>
-                          </div>
-                        </div>
-                        <CardFooter className="flex justify-between p-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <Heart className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <MessageCircle className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                          >
-                            <User className="h-4 w-4" />
-                          </Button>
-                        </CardFooter>
-                      </Card>
-                    </div>
-                    <div className="mt-4 flex justify-center">
-                      <Button variant="outline">View More Matches</Button>
-                    </div>
+                    {/* Match Card 1 */}
+                    <MatchingProfiles />
                   </TabsContent>
 
                   {/* Messages Tab Content */}

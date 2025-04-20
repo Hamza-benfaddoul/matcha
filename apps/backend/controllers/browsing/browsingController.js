@@ -3,6 +3,7 @@ const db = require("../../db/db");
 const matchingProfiles = async (req, res) => {
   try {
     const { userId } = req.params;
+    const { limit = 5, offset = 0 } = req.query; // Default to 5 results per request
 
     // Step 1: Get current user data
     const {
@@ -62,7 +63,7 @@ const matchingProfiles = async (req, res) => {
         AND t.tag = ANY($5)
       GROUP BY u.id
       ORDER BY distance ASC, shared_tags_count DESC, fame_rating DESC
-      LIMIT 50
+        LIMIT $6 OFFSET $7
     `,
       [
         user.id,
@@ -70,6 +71,8 @@ const matchingProfiles = async (req, res) => {
         user.location_longitude,
         preferredGenders,
         userTags,
+        limit,
+        offset,
       ],
     );
 
