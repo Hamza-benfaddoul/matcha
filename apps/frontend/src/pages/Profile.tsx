@@ -1,9 +1,10 @@
 import { FaStar } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { FaCamera } from "react-icons/fa";
 import ProfileSectionContent from "@/components/Profile/ProfileSectionContent";
 // @ts-ignore
 import Modal from "react-modal";
@@ -23,6 +24,7 @@ function Profile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const fileInputRef = useRef(null);
 
    // Open and close modal handlers
    const openModal = () => setIsOpen(true);
@@ -30,6 +32,37 @@ function Profile() {
 
   const handleUpdateModal = () => {
     setIsUpdateModalOpen(!isUpdateModalOpen);
+  };
+
+  const handleClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const response = await axios.post(`/api/images/update-image/profile/${user.id}`, formData, {
+          headers: {
+            withCredentials: true,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        console.log("Profile image updated successfully:", response.data);
+        // Optionally reset the input
+        e.target.value = '';
+        // Update the user's profile picture in the state
+        setUser((prevUser) => ({
+          ...prevUser,
+          profile_picture: response.data.filePath,
+        }));
+      } catch (error) {
+        console.error("Error updating profile image:", error);
+      }
+    }
   };
 
   const isLikedFunc = async () => {
@@ -79,6 +112,22 @@ function Profile() {
     }
   }
 
+  const updateImageProfile = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("image", user.profile_picture);
+      formData.append("isProfileImage", "true");
+      const response = await axios.post(`/api/images/add-image/${user.id}`, formData, {
+        headers: {
+          withCredentials: true,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("response in update image profile: ", response.data);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  }
 
 //isLiked
   useEffect(() => {
@@ -110,7 +159,24 @@ function Profile() {
         {/* this div under me is for the background color have fun :) */}
         <div className="w-full min-h-[250px] bg-gradient-to-r from-[#F02C56] to-[#FF6243]" />
         <div className="w-full flex md:flex-row flex-col justify-between px-4 relative py-8">
+        <div className="group">
           <img src={`/api${user.profile_picture}`} alt="profile" className="md:absolute mx-auto mb-8 md:-top-14 md:left-4 w-[200px] h-[200px] rounded-3xl" />
+          { id == auth.user.id &&
+            <div 
+              onClick={handleClick}
+              className="md:absolute mx-auto mb-8 md:-top-14 md:left-4 w-[200px] h-[200px] bg-black bg-opacity-50 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl cursor-pointer"
+              >
+                <FaCamera className="text-white text-3xl" />
+            </div>
+          }
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            className="hidden"
+          />
+        </div>
           {/* this div under me is for the container who container both infos, rates, viewss and likes, edit profile.*/}
           <div className="flex w-full md:flex-row max-sm:flex-col md:justify-between justify-around items-center">
             <div className="md:ml-60 max-sm:items-center max-sm:flex-col max-sm:flex">

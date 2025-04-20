@@ -45,6 +45,7 @@ const ProfileForm = ({ initialData = {
     const [tagsEdited, setTagsEdited] = useState<string[]>([]);
     const [existingTags, setExistingTags] = useState<string[]>([]);
     const [profileImageIndex, setProfileImageIndex] = useState<number | null>(null)
+    const [errorImages, setErrorImages] = useState<string>("")
     
     const handleTagsChange = (selectedTags: any) => {
         const newTags = [...tags];
@@ -130,11 +131,16 @@ const ProfileForm = ({ initialData = {
   
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(e.target.files || [])
-      if (files.length + images.length <= 5) {
-        setImages([...images, ...files])
-        if (profileImageIndex === null) {
-          setProfileImageIndex(0)
-        }
+      setImages([...images, ...files])
+      // if (files.length + images.length <= 5) {
+        if (images.length <= 5) {
+          setErrorImages("")
+          if (profileImageIndex === null) {
+            setProfileImageIndex(0)
+          }
+      }
+      else {
+        setErrorImages("You can upload a maximum of 5 images.")
       }
     }
   
@@ -163,6 +169,14 @@ const ProfileForm = ({ initialData = {
           // setImages(initialData.images || []);
 
     }, [initialData.id])
+
+    useEffect(() => {
+      if (images.length <= 5)
+        setErrorImages("")
+      else
+        setErrorImages("You can upload a maximum of 5 images.")
+      console.log("images len: ", images.length);
+    }, [images]);
   
     return (
       <div className="max-w-md mt-10 mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -259,6 +273,7 @@ const ProfileForm = ({ initialData = {
                 disabled={images.length >= 5}
                 className="border-[#F02C56] focus:ring-[#F02C56]"
               />
+              {errorImages && <p className="text-red-500 text-sm">{errorImages}</p>}
               <div className="mt-2 flex flex-wrap gap-2">
                 {images.map((image, index) => (
                   <div key={index} className="relative">
@@ -267,17 +282,26 @@ const ProfileForm = ({ initialData = {
                       alt={`Uploaded ${index + 1}`}
                       className="w-20 h-20 object-cover rounded"
                       />
-                    <button
+                    <div
                       onClick={() => {
-                        setImages(images.filter((_, i) => i !== index))
+                        const updatedImages = images.filter((_, i) => i !== index);
+                        setImages(updatedImages);
                         if (profileImageIndex === index) {
-                          setProfileImageIndex(images.length > 1 ? 0 : null)
+                          setProfileImageIndex(updatedImages.length > 0 ? 0 : null);
+                        }
+
+                        // Update the file input value
+                        const dataTransfer = new DataTransfer();
+                        updatedImages.forEach((file) => dataTransfer.items.add(file));
+                        const inputElement = document.getElementById("images") as HTMLInputElement;
+                        if (inputElement) {
+                          inputElement.files = dataTransfer.files;
                         }
                       }}
                       className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
                       >
                       <X size={12} />
-                    </button>
+                    </div>
                     <input
                       type="radio"
                       name="profileImage"
@@ -291,7 +315,14 @@ const ProfileForm = ({ initialData = {
             </div>
           }
   
-            <Button type="submit" className="w-full bg-[#F02C56] hover:bg-[#d02548]">Save Profile</Button>
+            <Button 
+              type="submit" 
+              className="w-full bg-[#F02C56] hover:bg-[#d02548]" 
+              disabled={images.length > 5}
+              onSubmit={form.handleSubmit(onSubmit)}
+            >
+              Save Profile
+            </Button>
           </form>
         </Form>
       </div>

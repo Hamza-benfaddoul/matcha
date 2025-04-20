@@ -30,7 +30,8 @@ const router = createBrowserRouter([
   },
   {
     path: "/complete-profile",
-    element: <ProtectedRoute element={<CompleteProfile />} />,
+    element: <CompleteProfile />,
+    // element: <ProtectedRoute element={<CompleteProfile />} />,
   },
   {
     path: "/register",
@@ -63,6 +64,5 @@ createRoot(document.getElementById("root")!).render(
     <AuthProvider>
       <RouterProvider router={router} />
     </AuthProvider>
-    ,
   </StrictMode>,
 );

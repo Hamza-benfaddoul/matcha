@@ -30,8 +30,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
   if (auth?.accessToken) {
     if (auth?.user.isprofilecomplete === true) {
       return element;
-    } else return <Navigate to="/complete-profile" />;
-  } else return <Navigate to="/login" />;
+    } else {
+        return <Navigate to="/complete-profile" />;
+      }
+    } else return <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;

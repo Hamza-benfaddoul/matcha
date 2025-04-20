@@ -14,7 +14,7 @@ const renderContent = (activeTab: string, id: string, user: any) => {
     switch (activeTab) {
         case 'photos':
             return (
-                <ProfilePicture id={id} />
+                <ProfilePicture idUser={id} IsProfilePicture={user.profile_picture}  />
             );
         case 'likes':
             return (
