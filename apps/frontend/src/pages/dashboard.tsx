@@ -1,10 +1,6 @@
-"use client";
-
 import MatchingProfiles from "@/components/browsing/matching-profiles";
 
-import { useNavigate } from "react-router-dom";
 import {
-  Bell,
   Heart,
   MessageCircle,
   Search,
@@ -14,7 +10,6 @@ import {
   MapPin,
   Star,
   ChevronRight,
-  Filter,
   LogOut,
   Calendar,
 } from "lucide-react";
@@ -45,64 +40,16 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarRail,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-interface DashboardPageProps {
-  onLogout?: () => void;
-}
+import NavBar from "@/components/nav-bar";
 
-export default function DashboardPage({ onLogout }: DashboardPageProps) {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
-      navigate("/");
-    }
-  };
-
+export default function DashboardPage() {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen flex-col">
-        {/* Header */}
-        <header className="sticky top-0 z-50 w-full border-b bg-white">
-          <div className="mx-auto max-w-7xl w-full flex h-16 items-center justify-between px-4 md:px-6">
-            <div className="flex items-center gap-2">
-              <SidebarTrigger className="md:hidden" />
-              <Heart className="h-6 w-6 text-rose-500" />
-              <span className="text-xl font-bold">Matcha</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button variant="outline" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-xs text-white">
-                  3
-                </span>
-              </Button>
-              <Button variant="outline" size="icon">
-                <MessageCircle className="h-5 w-5" />
-              </Button>
-              <Avatar>
-                <AvatarImage
-                  src="/placeholder.svg?height=32&width=32"
-                  alt="User"
-                />
-                <AvatarFallback>JD</AvatarFallback>
-              </Avatar>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLogout}
-                className="hidden md:flex"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
-            </div>
-          </div>
-        </header>
-
+        {/* Nav bar */}
+        <NavBar />
         <div className="flex flex-1">
           {/* Sidebar using shadcn/ui components */}
           <Sidebar className="z-30">
@@ -179,7 +126,7 @@ export default function DashboardPage({ onLogout }: DashboardPageProps) {
             <SidebarFooter>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton onClick={handleLogout}>
+                  <SidebarMenuButton>
                     <LogOut className="h-4 w-4" />
                     <span>Logout</span>
                   </SidebarMenuButton>
