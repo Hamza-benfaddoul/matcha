@@ -1,7 +1,7 @@
 import useAuth from "@/hooks/useAuth";
 import useRefreshToken from "@/hooks/useRefreshToken";
 import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 interface ProtectedRouteProps {
   element: React.ReactElement;
@@ -11,6 +11,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
   const { auth } = useAuth();
   const { refresh } = useRefreshToken(); // Ensure that refresh is a function
   const [loading, setLoading] = useState(true);
+
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -26,9 +28,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
   }, [auth, loading, refresh]);
 
   if (loading) return <div>Loading...</div>; // or a spinner component
-
   if (auth?.accessToken) {
-    if (auth?.user.isprofilecomplete === true) {
+    if (
+      ["/", "/login", "/register", "/reset", "new-verification"].includes(
+        pathname,
+      )
+    )
+      return <Navigate to="/protected" />;
+    if (
+      auth?.user.isprofilecomplete === true ||
+      pathname == "/complete-profile"
+    ) {
       return element;
     } else {
         return <Navigate to="/complete-profile" />;

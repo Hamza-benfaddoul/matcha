@@ -6,6 +6,7 @@ const { sendVerificationEmail } = require("../lib/mail");
 const {
   createUser,
   findUserByEmail,
+  findUserbyUserName,
   validateUser,
 } = require("../models/users");
 
@@ -26,12 +27,20 @@ const handleNewUser = async (req, res) => {
     return;
   }
 
+  const ifUserNameExists = await findUserbyUserName(value.userName);
+  if (ifUserNameExists) {
+    // 400 Bad requiset
+    res.status(400).send({ error: "The user name is already registered." });
+    return;
+  }
+
   const hashedPassword = await bcrypt.hash(value.password, 10);
 
   // hashed password
   const user = {
     firstName: value.firstName,
     lastName: value.lastName,
+    userName: value.userName,
     email: value.email,
     password: hashedPassword,
   };

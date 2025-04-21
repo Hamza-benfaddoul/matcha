@@ -35,6 +35,7 @@ const RegisterForm = () => {
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       firstName: "",
+      userName: "",
       lastName: "",
       email: "",
       password: "",
@@ -110,6 +111,21 @@ const RegisterForm = () => {
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="userName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>User Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isPending} placeholder="zoro" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="email"

@@ -12,17 +12,23 @@ import LandingPage from "./home/home.tsx";
 import Profile from "./pages/Profile.tsx";
 import CompleteProfile from "./components/Profile/CompleteProfile.tsx";
 import NotFoundPage from "./pages/404.tsx";
+import Home from "./pages/Home";
+import DashboardPage from "./pages/dashboard.tsx";
 
 // Or use plain objects
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Home />,
   },
 
   {
     path: "/protected",
     element: <ProtectedRoute element={<LandingPage />} />,
+  },
+  {
+    path: "/dashboard",
+    element: <ProtectedRoute element={<DashboardPage />} />,
   },
   {
     path: "/login",

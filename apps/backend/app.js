@@ -51,6 +51,11 @@ app.use("/api/user/views", require("./routes/api/user/views"));
 app.use("/api/user/likes", require("./routes/api/user/likes"));
 app.use("/api/user/tags", require("./routes/api/user/tags"));
 
+app.use(
+  "/api/matching-profiles",
+  require("./routes/api/browsing/matching-profiles"),
+);
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send(err.message);
