@@ -3,21 +3,34 @@ const db = require("../db/db");
 
 const createUser = async (user) => {
   const insertUserQuery = `
-    INSERT INTO users (firstName, lastName, email, password)
-    VALUES ($1, $2, $3, $4)
-    RETURNING id, firstName, LastName, email;
+    INSERT INTO users (firstName, lastName,userName, email, password)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING id, firstName, LastName, userName, email;
   `;
 
   try {
     const res = await db.query(insertUserQuery, [
       user.firstName,
       user.lastName,
+      user.userName,
       user.email,
       user.password,
     ]);
     return res.rows[0];
   } catch (err) {
     console.error("ERROR: CREACT USER\n", err);
+    return null;
+  }
+};
+
+const findUserbyUserName = async (userName) => {
+  try {
+    const res = await db.query("SELECT * FROM users WHERE userName = $1", [
+      userName,
+    ]);
+    return res.rows[0];
+  } catch (err) {
+    console.error("ERROR: FIND USER BY USERNAME\n", err);
     return null;
   }
 };
@@ -68,6 +81,7 @@ const validateUser = (user) => {
   const userSchema = Joi.object({
     firstName: Joi.string().min(3).required(),
     lastName: Joi.string().min(3).required(),
+    userName: Joi.string().min(3).required(),
     email: Joi.string().min(5).max(255).required(),
     password: Joi.string().min(5).max(255).required(),
   });
@@ -168,6 +182,7 @@ module.exports = {
   createUser,
   findUserByEmail,
   findUserByName,
+  findUserbyUserName,
   validateLoginUser,
   updateRefreshToken,
   updateProfile,
