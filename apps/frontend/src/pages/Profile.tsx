@@ -160,7 +160,17 @@ function Profile() {
         <div className="w-full min-h-[250px] bg-gradient-to-r from-[#F02C56] to-[#FF6243]" />
         <div className="w-full flex md:flex-row flex-col justify-between px-4 relative py-8">
         <div className="group">
-          <img src={`/api${user.profile_picture}`} alt="profile" className="md:absolute mx-auto mb-8 md:-top-14 md:left-4 w-[200px] h-[200px] rounded-3xl" />
+        {/* src={
+                    image.image_url.startsWith("/")
+                        ? `/api${image.image_url}`
+                        : image.image_url
+                    } 
+                     {`/api${user.profile_picture}`}
+                     */}
+          <img src={user.profile_picture.startsWith("/")
+                        ? `/api${user.profile_picture}`
+                        : user.profile_picture
+                    } alt="profile" className="md:absolute mx-auto mb-8 md:-top-14 md:left-4 w-[200px] h-[200px] rounded-3xl" />
           { id == auth.user.id &&
             <div 
               onClick={handleClick}

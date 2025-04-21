@@ -75,11 +75,16 @@ const ProfilePicture = ({idUser, IsProfilePicture} : ProfilePictureProps) => {
                         <X className="absolute bg-red-400 z-50 top-2 right-2 w-6 h-6 text-white cursor-pointer" onClick={() => deleteImage(image.id)} />
                     ) 
                 }
-                <img className="w-52 h-52 cursor-pointer" src={`http://localhost:8080/api${image.image_url}`} alt="photo" />
+                {/* <img className="w-52 h-52 cursor-pointer" src={`/api${image.image_url}`} alt="photo" /> */}
+                <img className="w-52 h-52 cursor-pointer" src={
+                    image.image_url.startsWith("/")
+                        ? `/api${image.image_url}`
+                        : image.image_url
+                    } alt="profile-photo" />
             </div>
             ))}
             {
-                images.length < 5 && (
+                ( id == auth.user.id && images.length < 5) && (
                     <div className="w-52 h-52 bg-gray-200 flex items-center justify-center cursor-pointer">
                         <label htmlFor="upload" className="text-gray-500 text-4xl">+</label>
                         <input 
