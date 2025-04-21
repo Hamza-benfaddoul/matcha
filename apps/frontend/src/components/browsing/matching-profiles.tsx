@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { axiosPrivate } from "@/api/axios";
 import useAuth from "@/hooks/useAuth";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Link } from "react-router-dom";
 
 import {
   Popover,
@@ -272,11 +273,17 @@ const MatchingProfiles = () => {
           selectedProfiles.map((profile) => (
             <Card key={profile.id} className="overflow-hidden">
               <div className="relative aspect-[3/4]">
-                <img
-                  src={profile.profile_picture}
-                  alt="Profile"
-                  className="h-full w-full object-cover"
-                />
+                <Link to={`/profile/${profile.id}`}>
+                  <img
+                    src={
+                      profile.profile_picture.startsWith("/")
+                        ? `/api${profile.profile_picture}`
+                        : profile.profile_picture
+                    }
+                    alt="Profile"
+                    className="h-full w-full object-cover"
+                  />
+                </Link>
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white">
                   <div className="flex items-center justify-between">
                     <div>
