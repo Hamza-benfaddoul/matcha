@@ -27,92 +27,93 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-7xl ">
       {/* Rest of the dashboard content remains the same */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {/* <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"> */}
+      <div>
         {/* Profile Completion Card */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle>Profile Completion</CardTitle>
-            <CardDescription>
-              Complete your profile to get better matches
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">75% Complete</span>
-              <span className="text-sm text-gray-500">3 items left</span>
-            </div>
-            <Progress value={75} className="mt-2" />
-            <div className="mt-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Add more photos</span>
-                <Button variant="ghost" size="sm" className="h-8 gap-1">
-                  <span className="text-xs">Add</span>
-                  <ChevronRight className="h-3 w-3" />
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Complete your bio</span>
-                <Button variant="ghost" size="sm" className="h-8 gap-1">
-                  <span className="text-xs">Edit</span>
-                  <ChevronRight className="h-3 w-3" />
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Add more interests</span>
-                <Button variant="ghost" size="sm" className="h-8 gap-1">
-                  <span className="text-xs">Add</span>
-                  <ChevronRight className="h-3 w-3" />
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* <Card> */}
+        {/*   <CardHeader className="pb-2"> */}
+        {/*     <CardTitle>Profile Completion</CardTitle> */}
+        {/*     <CardDescription> */}
+        {/*       Complete your profile to get better matches */}
+        {/*     </CardDescription> */}
+        {/*   </CardHeader> */}
+        {/*   <CardContent> */}
+        {/*     <div className="flex items-center justify-between"> */}
+        {/*       <span className="text-sm font-medium">75% Complete</span> */}
+        {/*       <span className="text-sm text-gray-500">3 items left</span> */}
+        {/*     </div> */}
+        {/*     <Progress value={75} className="mt-2" /> */}
+        {/*     <div className="mt-4 space-y-2"> */}
+        {/*       <div className="flex items-center justify-between"> */}
+        {/*         <span className="text-sm">Add more photos</span> */}
+        {/*         <Button variant="ghost" size="sm" className="h-8 gap-1"> */}
+        {/*           <span className="text-xs">Add</span> */}
+        {/*           <ChevronRight className="h-3 w-3" /> */}
+        {/*         </Button> */}
+        {/*       </div> */}
+        {/*       <div className="flex items-center justify-between"> */}
+        {/*         <span className="text-sm">Complete your bio</span> */}
+        {/*         <Button variant="ghost" size="sm" className="h-8 gap-1"> */}
+        {/*           <span className="text-xs">Edit</span> */}
+        {/*           <ChevronRight className="h-3 w-3" /> */}
+        {/*         </Button> */}
+        {/*       </div> */}
+        {/*       <div className="flex items-center justify-between"> */}
+        {/*         <span className="text-sm">Add more interests</span> */}
+        {/*         <Button variant="ghost" size="sm" className="h-8 gap-1"> */}
+        {/*           <span className="text-xs">Add</span> */}
+        {/*           <ChevronRight className="h-3 w-3" /> */}
+        {/*         </Button> */}
+        {/*       </div> */}
+        {/*     </div> */}
+        {/*   </CardContent> */}
+        {/* </Card> */}
 
         {/* Activity Card */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle>Activity</CardTitle>
-            <CardDescription>Your recent activity on Matcha</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="rounded-full bg-rose-100 p-2">
-                  <Heart className="h-4 w-4 text-rose-500" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">
-                    You received 5 new likes
-                  </p>
-                  <p className="text-xs text-gray-500">2 hours ago</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="rounded-full bg-blue-100 p-2">
-                  <MessageCircle className="h-4 w-4 text-blue-500" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">New message from Emma</p>
-                  <p className="text-xs text-gray-500">5 hours ago</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="rounded-full bg-green-100 p-2">
-                  <Users className="h-4 w-4 text-green-500" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">You have a new match!</p>
-                  <p className="text-xs text-gray-500">Yesterday</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button variant="ghost" className="w-full">
-              View All Activity
-            </Button>
-          </CardFooter>
-        </Card>
+        {/* <Card> */}
+        {/*   <CardHeader className="pb-2"> */}
+        {/*     <CardTitle>Activity</CardTitle> */}
+        {/*     <CardDescription>Your recent activity on Matcha</CardDescription> */}
+        {/*   </CardHeader> */}
+        {/*   <CardContent> */}
+        {/*     <div className="space-y-4"> */}
+        {/*       <div className="flex items-start gap-3"> */}
+        {/*         <div className="rounded-full bg-rose-100 p-2"> */}
+        {/*           <Heart className="h-4 w-4 text-rose-500" /> */}
+        {/*         </div> */}
+        {/*         <div className="space-y-1"> */}
+        {/*           <p className="text-sm font-medium"> */}
+        {/*             You received 5 new likes */}
+        {/*           </p> */}
+        {/*           <p className="text-xs text-gray-500">2 hours ago</p> */}
+        {/*         </div> */}
+        {/*       </div> */}
+        {/*       <div className="flex items-start gap-3"> */}
+        {/*         <div className="rounded-full bg-blue-100 p-2"> */}
+        {/*           <MessageCircle className="h-4 w-4 text-blue-500" /> */}
+        {/*         </div> */}
+        {/*         <div className="space-y-1"> */}
+        {/*           <p className="text-sm font-medium">New message from Emma</p> */}
+        {/*           <p className="text-xs text-gray-500">5 hours ago</p> */}
+        {/*         </div> */}
+        {/*       </div> */}
+        {/*       <div className="flex items-start gap-3"> */}
+        {/*         <div className="rounded-full bg-green-100 p-2"> */}
+        {/*           <Users className="h-4 w-4 text-green-500" /> */}
+        {/*         </div> */}
+        {/*         <div className="space-y-1"> */}
+        {/*           <p className="text-sm font-medium">You have a new match!</p> */}
+        {/*           <p className="text-xs text-gray-500">Yesterday</p> */}
+        {/*         </div> */}
+        {/*       </div> */}
+        {/*     </div> */}
+        {/*   </CardContent> */}
+        {/*   <CardFooter> */}
+        {/*     <Button variant="ghost" className="w-full"> */}
+        {/*       View All Activity */}
+        {/*     </Button> */}
+        {/*   </CardFooter> */}
+        {/* </Card> */}
 
         {/* Stats Card */}
         <Card>
@@ -121,7 +122,7 @@ export default function DashboardPage() {
             <CardDescription>How you're doing on Matcha</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div className="space-y-1 rounded-lg border p-3">
                 <div className="flex items-center gap-2">
                   <Star className="h-4 w-4 text-amber-500" />
@@ -160,7 +161,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Matches and Messages Tabs */}
-      <Tabs defaultValue="matches" className="mt-6">
+      <Tabs defaultValue="matches" className="mt-6 p-6 bg-white">
         <div className="flex items-center justify-between">
           <TabsList>
             <TabsTrigger value="matches">Suggested Matches</TabsTrigger>
@@ -275,7 +276,6 @@ export default function DashboardPage() {
           </Card>
         </TabsContent>
       </Tabs>
-
       {/* Upcoming Events */}
       <div className="mt-6">
         <div className="flex items-center justify-between">
