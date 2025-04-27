@@ -38,4 +38,6 @@ export const CompleteProfileSchema = z.object({
   interests: z.array(z.string()).optional(),
   images: z.array(z.instanceof(File)).optional(),
   profileImageIndex: z.number().nullable().optional(),
+  longitude: z.number().optional(),
+  latitude: z.number().optional(),
 });

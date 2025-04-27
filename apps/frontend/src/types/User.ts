@@ -10,4 +10,6 @@ export type User = {
     profile_picture: string;  // Profile picture of the user
     images?: File[];  // Images of the user
     profileImageIndex?: number | null;  // Index of the profile image
+    longitude?: number;  // Longitude of the user's location
+    latitude?: number;  // Latitude of the user's location
   };

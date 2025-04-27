@@ -34,7 +34,9 @@ const ProfileForm = ({ initialData = {
   profile_picture: '',
   interests: [],
   images: [],
-  profileImageIndex: 0
+  profileImageIndex: 0,
+  longitude: 0,
+  latitude: 0,
   
 }, endpoint, closeModal}: ProfileFormProps) => {
     const navigate = useNavigate();
@@ -72,7 +74,9 @@ const ProfileForm = ({ initialData = {
         biography: initialData?.biography || '',
         interests: initialData?.interests || [],
         images: initialData?.images || [],
-        profileImageIndex: initialData?.profileImageIndex || 0
+        profileImageIndex: initialData?.profileImageIndex || 0,
+        longitude: initialData?.longitude || 0,
+        latitude: initialData?.latitude || 0,
       },
     });
 
@@ -108,6 +112,7 @@ const ProfileForm = ({ initialData = {
       values.images.forEach((image) => formData.append('images', image));
       formData.append('profileImageIndex', values?.profileImageIndex?.toString() || '');
 
+      
 
       console.log('FormData interests:', formData.getAll('interests'));
         // Authorization: `Bearer ${auth.accessToken}`

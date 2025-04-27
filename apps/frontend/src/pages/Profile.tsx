@@ -199,7 +199,7 @@ function Profile() {
                   : 
                   <button onClick={addLike} className="bg-[#F02C56] text-white px-4 py-2 rounded-md mr-2">Like</button>
                 ) : null}
-                {isMyProfile &&
+                  {isMyProfile &&
                   <>
                     <button onClick={openModal} className="bg-[#ff6b4e] text-white px-4 py-2 rounded-md"> Edit Profile</button>
                     <Modal
