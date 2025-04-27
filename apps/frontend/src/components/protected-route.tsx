@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import { SideBar } from "@/components/side-bar";
 import { Separator } from "@/components/ui/separator";
+import { SearchBar } from "@/components/search-bar";
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
   const { auth } = useAuth();
@@ -55,7 +56,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
                   <Separator orientation="vertical" className="mr-2 h-4" />
                 </div>
                 {/* <BreadcrumbNav /> */}
-                <div className="flex gap-4 justify-end items-center ml-auto mr-4">
+                <SearchBar />
+                <div className="flex gap-4 justify-end items-center ml-auto mr-4 ">
                   <NavBar />
                   {/* <ModeToggle /> */}
                 </div>
