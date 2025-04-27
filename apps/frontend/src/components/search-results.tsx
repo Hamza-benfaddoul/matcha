@@ -142,7 +142,11 @@ export default function SearchResults({ query, filters }: SearchResultsProps) {
             >
               <Avatar className="h-10 w-10 border">
                 <AvatarImage
-                  src={user.profile_picture || "/placeholder.svg"}
+                  src={
+                    user.profile_picture.startsWith("/")
+                      ? `/api${user.profile_picture}`
+                      : user.profile_picture
+                  }
                   alt={user.username}
                 />
                 <AvatarFallback>

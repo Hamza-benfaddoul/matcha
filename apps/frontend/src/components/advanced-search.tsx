@@ -29,8 +29,8 @@ import useAuth from "@/hooks/useAuth";
 // Types
 interface User {
   id: number;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   username: string;
   gender: string;
   sexual_preferences: string;
@@ -385,8 +385,9 @@ export default function AdvancedSearch({
                       <div className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0">
                         <img
                           src={
-                            user.profile_picture ||
-                            "/placeholder.svg?height=64&width=64"
+                            user.profile_picture.startsWith("/")
+                              ? `/api${user.profile_picture}`
+                              : user.profile_picture
                           }
                           alt={user.username}
                           className="h-full w-full object-cover"
@@ -394,7 +395,7 @@ export default function AdvancedSearch({
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold">
-                          {user.firstName} {user.lastName}
+                          {user.firstname} {user.lastname}
                         </h3>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <span>{user.age} years</span>

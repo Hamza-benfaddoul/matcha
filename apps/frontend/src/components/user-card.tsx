@@ -5,8 +5,8 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 interface User {
   id: number;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   username: string;
   gender: string;
   sexual_preferences: string;
@@ -29,7 +29,11 @@ export default function UserCard({ user }: UserCardProps) {
     <Card className="overflow-hidden group hover:shadow-md transition-all duration-300">
       <div className="relative h-60 overflow-hidden">
         <img
-          src={user.profile_picture || "/placeholder.svg?height=240&width=240"}
+          src={
+            user.profile_picture.startsWith("/")
+              ? `/api${user.profile_picture}`
+              : user.profile_picture
+          }
           alt={user.username}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -50,8 +54,13 @@ export default function UserCard({ user }: UserCardProps) {
         <div className="flex justify-between items-start">
           <div>
             <h3 className="font-semibold">
-              {user.firstName}, {user.age}
+              {user.firstname} {user.lastname}
             </h3>
+
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span>•</span>
+              <span>{user.age} years</span>
+            </div>
             <div className="flex items-center text-sm text-muted-foreground mt-1">
               <MapPin className="h-3 w-3 mr-1" />
               <span>{user.distance} km away</span>
