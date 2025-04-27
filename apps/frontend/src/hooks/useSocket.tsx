@@ -1,11 +1,10 @@
-// hooks/useSocket.ts
 import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import useAuth from "@/hooks/useAuth";
 
-const BASE_URL = "http://localhost:8080/";
+const BASE_URL = "http://localhost:8080";
 
-export default function useSocket() {
+export default function useSocket(namespace = "") {
   const socketRef = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const { auth } = useAuth();
@@ -13,7 +12,6 @@ export default function useSocket() {
 
   useEffect(() => {
     if (!token) {
-      // Disconnect if no token
       if (socketRef.current) {
         socketRef.current.disconnect();
         socketRef.current = null;
@@ -22,9 +20,9 @@ export default function useSocket() {
       return;
     }
 
-    // Initialize new connection if needed
     if (!socketRef.current) {
-      const socket = io(BASE_URL, {
+      // Connect to specific namespace
+      const socket = io(`${BASE_URL}${namespace}`, {
         path: "/ws/socket.io",
         withCredentials: true,
         transports: ["websocket"],
@@ -32,37 +30,31 @@ export default function useSocket() {
         autoConnect: true,
       });
 
-      // Connection events
       socket.on("connect", () => {
         setIsConnected(true);
-        console.log("Socket connected");
+        console.log(`Connected to namespace ${namespace}`);
       });
 
       socket.on("disconnect", () => {
         setIsConnected(false);
-        console.log("Socket disconnected");
+        console.log(`Disconnected from namespace ${namespace}`);
       });
 
-      socket.on("connect_error", (error) => {
-        console.error("Connection error:", error);
-        setIsConnected(false);
+      socket.on("connect_error", (err) => {
+        console.error(`Connection error (${namespace}):`, err);
       });
 
       socketRef.current = socket;
     }
 
-    // Reconnect if token changes
-    else if (socketRef.current.auth.token !== token) {
-      socketRef.current.auth.token = token;
-      socketRef.current.disconnect().connect();
-    }
-
     return () => {
-      // Don't disconnect here - keep connection alive
-      // Only cleanup state
-      setIsConnected(false);
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+        setIsConnected(false);
+      }
     };
-  }, [token]);
+  }, [token, namespace]);
 
   return {
     socket: socketRef.current,

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   const { auth } = useAuth();
   const [message, setMessage] = useState("");
-  const { socket, isConnected } = useSocket();
+  const { socket, isConnected } = useSocket("/test");
 
   useEffect(() => {
     if (!socket) return;

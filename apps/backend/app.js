@@ -35,8 +35,10 @@ const io = new Server(server, {
 io.use(verifyJWT);
 
 // Initialize socket services
-require("./services/socketServiceExample").socketServiceExample(io);
-require("./services/socketServiceExample").testConnection(io);
+require("./services/socketServiceExample").socketServiceExample(
+  io.of("/example"),
+);
+require("./services/socketServiceExample").testConnection(io.of("/test"));
 
 // Express Middleware (unchanged from your original)
 app.use(logger);
