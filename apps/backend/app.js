@@ -72,6 +72,10 @@ app.use(
   "/api/matching-profiles",
   require("./routes/api/browsing/matching-profiles"),
 );
+app.use(
+  "/api/user/location",
+  require("./routes/api/user/gps"),
+);
 
 // Error handling (unchanged)
 app.use((err, req, res, next) => {

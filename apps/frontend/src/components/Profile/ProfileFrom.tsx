@@ -92,6 +92,53 @@ const ProfileForm = ({ initialData = {
         profileImageIndex: initialData.profileImageIndex || 0
       });
     }, [initialData && initialData.id]);
+
+
+    // functions for user location ====================================================
+    // In your React component
+    const getUserLocation = async () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            // User consented - send precise location to backend
+            const { latitude, longitude } = position.coords;
+            // sendLocationToBackend(latitude, longitude, true);
+            return {
+              latitude,
+              longitude
+            }
+          },
+          (error) => {
+            // User denied or error occurred - fallback to IP-based location
+            console.log("Geolocation error:", error);
+            return getApproximateLocation();
+          }
+        );
+      } else {
+        // Geolocation not supported - fallback
+        return getApproximateLocation();
+      }
+    };
+
+    const getApproximateLocation = async () => {
+      try {
+        // Call your backend API to get IP-based location
+        const response = await fetch('/api/location/approximate');
+        const data = await response.json();
+        
+        if (data.latitude && data.longitude) {
+          // sendLocationToBackend(data.latitude, data.longitude, false);
+          return {
+            latitude: data.latitude,
+            longitude: data.longitude
+          }
+        }
+      } catch (error) {
+        console.error("Error getting approximate location:", error);
+      }
+    };
+
+    // the end ========================================================================
   
     const onSubmit = async (values: z.infer<typeof CompleteProfileSchema>) => {
       const formData = new FormData();
@@ -111,7 +158,14 @@ const ProfileForm = ({ initialData = {
       tagsEdited.forEach((tag) => formData.append('interests', tag));
       values.images.forEach((image) => formData.append('images', image));
       formData.append('profileImageIndex', values?.profileImageIndex?.toString() || '');
-
+      const location = await getUserLocation();
+      if (location) {
+        const { latitude, longitude } = location;
+        formData.append('latitude', latitude.toString());
+        formData.append('longitude', longitude.toString());
+      } else {
+        console.error("Unable to retrieve user location.");
+      }
       
 
       console.log('FormData interests:', formData.getAll('interests'));

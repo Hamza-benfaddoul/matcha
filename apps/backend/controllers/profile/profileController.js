@@ -16,9 +16,9 @@ exports.completeProfile = async (req, res) => {
     try {
       if (req.body.firstName && req.body.lastName) {
         console.log('Updating first and last name', req.body);
-        const updatedUser = await updateProfile(user.id, { gender, sexualPreferences, biography, firstName: req.body.firstName, lastName: req.body.lastName });
+        const updatedUser = await updateProfile(user.id, { gender, sexualPreferences, biography, firstName: req.body.firstName, lastName: req.body.lastName});
       }
-      const updatedUser = await completeProfile(user.id, { gender, sexualPreferences, biography });
+      const updatedUser = await completeProfile(user.id, { gender, sexualPreferences, biography, location_latitude: req.body.latitude, location_longitude: req.body.longitude  });
     }
     catch (err) {
       console.error('Error completing profile:', err);
