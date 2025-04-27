@@ -33,21 +33,33 @@ const socketServiceExample = (io) => {
   });
 };
 
+// services/socketServiceExample.js
 const testConnection = (io) => {
   io.on("connection", (socket) => {
-    console.log("New client connected:", socket.id);
+    console.log("New client connected:", socket.id, socket.user?.email);
 
-    // listen for the "test-connection" event
+    // Test connection handler
     socket.on("test-connection", (data) => {
       console.log("Test connection data:", data);
-      io.to(socket.userId).emit("test-connection-response", {
-        message: "Test connection successful",
+
+      // Send response only to the sender
+      socket.emit("test-connection-response", {
+        message: `Test successful at ${new Date().toISOString()}`,
+        user: socket.user?.email,
       });
     });
-  });
 
-  io.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
+    // Heartbeat system
+    const interval = setInterval(() => {
+      if (socket.connected) {
+        socket.emit("heartbeat");
+      }
+    }, 30000);
+
+    socket.on("disconnect", () => {
+      clearInterval(interval);
+      console.log("Client disconnected:", socket.id);
+    });
   });
 };
 
