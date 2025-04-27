@@ -19,7 +19,7 @@ import DashboardPage from "./pages/dashboard.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <ProtectedRoute element={<Home />} />,
   },
 
   {
