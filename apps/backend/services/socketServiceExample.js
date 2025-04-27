@@ -1,5 +1,6 @@
 // const chatController = require("../controllers/chat/chatController");
 // const notificationController = require("../controllers/chat/notificationController");
+const verifyJWT = require("../middleware/verifyJWT");
 
 const socketServiceExample = (io) => {
   io.on("connection", (socket) => {
@@ -35,6 +36,7 @@ const socketServiceExample = (io) => {
 
 // services/socketServiceExample.js
 const testConnection = (io) => {
+  io.use(verifyJWT);
   io.on("connection", (socket) => {
     console.log("New client connected:", socket.id, socket.user?.email);
 
