@@ -40,7 +40,7 @@ const testConnection = (io) => {
     // listen for the "test-connection" event
     socket.on("test-connection", (data) => {
       console.log("Test connection data:", data);
-      io.to(socket.userId).emit("test-connection-response", {
+      io.emit("test-connection-response", {
         message: "Test connection successful",
       });
     });
