@@ -16,8 +16,11 @@ router.post('/api/user/location/update', verifyToken, async (req, res) => {
   
     try {
       // Update the user's location in the database
-      const result = await db.query('UPDATE users SET location = point($1, $2) WHERE id = $3 RETURNING location', [longitude, latitude, userId]);
-  
+      const result = await db.query(
+        'UPDATE users SET location_latitude = $1, location_longitude = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING location_latitude, location_longitude',
+        [latitude, longitude, userId]
+      );
+      
       res.status(200).json({ message: 'Location updated successfully', location: result.rows[0].location });
     } catch (error) {
       console.error('Error updating location:', error);

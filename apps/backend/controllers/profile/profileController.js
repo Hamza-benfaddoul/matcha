@@ -11,7 +11,7 @@ exports.completeProfile = async (req, res) => {
   const { gender, sexualPreferences, biography, interests = [], profileImageIndex } = req.body;
   const files = req.files;
 
-  console.log('req.body', req.body);
+  console.log('req.body:  ', req.body.latitude, req.body.longitude);
   try {
     try {
       if (req.body.firstName && req.body.lastName) {

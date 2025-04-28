@@ -5,6 +5,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { FaCamera } from "react-icons/fa";
+import LocationPicker from "@/components/map/LocationPicker";
 import ProfileSectionContent from "@/components/Profile/ProfileSectionContent";
 // @ts-ignore
 import Modal from "react-modal";
@@ -200,8 +201,11 @@ function Profile() {
                   <button onClick={addLike} className="bg-[#F02C56] text-white px-4 py-2 rounded-md mr-2">Like</button>
                 ) : null}
                   {isMyProfile &&
-                  <>
-                    <button onClick={openModal} className="bg-[#ff6b4e] text-white px-4 py-2 rounded-md"> Edit Profile</button>
+                  <div>
+                    <div className="flex gap-2">
+                      <button onClick={openModal} className="bg-[#ff6b4e] text-white px-4 rounded-md"> Edit Profile</button>
+                      <LocationPicker />
+                    </div>
                     <Modal
                       isOpen={isOpen}
                       onRequestClose={closeModal}
@@ -211,7 +215,7 @@ function Profile() {
                     >
                       <UpdateProfileModal closeModal={closeModal} />
                     </Modal>
-                  </>
+                  </div>
                 }
               </div>
             </div>

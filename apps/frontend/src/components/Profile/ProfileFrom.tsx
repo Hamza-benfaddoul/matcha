@@ -95,46 +95,65 @@ const ProfileForm = ({ initialData = {
 
 
     // functions for user location ====================================================
-    // In your React component
-    const getUserLocation = async () => {
-      if (navigator.geolocation) {
+    // Wrapper for getCurrentPosition that returns a Promise
+    const getCurrentPosition = () => {
+      return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
-          (position) => {
-            // User consented - send precise location to backend
-            const { latitude, longitude } = position.coords;
-            // sendLocationToBackend(latitude, longitude, true);
-            return {
-              latitude,
-              longitude
-            }
-          },
-          (error) => {
-            // User denied or error occurred - fallback to IP-based location
-            console.log("Geolocation error:", error);
-            return getApproximateLocation();
+          position => resolve(position),
+          error => reject(error),
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,  // 10 second timeout
+            maximumAge: 0     // Don't use cached position
           }
         );
-      } else {
-        // Geolocation not supported - fallback
-        return getApproximateLocation();
+      });
+    };
+
+    // Gets precise location if possible, falls back to approximate
+    const getUserLocation = async () => {
+      try {
+        if (!navigator.geolocation) {
+          console.log("Geolocation not supported - getting approximate location");
+          return await getApproximateLocation();
+        }
+
+        const position = await getCurrentPosition();
+        return {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          isPrecise: true
+        };
+      } catch (error) {
+        console.log("Geolocation error:", error);
+        return await getApproximateLocation();
       }
     };
 
+    // Gets approximate location via IP
     const getApproximateLocation = async () => {
       try {
-        // Call your backend API to get IP-based location
         const response = await fetch('/api/location/approximate');
         const data = await response.json();
         
         if (data.latitude && data.longitude) {
-          // sendLocationToBackend(data.latitude, data.longitude, false);
           return {
             latitude: data.latitude,
-            longitude: data.longitude
-          }
+            longitude: data.longitude,
+            isPrecise: false
+          };
         }
+        
+        throw new Error('Invalid location data from server');
       } catch (error) {
         console.error("Error getting approximate location:", error);
+        // Return default location (e.g., San Francisco)
+        return {
+          latitude: 37.7749,
+          longitude: -122.4194,
+          isPrecise: false,
+          isDefault: true
+        };
       }
     };
 
@@ -158,7 +177,10 @@ const ProfileForm = ({ initialData = {
       tagsEdited.forEach((tag) => formData.append('interests', tag));
       values.images.forEach((image) => formData.append('images', image));
       formData.append('profileImageIndex', values?.profileImageIndex?.toString() || '');
-      const location = await getUserLocation();
+      let location;
+      while (!location) {
+        location = await getUserLocation();
+      }
       if (location) {
         const { latitude, longitude } = location;
         formData.append('latitude', latitude.toString());
@@ -166,6 +188,8 @@ const ProfileForm = ({ initialData = {
       } else {
         console.error("Unable to retrieve user location.");
       }
+
+      console.log("location: ", location);
       
 
       console.log('FormData interests:', formData.getAll('interests'));
@@ -181,7 +205,7 @@ const ProfileForm = ({ initialData = {
         setAuth({ user: response.data.user, accessToken: auth.accessToken });
         // if (initialData.id)
         closeModal && closeModal();
-        navigate(`/profile/${auth.user?.id}`);
+        navigate(`/dashboard`);
         // location.href = `/profile/${auth.user?.id}`;
       } catch (error) {
         console.error('Error updating profile:', error);
