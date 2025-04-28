@@ -10,6 +10,7 @@ import ProfileSectionContent from "@/components/Profile/ProfileSectionContent";
 // @ts-ignore
 import Modal from "react-modal";
 import UpdateProfileModal from "@/components/Profile/UpdateProfile";
+import { FameStars } from "@/components/Profile/FameStars";
 // Bind modal to your app root element (important for accessibility)
 Modal.setAppElement("#root");
 
@@ -30,6 +31,11 @@ function Profile() {
    // Open and close modal handlers
    const openModal = () => setIsOpen(true);
    const closeModal = () => setIsOpen(false);
+
+   const calculateFameRating = (views: number, likes: number) => {
+    return (likes * 5) + (views * 1); // you can tune 5 and 1 later
+  }
+  
 
   const handleUpdateModal = () => {
     setIsUpdateModalOpen(!isUpdateModalOpen);
@@ -94,7 +100,7 @@ function Profile() {
 
   const addLike = async () => {
     try {
-      await axios.post(`/api/user/likes/`, { likedId: id });
+      await axios.post(`/api/user/likes/`, { likedId: id, views: viewsCount, likes: likesCount });
       fetchCountLikes();
       isLikedFunc();
     } catch (error) {
@@ -222,10 +228,7 @@ function Profile() {
             <div className="flex flex-col items-end max-sm:items-center max-sm:mt-8">
               {/* fame rating should be in a separate component that take the user as a prop */}
               <div className="flex mb-6 text-[#F02C56]">
-                <FaStar />
-                <FaStar />
-                <FaStar />
-                <FaStar />
+                <FameStars fameRating={auth.user.fame_rating} />
               </div>
               <div className="flex">
                 <div className="flex mr-10 flex-col justify-center items-center">

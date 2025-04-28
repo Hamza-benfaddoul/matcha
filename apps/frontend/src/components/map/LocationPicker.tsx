@@ -36,10 +36,10 @@ export default function LocationPicker() {
 
     try {
       // Make the API call to update the user's location using axios
-      const response = await axios.post('/api/user/location/update', {
+      const response = await axios.put('/api/location/update', {
         latitude: location.latitude,
         longitude: location.longitude,
-        address: location.address,
+        // address: location.address,
         userId: auth.user.id, // Replace with actual user ID
       })
 

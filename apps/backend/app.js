@@ -75,7 +75,7 @@ app.use(
   require("./routes/api/browsing/matching-profiles"),
 );
 app.use(
-  "/api/user/location",
+  "/api/location",
   require("./routes/api/user/gps"),
 );
 

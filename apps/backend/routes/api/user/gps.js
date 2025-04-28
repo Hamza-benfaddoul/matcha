@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router();
 const geoip = require('geoip-lite');
+const db =  require('../../../db/db');
+
 (async () => {
   const publicIp = await import('public-ip');
 })();
@@ -10,8 +12,8 @@ const verifyToken = require('../../../middleware/authMiddleware');
 
 
 // Route: POST /api/user/location
-router.post('/api/user/location/update', verifyToken, async (req, res) => {
-    const userId = req.user.userId;
+router.put('/update', async (req, res) => {
+    const userId = req.body.userId;
     const { latitude, longitude } = req.body;
   
     try {
@@ -29,7 +31,7 @@ router.post('/api/user/location/update', verifyToken, async (req, res) => {
 });
 
 // Endpoint for approximate location
-router.get('/api/user/location/approximate', async (req, res) => {
+router.get('/approximate', async (req, res) => {
   try {
     // Get client's public IP (this might be behind proxy in production)
     const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
