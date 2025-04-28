@@ -68,18 +68,18 @@ const advancedSearch = async (req, res) => {
           SELECT ARRAY_AGG(t.tag)
           FROM tags t
           WHERE t.user_id = u.id
-          ${tags.length > 0 ? `AND t.tag = ANY($${tags.length + 8})` : ""}
+          ${tags.length > 0 ? `AND t.tag = ANY($${9}::text[])` : ""}
         ) AS tags,
         CAST(
           SQRT(
-            POWER(u.location_latitude - $2, 2) + 
-            POWER(u.location_longitude - $3, 2)
+            POWER(u.location_latitude - $2::numeric, 2) + 
+            POWER(u.location_longitude - $3::numeric, 2)
           ) * 111.0 AS NUMERIC(10,1)
         ) AS distance
       FROM users u
       WHERE u.id != $1
         AND u.isProfileComplete = TRUE
-        AND u.gender = ANY($4)
+        AND u.gender = ANY($4::text[])
         AND u.birth_date BETWEEN $5 AND $6
         AND u.fame_rating BETWEEN $7 AND $8
     `;
@@ -95,24 +95,29 @@ const advancedSearch = async (req, res) => {
       fameRange[1],
     ];
 
+    // Add tags parameter if tags exist
+    if (tags.length > 0) {
+      queryParams.push(tags);
+    }
+
     // Only add distance filter if not -1
     if (distance !== -1) {
       sqlQuery += ` AND SQRT(
-        POWER(u.location_latitude - $2, 2) + 
-        POWER(u.location_longitude - $3, 2)
-      ) * 111.0 <= $${queryParams.length + 1}`;
+        POWER(u.location_latitude - $2::numeric, 2) + 
+        POWER(u.location_longitude - $3::numeric, 2)
+      ) * 111.0 <= $${queryParams.length + 1}::numeric`;
       queryParams.push(distance);
     }
 
     // Add text search
     if (query) {
       sqlQuery += ` AND (
-        u.username ILIKE $${queryParams.length + 1}
-        OR u.biography ILIKE $${queryParams.length + 1}
+        u.username ILIKE $${queryParams.length + 1}::text
+        OR u.biography ILIKE $${queryParams.length + 1}::text
         OR EXISTS (
           SELECT 1 FROM tags t 
           WHERE t.user_id = u.id 
-          AND t.tag ILIKE $${queryParams.length + 1}
+          AND t.tag ILIKE $${queryParams.length + 1}::text
         )
       )`;
       queryParams.push(`%${query}%`);
@@ -123,9 +128,8 @@ const advancedSearch = async (req, res) => {
       sqlQuery += ` AND EXISTS (
         SELECT 1 FROM tags t
         WHERE t.user_id = u.id
-        AND t.tag = ANY($${queryParams.length + 1})
+        AND t.tag = ANY($${tags.length > 0 ? 9 : queryParams.length + 1}::text[])
       )`;
-      queryParams.push(tags);
     }
 
     // Add sorting
@@ -139,21 +143,15 @@ const advancedSearch = async (req, res) => {
     // Execute query
     const { rows } = await db.query(sqlQuery, queryParams);
 
-    // Process results - no need for toFixed() since we CAST in SQL
+    // Process results
     const users = rows.map((user) => ({
       ...user,
       age: calculateAge(user.birth_date),
-      distance: Number(user.distance), // Ensure it's a number
+      distance: Number(user.distance),
       tags: user.tags || [],
     }));
 
-    // Only filter by distance if not -1
-    const filteredUsers =
-      distance === -1
-        ? users
-        : users.filter((user) => user.distance <= distance);
-
-    res.status(200).json({ users: filteredUsers });
+    res.status(200).json({ users });
   } catch (error) {
     console.error("Error in advanced search:", error);
     res.status(500).json({ message: "Internal server error" });
