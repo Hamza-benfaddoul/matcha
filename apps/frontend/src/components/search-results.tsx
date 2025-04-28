@@ -10,8 +10,8 @@ import useAuth from "@/hooks/useAuth";
 
 interface User {
   id: number;
-  firstName?: string | null;
-  lastName?: string | null;
+  firstname?: string | null;
+  lastname?: string | null;
   username: string;
   gender: string;
   sexual_preferences: string;
@@ -59,8 +59,8 @@ export default function SearchResults({ query, filters }: SearchResultsProps) {
         // Ensure all required fields have fallback values
         const processedResults = response.data.users.map((user: User) => ({
           ...user,
-          firstName: user.firstname || "Unknown",
-          lastName: user.lastname || "User",
+          firstname: user.firstname || "Unknown",
+          lastname: user.lastname || "User",
           profile_picture: user.profile_picture || null,
           biography: user.biography || "",
           tags: user.tags || [],
@@ -131,8 +131,8 @@ export default function SearchResults({ query, filters }: SearchResultsProps) {
       </div>
       <div className="divide-y">
         {results.map((user) => {
-          const firstNameInitial = user.firstName?.charAt(0) || "U";
-          const lastNameInitial = user.lastName?.charAt(0) || "U";
+          const firstNameInitial = user.firstname?.charAt(0) || "U";
+          const lastNameInitial = user.lastname?.charAt(0) || "U";
 
           return (
             <a
@@ -157,8 +157,8 @@ export default function SearchResults({ query, filters }: SearchResultsProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <p className="font-medium truncate">
-                    {user.firstName || "Unknown"} {user.lastName || "User"},{" "}
-                    {user.age}
+                    {user.firstname || "Unknown"} {user.lastname || "User"},{" "}
+                    {user.age} years
                   </p>
                   <p className="text-xs text-muted-foreground whitespace-nowrap flex items-center">
                     <MapPin className="h-3 w-3 mr-1" />

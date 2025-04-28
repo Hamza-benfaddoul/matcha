@@ -3,6 +3,7 @@ import type * as React from "react";
 
 // import { NavMain } from "@/components/nav-main";
 // import { NavProjects } from "@/components/nav-projects";
+import { Link } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -18,7 +19,6 @@ import {
 
 import {
   Heart,
-  User,
   MessageCircle,
   Search,
   Settings,
@@ -31,6 +31,7 @@ const items = [
   {
     name: "Dashboard",
     icon: <Users className="h-4 w-4" />,
+    url: "/dashboard",
   },
   {
     name: "Matches",
@@ -43,10 +44,7 @@ const items = [
   {
     name: "Search",
     icon: <Search className="h-4 w-4" />,
-  },
-  {
-    name: "Profile",
-    icon: <User className="h-4 w-4" />,
+    url: "/search",
   },
   {
     name: "Settings",
@@ -80,12 +78,14 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton>
-                    {item.icon}
-                    <span>{item.name}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <Link to={item.url} key={item.name}>
+                  <SidebarMenuItem key={item.name}>
+                    <SidebarMenuButton>
+                      {item.icon}
+                      <span>{item.name}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </Link>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
