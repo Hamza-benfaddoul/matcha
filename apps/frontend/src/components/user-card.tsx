@@ -2,6 +2,7 @@ import { Heart, MapPin, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 interface User {
   id: number;
@@ -87,9 +88,11 @@ export default function UserCard({ user }: UserCardProps) {
       </CardContent>
 
       <CardFooter className="p-4 pt-0">
-        <Button className="w-full bg-rose-500 hover:bg-rose-600">
-          View Profile
-        </Button>
+        <Link to={`/profile/${user.id}`} className="w-full">
+          <Button className="w-full bg-rose-500 hover:bg-rose-600">
+            View Profile
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   );
