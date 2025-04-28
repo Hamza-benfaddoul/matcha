@@ -79,6 +79,8 @@ app.use(
   require("./routes/api/user/gps"),
 );
 
+app.use("/api/search", require("./routes/api/search/searchRoutes"));
+
 // Error handling (unchanged)
 app.use((err, req, res, next) => {
   console.error(err.stack);

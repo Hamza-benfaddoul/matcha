@@ -17,10 +17,9 @@ CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   firstName VARCHAR(255) NOT NULL,
   lastName VARCHAR(255) NOT NULL,
-  username VARCHAR(255) NOT NULL,
+  username VARCHAR(255) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
-  username VARCHAR(255) NOT NULL UNIQUE,
   refreshToken VARCHAR(255),
   isEmailVerified BOOLEAN DEFAULT FALSE,
   gender VARCHAR(10),
@@ -30,11 +29,11 @@ CREATE TABLE IF NOT EXISTS users (
   fame_rating INTEGER DEFAULT 0,
   location_latitude DECIMAL(9,6),
   location_longitude DECIMAL(9,6),
+  birth_date DATE, -- NEW COLUMN
   isProfileComplete BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
-`;
+)`;
 
 const TagsListTableQuery = `
 CREATE TABLE IF NOT EXISTS tags_list (

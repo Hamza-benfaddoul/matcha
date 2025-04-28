@@ -14,12 +14,17 @@ import CompleteProfile from "./components/Profile/CompleteProfile.tsx";
 import NotFoundPage from "./pages/404.tsx";
 import Home from "./pages/Home";
 import DashboardPage from "./pages/dashboard.tsx";
+import SearchPage from "./pages/search/page.tsx";
 
 // Or use plain objects
 const router = createBrowserRouter([
   {
     path: "/",
     element: <ProtectedRoute element={<Home />} />,
+  },
+  {
+    path: "/search",
+    element: <ProtectedRoute element={<SearchPage />} />,
   },
 
   {
