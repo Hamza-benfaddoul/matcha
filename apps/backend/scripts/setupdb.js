@@ -77,6 +77,17 @@ CREATE TABLE IF NOT EXISTS likes (
 );
 `;
 
+const BlockTableQuery = `
+CREATE TABLE IF NOT EXISTS blocks (
+  id SERIAL PRIMARY KEY,
+  blocker_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  blocked_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  blocked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+`;
+
+
+
 // const FameRatingLogTableQuery = `
 // CREATE TABLE IF NOT EXISTS fame_rating_log (
 //   id SERIAL PRIMARY KEY,
@@ -124,6 +135,7 @@ const createTables = async () => {
     await client.query(LikeTableQuery);
     await client.query(UserTagssTableQuery);
     await client.query(TagsListTableQuery);
+    await client.query(BlockTableQuery);
 
     // always keep this line at the end :)
     await insertDefaultTags(client);

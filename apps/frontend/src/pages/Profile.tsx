@@ -11,6 +11,7 @@ import ProfileSectionContent from "@/components/Profile/ProfileSectionContent";
 import Modal from "react-modal";
 import UpdateProfileModal from "@/components/Profile/UpdateProfile";
 import { FameStars } from "@/components/Profile/FameStars";
+import { UserActionsDropdown } from "@/components/Profile/UserActionDropDown";
 // Bind modal to your app root element (important for accessibility)
 Modal.setAppElement("#root");
 
@@ -154,11 +155,15 @@ function Profile() {
     }
     else
       setIsMyProfile(true);
+    if ( id != auth.user.id) {
+      const viewResponse = axios.post(`/api/user/views/add-view`, { viewedId: id });
+    }
     fetchCountViews();
     fetchCountLikes();
     isLikedFunc();
     closeModal();
   }, [id, user.id, auth.user]);
+
 
   return (
     <div className="flex w-full justify-center">
@@ -227,8 +232,20 @@ function Profile() {
             </div>
             <div className="flex flex-col items-end max-sm:items-center max-sm:mt-8">
               {/* fame rating should be in a separate component that take the user as a prop */}
-              <div className="flex mb-6 text-[#F02C56]">
+              <div className="flex mb-6 gap-3 text-[#F02C56]">
                 <FameStars fameRating={auth.user.fame_rating} />
+                {
+                  id != auth.user.id && (
+                    // In your parent component where you use the dropdown
+                    <>
+                        <UserActionsDropdown 
+                        reporterId={auth.user.id} 
+                        reportedId={id} 
+                        />
+                      {/* <h1>123</h1> */}
+                    </>
+                  )
+                }
               </div>
               <div className="flex">
                 <div className="flex mr-10 flex-col justify-center items-center">
