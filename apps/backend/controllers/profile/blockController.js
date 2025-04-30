@@ -87,3 +87,36 @@ exports.getUserBlocks = async (req, res) => {
         });
     }
 }
+
+exports.IsUserBlocked = async (req, res) => {
+    const blocker_id = req.query.blocker_id;
+    const blocked_id = req.query.blocked_id;
+
+    console.log('blocker_id', blocker_id);
+    console.log('blocked_id', blocked_id);
+    const query = `
+        SELECT * FROM blocks
+        WHERE blocker_id = $1 AND blocked_id = $2
+    `;
+    const values = [blocker_id, blocked_id];
+    try {
+        const result = await db.query(query, values);
+        if (result.rowCount > 0) {
+            return res.status(200).json({
+                message: 'User is blocked',
+                isBlocked: true,
+            });
+        } else {
+            return res.status(200).json({
+                message: 'User is not blocked',
+                isBlocked: false,
+            });
+        }
+    } catch (error) {
+        console.error('Error checking if user is blocked:', error);
+        res.status(500).json({
+            message: 'Error checking if user is blocked',
+            error: error.message,
+        });
+    }
+}

@@ -47,18 +47,20 @@ import axios from "axios";
   interface UserActionsDropdownProps {
     reporterId: string | undefined;
     reportedId: string | undefined;
+    onBlockeUser: () => Promise<void>;
     onReportSubmit: (reportData: {
       reporter_id: string | undefined;
       reported_id: string | undefined;
       reason: string;
       details?: string;
       status: string;
-    }) => Promise<void>;
+    }) => Promise<void>
   }
   
   export function UserActionsDropdown({
     reporterId,
     reportedId,
+    onBlockeUser,
     onReportSubmit,
   }: UserActionsDropdownProps) {
     const [blockModalOpen, setBlockModalOpen] = useState(false);
@@ -86,7 +88,9 @@ import axios from "axios";
             blocker_id: reporterId,
             blocked_id: reportedId,
           })
+        onBlockeUser();
         setBlockModalOpen(false);
+        window.location.href = `/profile/${reportedId}`;
       } catch (error) {
         console.error("Error blocking user:", error);
       }
