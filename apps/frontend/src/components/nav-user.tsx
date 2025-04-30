@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CaretSortIcon } from "@radix-ui/react-icons";
+import { GoBlocked } from "react-icons/go";
 
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
@@ -106,6 +107,18 @@ export function NavUser() {
             >
               <BadgeCheck className="w-4 h-4" />
               Profile
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <Link
+              to={`/blocks`}
+              className="flex w-full items-center gap-1"
+            >
+              <GoBlocked className="w-4 h-4" />
+              Blocked Users
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>

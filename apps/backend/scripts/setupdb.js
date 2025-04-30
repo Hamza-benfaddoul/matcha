@@ -86,18 +86,19 @@ CREATE TABLE IF NOT EXISTS blocks (
 );
 `;
 
+const ReportsTableQuery = `
+CREATE TABLE IF NOT EXISTS reports (
+  id SERIAL PRIMARY KEY,
+  reporter_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  reported_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  reason TEXT NOT NULL,
+  details TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status VARCHAR(50) DEFAULT 'pending'
+);
+`;
 
 
-// const FameRatingLogTableQuery = `
-// CREATE TABLE IF NOT EXISTS fame_rating_log (
-//   id SERIAL PRIMARY KEY,
-//   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-//   action VARCHAR(50) NOT NULL,  -- e.g., "view", "like"
-//   action_count INTEGER DEFAULT 1, -- number of views or likes
-//   fame_change INTEGER NOT NULL,   -- fame points added/subtracted
-//   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-// );
-// `;
 
 const VerificationTokenTableQuery = `
 CREATE TABLE IF NOT EXISTS verification_tokens (
@@ -136,6 +137,7 @@ const createTables = async () => {
     await client.query(UserTagssTableQuery);
     await client.query(TagsListTableQuery);
     await client.query(BlockTableQuery);
+    await client.query(ReportsTableQuery);
 
     // always keep this line at the end :)
     await insertDefaultTags(client);

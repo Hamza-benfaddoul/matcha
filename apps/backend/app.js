@@ -70,6 +70,7 @@ app.use("/api/images", images);
 app.use("/api/user/views", require("./routes/api/user/views"));
 app.use("/api/user/likes", require("./routes/api/user/likes"));
 app.use("/api/user/tags", require("./routes/api/user/tags"));
+app.use("/api/user/block", require("./routes/api/user/block"));
 app.use(
   "/api/matching-profiles",
   require("./routes/api/browsing/matching-profiles"),

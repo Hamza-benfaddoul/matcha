@@ -15,6 +15,7 @@ import NotFoundPage from "./pages/404.tsx";
 import Home from "./pages/Home";
 import DashboardPage from "./pages/dashboard.tsx";
 import SearchPage from "./pages/search/page.tsx";
+import BlockLists from "./pages/BlockLists.tsx";
 
 // Or use plain objects
 const router = createBrowserRouter([
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
     path: "/complete-profile",
     element: <CompleteProfile />,
     // element: <ProtectedRoute element={<CompleteProfile />} />,
+  },
+  {
+    path: "/blocks",
+    element: <ProtectedRoute element={<BlockLists />} />,
   },
   {
     path: "/register",

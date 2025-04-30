@@ -26,6 +26,7 @@ import {
   import { useForm, Controller } from "react-hook-form";
   import { zodResolver } from "@hookform/resolvers/zod";
   import * as z from "zod";
+import axios from "axios";
   
   // Validation schema for the report form
   const reportFormSchema = z.object({
@@ -53,14 +54,12 @@ import {
       details?: string;
       status: string;
     }) => Promise<void>;
-    onBlockUser: () => Promise<void>;
   }
   
   export function UserActionsDropdown({
     reporterId,
     reportedId,
     onReportSubmit,
-    onBlockUser,
   }: UserActionsDropdownProps) {
     const [blockModalOpen, setBlockModalOpen] = useState(false);
     const [reportModalOpen, setReportModalOpen] = useState(false);
@@ -81,7 +80,12 @@ import {
   
     const handleBlockConfirm = async () => {
       try {
-        await onBlockUser();
+        const block_response = await axios.post(
+          "/api/user/block/add",
+          {
+            blocker_id: reporterId,
+            blocked_id: reportedId,
+          })
         setBlockModalOpen(false);
       } catch (error) {
         console.error("Error blocking user:", error);
@@ -91,13 +95,13 @@ import {
     const onSubmitReport = async (data: ReportFormValues) => {
       setIsSubmitting(true);
       try {
-        await onReportSubmit({
-          reporter_id: reporterId,
-          reported_id: reportedId,
-          reason: data.reason,
-          details: data.details,
-          status: "pending",
-        });
+        // await axios.post("/api/user/report/add", {
+        //   reporter_id: reporterId,
+        //   reported_id: reportedId,
+        //   reason: data.reason,
+        //   details: data.details,
+        //   status: "pending",
+        // });
         reset();
         setReportModalOpen(false);
       } catch (error) {

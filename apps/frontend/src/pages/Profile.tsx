@@ -240,7 +240,10 @@ function Profile() {
                     <>
                         <UserActionsDropdown 
                         reporterId={auth.user.id} 
-                        reportedId={id} 
+                        reportedId={id}
+                        onReportSubmit={async (data) => {
+                            console.log("Report submitted:", data); 
+                          }}
                         />
                       {/* <h1>123</h1> */}
                     </>
