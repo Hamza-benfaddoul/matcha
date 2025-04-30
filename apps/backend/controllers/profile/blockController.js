@@ -24,8 +24,9 @@ exports.addBlock = async (req, res) => {
 }
 
 exports.removeBlock = async (req, res) => {
-    const blocker_id = req.params.id;
     const blocked_id = req.body.blocked_id;
+    const blocker_id = req.body.blocker_id;
+    
     const query = `DELETE FROM blocks WHERE blocker_id = $1 AND blocked_id = $2 RETURNING *`;
     const values = [blocker_id, blocked_id];
     try {

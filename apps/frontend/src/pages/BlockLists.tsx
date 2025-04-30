@@ -4,6 +4,7 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { User, X, Shield } from "lucide-react"
+import useAuth from "@/hooks/useAuth"
 
 interface BlockedUser {
   blocked_id: number
@@ -24,6 +25,7 @@ const BlockLists = () => {
   const { id } = useParams()
   const [blockLists, setBlockLists] = useState<BlockedUser[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const { auth } = useAuth()
 
   const fetchBlockLists = async () => {
     setIsLoading(true)
@@ -41,16 +43,15 @@ const BlockLists = () => {
   const handleUnblock = async (blockedId: number) => {
     try {
       // Make API call to unblock the user
-      await axios.delete(`/api/user/block/${blockedId}`)
-
-      // Show success message (optional)
-      alert("User has been unblocked successfully")
+      await axios.post(`/api/user/block/remove`, {
+          blocked_id: blockedId,
+          blocker_id: auth.user.id,
+      })
 
       // Refresh the block list
       fetchBlockLists()
     } catch (error) {
       console.error("Error unblocking user:", error)
-      alert("Failed to unblock user. Please try again.")
     }
   }
 
