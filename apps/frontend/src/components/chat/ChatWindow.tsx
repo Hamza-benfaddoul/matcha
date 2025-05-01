@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react"
 import { Send, Mic, MicOff, Phone, PhoneOff, ArrowLeft } from "lucide-react"
 import MessageBubble from "./MessageBubble"
 import AudioCallPanel from "./AudioCallPanel"
+import axios from "axios"
+import AudioRecorder from "./AudioRecorder"
 
 
 const ChatWindow = ({ currentUser, activeChat, onSendMessage, onToggleCall, onBackClick, onMessageChange, typingStatus, onTyping, socket  }) => {
@@ -51,57 +53,79 @@ const ChatWindow = ({ currentUser, activeChat, onSendMessage, onToggleCall, onBa
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
+  const streamRef = useRef(null);
+
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const mediaRecorder = new MediaRecorder(stream)
-      mediaRecorderRef.current = mediaRecorder
-      audioChunksRef.current = []
-
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+  
       mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
-          audioChunksRef.current.push(e.data)
+          audioChunksRef.current.push(e.data);
         }
-      }
-
-      mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/mp3" })
-        const audioUrl = URL.createObjectURL(audioBlob)
-        onSendMessage(audioUrl, "audio")
-
-        // Stop all tracks
-        stream.getTracks().forEach((track) => track.stop())
-      }
-
-      mediaRecorder.start()
-      setIsRecording(true)
-
-      // Start timer
-      let seconds = 0
+      };
+  
+      mediaRecorder.start(1000); // Request data every second
+      setIsRecording(true);
+  
+      let seconds = 0;
       const interval = setInterval(() => {
-        seconds++
-        setRecordingTime(seconds)
-      }, 1000)
-
-      setRecordingInterval(interval)
+        seconds++;
+        setRecordingTime(seconds);
+      }, 1000);
+  
+      setRecordingInterval(interval);
     } catch (err) {
-      console.error("Error accessing microphone:", err)
-      alert("Could not access microphone. Please check your permissions.")
+      console.error("Error accessing microphone:", err);
+      alert("Could not access microphone. Please check your permissions.");
     }
-  }
-
+  };
+  
   const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop()
-      clearInterval(recordingInterval)
-      setRecordingInterval(null)
-      setIsRecording(false)
-      setRecordingTime(0)
-    }
-  }
+    if (!mediaRecorderRef.current || !isRecording) return;
+  
+    return new Promise((resolve) => {
+      mediaRecorderRef.current.onstop = () => {
+        try {
+          const audioBlob = new Blob(audioChunksRef.current, { type: "audio/mp3" });
+          
+          // Create FormData and upload
+          const formData = new FormData();
+          formData.append('audio', audioBlob, `audio_${Date.now()}.mp3`);
+          
+          axios.post('/api/user/chat/upload-audio', formData)
+            .then(response => {
+              onSendMessage(response.data.audioUrl, "audio");
+              resolve();
+            })
+            .catch(error => {
+              console.error('Upload failed:', error);
+              resolve();
+            });
+        } finally {
+          if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+          }
+        }
+      };
+  
+      mediaRecorderRef.current.stop();
+      clearInterval(recordingInterval);
+      setRecordingInterval(null);
+      setIsRecording(false);
+      setRecordingTime(0);
+    });
+  };
 
   const toggleRecording = () => {
+    console.log("Toggling recording...");
     if (isRecording) {
+
       stopRecording()
     } else {
       startRecording()
@@ -129,6 +153,24 @@ const ChatWindow = ({ currentUser, activeChat, onSendMessage, onToggleCall, onBa
       }
     };
   }, []);
+
+  const handleSendAudio = async (audioBlob) => {
+    try {
+      const formData = new FormData();
+      formData.append('audio', audioBlob, `audio_${Date.now()}.mp3`);
+      formData.append('senderId', currentUser.id);
+      formData.append('receiverId', activeChat.id);
+  
+      const response = await axios.post('/api/user/chat/upload-audio', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+  
+      onSendMessage(response.data.audioUrl, "audio");
+    } catch (error) {
+      console.error('Error sending audio:', error);
+      alert('Failed to send audio message');
+    }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -246,13 +288,16 @@ const ChatWindow = ({ currentUser, activeChat, onSendMessage, onToggleCall, onBa
               value={message}
               onChange={(e) => setMessage(e.target.value) }
             /> */}
-            <button
+
+              <AudioRecorder onSendAudio={handleSendAudio} />
+
+            {/* <button
               type="button"
               className="ml-2 p-2 rounded-full bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500"
               onClick={toggleRecording}
             >
               <Mic size={20} />
-            </button>
+            </button> */}
             <button
               type="submit"
               className="ml-2 p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"

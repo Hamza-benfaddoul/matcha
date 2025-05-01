@@ -189,8 +189,8 @@ function Chat() {
 
   // Handle sending a message
   const handleSendMessage = (content, type = "text") => {
-    if (!socket || !activeChat) return
-
+    if (!socket || !activeChat) return;
+  
     const message = {
       id: Date.now(),
       senderId: currentUser.id,
@@ -198,30 +198,30 @@ function Chat() {
       content,
       timestamp: new Date().toISOString(),
       type,
-    }
-
+    };
+  
     // Update local state
     setActiveChat((prev) => ({
       ...prev,
       messages: [...prev.messages, message],
-    }))
-
+    }));
+  
     // Send message via socket
-    socket.emit("send_message", message)
-
+    socket.emit("send_message", message);
+  
     // Update last message in contacts
     setContacts((prev) =>
       prev.map((contact) =>
         contact.id === activeChat.id
           ? {
               ...contact,
-              lastMessage: content,
+              lastMessage: type === 'audio' ? 'Audio message' : content,
               lastMessageTime: message.timestamp,
             }
           : contact,
       ),
-    )
-  }
+    );
+  };
 
   // Handle starting/ending audio call
   const handleToggleCall = () => {

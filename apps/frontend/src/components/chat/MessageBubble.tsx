@@ -1,4 +1,5 @@
 const MessageBubble = ({ message, isOwn, contactName }) => {
+  console.log("MessageBubble", message)
     const formatTime = (isoString) => {
       const date = new Date(isoString)
       return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
@@ -15,7 +16,7 @@ const MessageBubble = ({ message, isOwn, contactName }) => {
             <p>{message.content}</p>
           ) : message.type === "audio" ? (
             <div className="audio-message">
-              <audio src={message.content} controls className="max-w-full" />
+              <audio src={`/api${message.content}`} controls className="max-w-full" />
             </div>
           ) : null}
           <div className={`text-xs mt-1 ${isOwn ? "text-blue-100" : "text-gray-500 dark:text-gray-400"}`}>

@@ -1,5 +1,7 @@
 const db =  require('../../db/db');
 
+
+
 exports.getContacts = async (req, res) => {
     try {
         const userId = req.userId; // Assuming the user ID is available in the request object
@@ -84,3 +86,7 @@ exports.getMessages = async (req, res) => {
         res.status(500).json({ error: 'An error occurred while fetching messages.' });
     }
 }
+
+
+
+
