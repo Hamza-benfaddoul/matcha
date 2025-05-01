@@ -39,6 +39,9 @@ require("./services/socketServiceExample").socketServiceExample(
   io.of("/example"),
 );
 require("./services/socketServiceExample").testConnection(io.of("/test"));
+require("./services/socketServiceChat").socketServiceChat(
+  io.of("/chat"),
+);
 
 // Express Middleware (unchanged from your original)
 app.use(logger);
@@ -71,6 +74,7 @@ app.use("/api/user/views", require("./routes/api/user/views"));
 app.use("/api/user/likes", require("./routes/api/user/likes"));
 app.use("/api/user/tags", require("./routes/api/user/tags"));
 app.use("/api/user/block", require("./routes/api/user/block"));
+app.use("/api/user/chat", require("./routes/api/user/chat"));
 app.use(
   "/api/matching-profiles",
   require("./routes/api/browsing/matching-profiles"),

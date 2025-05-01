@@ -108,6 +108,19 @@ token VARCHAR(255),
 expires TIMESTAMP 
 )`;
 
+const MessagesTableQuery = `
+CREATE TABLE IF NOT EXISTS messages (
+  id SERIAL PRIMARY KEY,
+  sender_id INTEGER NOT NULL REFERENCES users(id),
+  receiver_id INTEGER NOT NULL REFERENCES users(id),
+  content TEXT NOT NULL,
+  message_type VARCHAR(20) NOT NULL DEFAULT 'text',
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+`;
+
 const insertDefaultTags = async (client) => {
   const tags = ["#vegan", "#sport", "#music", "#movies"];
   // in case of the tag is already in the table the [ON CONFLICT (tag) DO NOTHING] do nothing :)
@@ -138,6 +151,7 @@ const createTables = async () => {
     await client.query(TagsListTableQuery);
     await client.query(BlockTableQuery);
     await client.query(ReportsTableQuery);
+    await client.query(MessagesTableQuery);
 
     // always keep this line at the end :)
     await insertDefaultTags(client);

@@ -16,6 +16,7 @@ import Home from "./pages/Home";
 import DashboardPage from "./pages/dashboard.tsx";
 import SearchPage from "./pages/search/page.tsx";
 import BlockLists from "./pages/BlockLists.tsx";
+import Chat from "./pages/Chat.tsx";
 
 // Or use plain objects
 const router = createBrowserRouter([
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
   {
     path: "/blocks",
     element: <ProtectedRoute element={<BlockLists />} />,
+  },
+  {
+    path: "/chat",
+    element: <ProtectedRoute element={<Chat />} />,
   },
   {
     path: "/register",

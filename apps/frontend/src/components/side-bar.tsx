@@ -40,6 +40,7 @@ const items = [
   {
     name: "Messages",
     icon: <MessageCircle className="h-4 w-4" />,
+    url: "/chat",
   },
   {
     name: "Search",
