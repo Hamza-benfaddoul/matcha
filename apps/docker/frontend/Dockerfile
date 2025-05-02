@@ -4,6 +4,8 @@ FROM node:22.11.0-alpine
 # Set the working directory
 WORKDIR /app/frontend
 
+
+
 # Copy package.json and package-lock.json
 COPY ./frontend/package*.json ./
 

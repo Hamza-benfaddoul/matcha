@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
-const { findUserByEmail } = require('../models/users');
+const { findUserByEmail } = require("../models/users");
 
 const handleRefreshToken = async (req, res) => {
   const { jwt: refreshToken } = req.cookies;
@@ -19,25 +19,19 @@ const handleRefreshToken = async (req, res) => {
         email: user.email,
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '10m' }
+      { expiresIn: "10m" },
     );
 
     return res.json({
-      user:
-      {
-        firstName: user.firstname,
-        lastName: user.lastname,
-        email: user.email,
-      }
-      , accessToken
+      user: user,
+      accessToken,
     });
   } catch (err) {
-    if (err.name === 'TokenExpiredError' || err.name === 'JsonWebTokenError') {
+    if (err.name === "TokenExpiredError" || err.name === "JsonWebTokenError") {
       return res.sendStatus(403); // Forbidden
     }
-    return res.status(500).json({ error: 'Login failed' });
+    return res.status(500).json({ error: "Login failed" });
   }
 };
 
-module.exports = { handleRefreshToken }
-
+module.exports = { handleRefreshToken };

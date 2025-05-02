@@ -1,5 +1,4 @@
 bin/
-lib/
 node_modules
 .pnp
 .pnp.js
@@ -23,4 +22,9 @@ yarn.lock
 package-lock.json
 poetry.lock
 *.sqlite3
+
+# envs
 .env*
+# backend logs file
+apps/backend/logs
+apps/backend/uploads
