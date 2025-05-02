@@ -20,16 +20,31 @@ exports.getLikesProfile = async (req, res) => {
     }
 }
 
+const calculateFameRating = (views, likes) => {
+  return (likes * 5) + (views * 1); // you can tune 5 and 1 later
+}
+
+
 exports.addLikeProfile = async (req, res) => {
     const likerId = req.userId;
     const { likedId } = req.body; // Profile being liked
-  
+
+    // Fetch the number of views and likes for the likedId
+    const viewsResult = await db.query('SELECT COUNT(*) AS views FROM views WHERE viewed_id = $1', [likedId]);
+    const likesResult = await db.query('SELECT COUNT(*) AS likes FROM likes WHERE liked_id = $1', [likedId]);
+
+    const views = parseInt(viewsResult.rows[0].views, 10);
+    const likes = parseInt(likesResult.rows[0].likes, 10) + 1;
+
     try {
       // Record the like in the database
       await db.query('INSERT INTO likes (liker_id, liked_id) VALUES ($1, $2)', [likerId, likedId]);
+
   
       // Update fame rating (calculateFameRating is called)
-      // const fameRating = await calculateFameRating(likedId);
+      const fameRating = calculateFameRating(views, likes);
+      // Update the fame rating in the database
+      await db.query('UPDATE users SET fame_rating = $1 WHERE id = $2', [fameRating, likedId]);
   
       // res.status(200).json({ message: 'Profile liked successfully', fameRating });
       res.status(200).json({ message: 'Profile liked successfully' });

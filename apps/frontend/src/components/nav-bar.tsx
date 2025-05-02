@@ -12,7 +12,13 @@ const NavBar = () => {
           3
         </span>
       </Button>
-      <Button variant="outline" size="icon">
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => {
+          window.location.href = "/chat";
+        }}
+      >
         <MessageCircle className="h-5 w-5" />
       </Button>
       <NavUser />

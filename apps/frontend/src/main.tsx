@@ -15,6 +15,8 @@ import Home from "./pages/Home";
 import DashboardPage from "./pages/dashboard.tsx";
 import SearchPage from "./pages/search/page.tsx";
 import NewVerificationPage from "./auth/new-verification/page.tsx";
+import BlockLists from "./pages/BlockLists.tsx";
+import Chat from "./pages/Chat.tsx";
 
 // Or use plain objects
 const router = createBrowserRouter([
@@ -48,6 +50,14 @@ const router = createBrowserRouter([
     element: <ProtectedRoute element={<CompleteProfile />} />,
   },
   {
+    path: "/blocks",
+    element: <ProtectedRoute element={<BlockLists />} />,
+  },
+  {
+    path: "/chat",
+    element: <ProtectedRoute element={<Chat />} />,
+  },
+  {
     path: "/register",
     element: <ProtectedRoute element={<RegisterPage />} />,
   },
@@ -66,9 +76,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
-  </StrictMode>,
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>,
 );

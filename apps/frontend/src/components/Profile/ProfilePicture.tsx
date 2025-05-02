@@ -73,7 +73,7 @@ const ProfilePicture = ({idUser, IsProfilePicture} : ProfilePictureProps) => {
                 {
                     (!image.is_profile_picture && auth.user.id == id) && (
                         <X className="absolute bg-red-400 z-50 top-2 right-2 w-6 h-6 text-white cursor-pointer" onClick={() => deleteImage(image.id)} />
-                    ) 
+                    )
                 }
                 {/* <img className="w-52 h-52 cursor-pointer" src={`/api${image.image_url}`} alt="photo" /> */}
                 <img className="w-52 h-52 cursor-pointer" src={

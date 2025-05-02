@@ -26,7 +26,7 @@ export default function useSocket(namespace = "") {
         path: "/ws/socket.io",
         withCredentials: true,
         transports: ["websocket"],
-        auth: { token },
+        auth: { token, userId: auth.user.id },
         autoConnect: true,
       });
 

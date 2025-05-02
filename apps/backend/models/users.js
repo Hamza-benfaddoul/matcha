@@ -129,8 +129,8 @@ const completeProfile = async (userId, profileData) => {
       profileData.sexualPreferences,
       profileData.biography,
       profileData.fameRating || 0,
-      profileData.locationLatitude || 0,
-      profileData.locationLongitude || 0,
+      profileData.location_latitude || 0,
+      profileData.location_longitude || 0,
       true,
       userId,
     ]);

@@ -1,4 +1,4 @@
-import { db } from "/lib/db";
+const db = require("../db/db");
 import { getUserByEmail } from "../models/users";
 import { getVerificationTokenByToken } from "@/data/verification-token";
 

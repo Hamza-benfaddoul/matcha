@@ -25,18 +25,36 @@ exports.addViewProfile = async (req, res) => {
     const viewerId = req.userId;
     const { viewedId } = req.body; // Profile being viewed
   
-    try {
-      // Record the view in the database
-      await db.query('INSERT INTO views (viewer_id, viewed_id) VALUES ($1, $2)', [viewerId, viewedId]);
-  
-      // Update fame rating (calculateFameRating is called)
-      const fameRating = await calculateFameRating(viewedId);
-  
-      res.status(200).json({ message: 'Profile viewed successfully', fameRating });
-    } catch (error) {
-      console.error('Error viewing profile:', error);
-      res.status(500).json({ message: 'Error viewing profile' });
+  try {
+    // Check if a view already exists
+    const existingView = await db.query(`
+      SELECT viewed_at 
+      FROM views 
+      WHERE viewer_id = $1 AND viewed_id = $2
+    `, [viewerId, viewedId]);
+
+    if (existingView.rows.length > 0) {
+      const lastViewedAt = new Date(existingView.rows[0].viewed_at);
+      const now = new Date();
+
+      // Check if one day has passed
+      const oneDayInMs = 24 * 60 * 60 * 1000;
+      if (now - lastViewedAt < oneDayInMs) {
+        return res.status(200).json({ message: 'View already exists and is less than one day old' });
+      }
     }
+
+    // Insert a new view
+    await db.query(`
+      INSERT INTO views (viewer_id, viewed_id) 
+      VALUES ($1, $2)
+    `, [viewerId, viewedId]);
+
+    res.status(201).json({ message: 'View added successfully' });
+  } catch (error) {
+    console.error('Error adding profile view:', error);
+    res.status(500).json({ message: 'Error adding profile view' });
+  }
 }
 
 exports.countViews = async (req, res) => {

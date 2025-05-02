@@ -34,7 +34,9 @@ const ProfileForm = ({ initialData = {
   profile_picture: '',
   interests: [],
   images: [],
-  profileImageIndex: 0
+  profileImageIndex: 0,
+  longitude: 0,
+  latitude: 0,
   
 }, endpoint, closeModal}: ProfileFormProps) => {
     const navigate = useNavigate();
@@ -72,7 +74,9 @@ const ProfileForm = ({ initialData = {
         biography: initialData?.biography || '',
         interests: initialData?.interests || [],
         images: initialData?.images || [],
-        profileImageIndex: initialData?.profileImageIndex || 0
+        profileImageIndex: initialData?.profileImageIndex || 0,
+        longitude: initialData?.longitude || 0,
+        latitude: initialData?.latitude || 0,
       },
     });
 
@@ -88,6 +92,72 @@ const ProfileForm = ({ initialData = {
         profileImageIndex: initialData.profileImageIndex || 0
       });
     }, [initialData && initialData.id]);
+
+
+    // functions for user location ====================================================
+    // Wrapper for getCurrentPosition that returns a Promise
+    const getCurrentPosition = () => {
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          position => resolve(position),
+          error => reject(error),
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,  // 10 second timeout
+            maximumAge: 0     // Don't use cached position
+          }
+        );
+      });
+    };
+
+    // Gets precise location if possible, falls back to approximate
+    const getUserLocation = async () => {
+      try {
+        if (!navigator.geolocation) {
+          console.log("Geolocation not supported - getting approximate location");
+          return await getApproximateLocation();
+        }
+
+        const position = await getCurrentPosition();
+        return {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          isPrecise: true
+        };
+      } catch (error) {
+        console.log("Geolocation error:", error);
+        return await getApproximateLocation();
+      }
+    };
+
+    // Gets approximate location via IP
+    const getApproximateLocation = async () => {
+      try {
+        const response = await fetch('/api/location/approximate');
+        const data = await response.json();
+        
+        if (data.latitude && data.longitude) {
+          return {
+            latitude: data.latitude,
+            longitude: data.longitude,
+            isPrecise: false
+          };
+        }
+        
+        throw new Error('Invalid location data from server');
+      } catch (error) {
+        console.error("Error getting approximate location:", error);
+        // Return default location (e.g., San Francisco)
+        return {
+          latitude: 37.7749,
+          longitude: -122.4194,
+          isPrecise: false,
+          isDefault: true
+        };
+      }
+    };
+
+    // the end ========================================================================
   
     const onSubmit = async (values: z.infer<typeof CompleteProfileSchema>) => {
       const formData = new FormData();
@@ -107,7 +177,20 @@ const ProfileForm = ({ initialData = {
       tagsEdited.forEach((tag) => formData.append('interests', tag));
       values.images.forEach((image) => formData.append('images', image));
       formData.append('profileImageIndex', values?.profileImageIndex?.toString() || '');
+      let location;
+      while (!location) {
+        location = await getUserLocation();
+      }
+      if (location) {
+        const { latitude, longitude } = location;
+        formData.append('latitude', latitude.toString());
+        formData.append('longitude', longitude.toString());
+      } else {
+        console.error("Unable to retrieve user location.");
+      }
 
+      console.log("location: ", location);
+      
 
       console.log('FormData interests:', formData.getAll('interests'));
         // Authorization: `Bearer ${auth.accessToken}`
@@ -122,7 +205,7 @@ const ProfileForm = ({ initialData = {
         setAuth({ user: response.data.user, accessToken: auth.accessToken });
         // if (initialData.id)
         closeModal && closeModal();
-        navigate(`/profile/${auth.user?.id}`);
+        navigate(`/dashboard`);
         // location.href = `/profile/${auth.user?.id}`;
       } catch (error) {
         console.error('Error updating profile:', error);

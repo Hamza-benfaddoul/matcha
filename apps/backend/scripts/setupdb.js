@@ -77,16 +77,28 @@ CREATE TABLE IF NOT EXISTS likes (
 );
 `;
 
-// const FameRatingLogTableQuery = `
-// CREATE TABLE IF NOT EXISTS fame_rating_log (
-//   id SERIAL PRIMARY KEY,
-//   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-//   action VARCHAR(50) NOT NULL,  -- e.g., "view", "like"
-//   action_count INTEGER DEFAULT 1, -- number of views or likes
-//   fame_change INTEGER NOT NULL,   -- fame points added/subtracted
-//   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-// );
-// `;
+const BlockTableQuery = `
+CREATE TABLE IF NOT EXISTS blocks (
+  id SERIAL PRIMARY KEY,
+  blocker_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  blocked_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  blocked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+`;
+
+const ReportsTableQuery = `
+CREATE TABLE IF NOT EXISTS reports (
+  id SERIAL PRIMARY KEY,
+  reporter_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  reported_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  reason TEXT NOT NULL,
+  details TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status VARCHAR(50) DEFAULT 'pending'
+);
+`;
+
+
 
 const VerificationTokenTableQuery = `
 CREATE TABLE IF NOT EXISTS verification_tokens (
@@ -95,6 +107,19 @@ email VARCHAR(255) NOT NULL,
 token VARCHAR(255),
 expires TIMESTAMP 
 )`;
+
+const MessagesTableQuery = `
+CREATE TABLE IF NOT EXISTS messages (
+  id SERIAL PRIMARY KEY,
+  sender_id INTEGER NOT NULL REFERENCES users(id),
+  receiver_id INTEGER NOT NULL REFERENCES users(id),
+  content TEXT NOT NULL,
+  message_type VARCHAR(20) NOT NULL DEFAULT 'text',
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+`;
 
 const insertDefaultTags = async (client) => {
   const tags = ["#vegan", "#sport", "#music", "#movies"];
@@ -124,6 +149,9 @@ const createTables = async () => {
     await client.query(LikeTableQuery);
     await client.query(UserTagssTableQuery);
     await client.query(TagsListTableQuery);
+    await client.query(BlockTableQuery);
+    await client.query(ReportsTableQuery);
+    await client.query(MessagesTableQuery);
 
     // always keep this line at the end :)
     await insertDefaultTags(client);

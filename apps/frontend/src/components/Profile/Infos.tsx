@@ -24,7 +24,7 @@ const Info = ({id, user}: InfoProps) => {
             fetchTags()
             // setImages(initialData.images || []);
             console.log("user in infos: ", user);
-      }, [id]);
+      }, [id, user]);
       
     return (
         <div className="mt-4 info-card p-4 bg-white shadow-md rounded-lg">

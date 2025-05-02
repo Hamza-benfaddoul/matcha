@@ -3,15 +3,14 @@ const db = require("../db/db");
 const {
   getVerificationTokenByToken,
   deleteVerificationToken,
+  updateNewVerificationToken,
 } = require("../models/verification_tokens");
 
-const {
-  findUserByEmail,
-  updateNewVerificationToken,
-} = require("../models/users");
+const { findUserByEmail } = require("../models/users");
 
 const handleNewVerificationToken = async (req, res) => {
   const existingToken = await getVerificationTokenByToken(req.body.token);
+  console.log("existingToken: ", existingToken);
 
   if (!existingToken) {
     return res.status(400).json({ error: "Token does not exist!" });

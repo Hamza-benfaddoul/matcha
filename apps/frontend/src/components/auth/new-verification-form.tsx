@@ -24,6 +24,7 @@ const NewVerificationForm = () => {
     }
     const sendVerificationToken = async () => {
       try {
+        console.log("Sending verification token", token);
         const res = await axiosPrivate.post("/new-verification", { token });
         setSuccess(res.data.message);
       } catch (err) {

@@ -21,6 +21,7 @@ const users = [
     fame_rating: 50,
     latitude: 34.020882,
     longitude: -6.84165,
+    birth_date: "1990-01-01",
     tags: ["#music", "#sport"],
     profileImage: "https://i.pravatar.cc/300?img=1",
   },
@@ -35,6 +36,7 @@ const users = [
     fame_rating: 60,
     latitude: 34.019456,
     longitude: -6.843322,
+    birth_date: "1988-05-12",
     tags: ["#sport", "#movies"],
     profileImage: "https://i.pravatar.cc/300?img=2",
   },
@@ -49,6 +51,7 @@ const users = [
     fame_rating: 40,
     latitude: 34.018101,
     longitude: -6.838201,
+    birth_date: "1992-09-23",
     tags: ["#vegan", "#music"],
     profileImage: "https://i.pravatar.cc/300?img=3",
   },
@@ -63,6 +66,7 @@ const users = [
     fame_rating: 70,
     latitude: 34.021234,
     longitude: -6.839823,
+    birth_date: "1995-03-15",
     tags: ["#movies", "#music"],
     profileImage: "https://i.pravatar.cc/300?img=4",
   },
@@ -77,6 +81,7 @@ const users = [
     fame_rating: 80,
     latitude: 34.016734,
     longitude: -6.842876,
+    birth_date: "1987-11-30",
     tags: ["#sport", "#vegan"],
     profileImage: "https://i.pravatar.cc/300?img=5",
   },
@@ -91,6 +96,7 @@ const users = [
     fame_rating: 90,
     latitude: 34.022908,
     longitude: -6.837215,
+    birth_date: "1993-07-08",
     tags: ["#vegan", "#music"],
     profileImage: "https://i.pravatar.cc/300?img=6",
   },
@@ -105,6 +111,7 @@ const users = [
     fame_rating: 55,
     latitude: 34.017543,
     longitude: -6.840204,
+    birth_date: "1991-02-19",
     tags: ["#sport", "#music"],
     profileImage: "https://i.pravatar.cc/300?img=7",
   },
@@ -119,6 +126,7 @@ const users = [
     fame_rating: 75,
     latitude: 34.019234,
     longitude: -6.844329,
+    birth_date: "1994-06-25",
     tags: ["#movies", "#vegan"],
     profileImage: "https://i.pravatar.cc/300?img=8",
   },
@@ -133,6 +141,7 @@ const users = [
     fame_rating: 65,
     latitude: 34.020989,
     longitude: -6.840014,
+    birth_date: "1990-12-10",
     tags: ["#music", "#vegan"],
     profileImage: "https://i.pravatar.cc/300?img=9",
   },
@@ -147,10 +156,13 @@ const users = [
     fame_rating: 85,
     latitude: 34.018928,
     longitude: -6.843211,
+    birth_date: "1989-04-17",
     tags: ["#music", "#movies"],
     profileImage: "https://i.pravatar.cc/300?img=10",
   },
 ];
+
+
 const seedUsers = async () => {
   try {
     await client.connect();
@@ -188,6 +200,7 @@ const seedUsers = async () => {
         fame_rating,
         latitude,
         longitude,
+        birth_date,
         tags,
         profileImage,
       } = user;
@@ -197,9 +210,9 @@ const seedUsers = async () => {
         INSERT INTO users (
           firstName, lastName, username, email, password,
           gender, sexual_preferences, fame_rating,
-          location_latitude, location_longitude,
+          location_latitude, location_longitude, birth_date,
           isProfileComplete, isEmailVerified
-        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,true,true)
+        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,true,true)
         RETURNING id
         `,
         [
@@ -213,6 +226,7 @@ const seedUsers = async () => {
           fame_rating,
           latitude,
           longitude,
+          birth_date
         ],
       );
 
