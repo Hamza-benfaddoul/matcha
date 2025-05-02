@@ -1,7 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./auth/login/page.tsx";
 import RegisterPage from "./auth/register/page.tsx";
@@ -37,20 +36,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <LoginPage />,
+    element: <ProtectedRoute element={<LoginPage />} />,
   },
   {
     path: "/complete-profile",
-    element: <CompleteProfile />,
-    // element: <ProtectedRoute element={<CompleteProfile />} />,
+    element: <ProtectedRoute element={<CompleteProfile />} />,
   },
   {
     path: "/register",
-    element: (
-      <div className="h-screen w-full  flex justify-center items-center ">
-        <RegisterPage />
-      </div>
-    ),
+    element: <ProtectedRoute element={<RegisterPage />} />,
   },
   {
     path: "/profile/:id",
@@ -58,14 +52,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/reset",
-    element: (
-      <div className="h-screen w-full  flex justify-center items-center ">
-        <ResetPage />
-      </div>
-    ),
+    element: <ProtectedRoute element={<ResetPage />} />,
   },
   {
-    path: "/404",
+    path: "*",
     element: <NotFoundPage />,
   },
 ]);

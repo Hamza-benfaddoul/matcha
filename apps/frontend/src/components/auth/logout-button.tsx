@@ -1,4 +1,5 @@
 import { axiosPrivate } from "@/api/axios";
+import useAuth from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 interface LogoutButtonProps {
@@ -7,9 +8,11 @@ interface LogoutButtonProps {
 
 export const LogoutButton = ({ children }: LogoutButtonProps) => {
   const navigate = useNavigate();
+  const { setAuth } = useAuth();
   const onClick = async () => {
     try {
       await axiosPrivate.get("/logout");
+      setAuth(null);
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
