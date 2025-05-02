@@ -1,9 +1,7 @@
 const express = require("express");
 const app = express();
-const jwt = require("jsonwebtoken"); // Added missing import
 const images = require("./routes/api/user/images.js");
 const user = require("./routes/api/user/user.js");
-const { sendVerificationEmail } = require("./lib/mail.js");
 const { logger } = require("./middleware/logEvent.js");
 const verifyJWT = require("./middleware/verifyJWT");
 const cookieparser = require("cookie-parser");
@@ -61,6 +59,10 @@ app.use("/api/login", require("./routes/api/auth/login"));
 app.use("/api/register", require("./routes/api/auth/register"));
 app.use("/api/logout", require("./routes/api/auth/logout"));
 app.use("/api/refresh", require("./routes/api/auth/refresh"));
+app.use(
+  "/api/new-verification",
+  require("./routes/api/auth/new-verification-token"),
+);
 
 // Protected routes (unchanged)
 app.use(verifyJWT);

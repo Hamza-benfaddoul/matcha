@@ -12,7 +12,6 @@ const {
 
 const handleNewVerificationToken = async (req, res) => {
   const existingToken = await getVerificationTokenByToken(req.body.token);
-  console.log("existingToken", existingToken);
 
   if (!existingToken) {
     return res.status(400).json({ error: "Token does not exist!" });
@@ -29,8 +28,6 @@ const handleNewVerificationToken = async (req, res) => {
   if (!existingUser) {
     return res.status(400).json({ error: "Email does not exist!" });
   }
-
-  console.log("daz");
 
   const updatedUser = await updateNewVerificationToken(existingUser.email);
   const deletedVerificationToken = await deleteVerificationToken(

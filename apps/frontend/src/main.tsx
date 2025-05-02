@@ -14,6 +14,7 @@ import NotFoundPage from "./pages/404.tsx";
 import Home from "./pages/Home";
 import DashboardPage from "./pages/dashboard.tsx";
 import SearchPage from "./pages/search/page.tsx";
+import NewVerificationPage from "./auth/new-verification/page.tsx";
 
 // Or use plain objects
 const router = createBrowserRouter([
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <ProtectedRoute element={<DashboardPage />} />,
+  },
+  {
+    path: "/new-verification",
+    element: <ProtectedRoute element={<NewVerificationPage />} />,
   },
   {
     path: "/login",

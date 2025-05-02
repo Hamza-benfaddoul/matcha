@@ -1,20 +1,19 @@
-"use client";
-
-// import { BeatLoader } from 'react-spinners'
-import { useSearchParams } from "next/navigation";
+import { useLocation } from "react-router-dom";
+import { axiosPrivate } from "@/api/axios";
 
 import CardWrapper from "./card-wrapper";
 import { useCallback, useEffect, useState } from "react";
-//import { newVerification } from '@/actions/new-verification';
 import { FormSuccess } from "../form-success";
 import { FormError } from "../form-error";
+import { Spinner } from "@/components/ui/spinner";
 
 const NewVerificationForm = () => {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
 
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const location = useLocation();
+  const param = new URLSearchParams(location.search);
+  const token = param.get("token");
 
   const onSubmit = useCallback(() => {
     if (success || error) return;
@@ -23,6 +22,14 @@ const NewVerificationForm = () => {
       setError("Missing token");
       return;
     }
+    const sendVerificationToken = async () => {
+      try {
+        const res = await axiosPrivate.post("/new-verification", { token });
+        setSuccess(res.data.message);
+      } catch (err) {
+        setError(err?.response?.data?.error);
+      }
+    };
     /*
         newVerification(token)
           .then((data) => {
@@ -32,6 +39,7 @@ const NewVerificationForm = () => {
             setError("Something went wrong!")
           })
         */
+    sendVerificationToken();
   }, [token, success, error]);
 
   useEffect(() => {
@@ -45,10 +53,7 @@ const NewVerificationForm = () => {
       backButtonHref="/login"
     >
       <div className="flex items-center w-full justify-center">
-        {!success && !error && (
-          // <BeatLoader />
-          <></>
-        )}
+        {!success && !error && <Spinner />}
         <FormSuccess message={success} />
         {!success && <FormError message={error} />}
       </div>
