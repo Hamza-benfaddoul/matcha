@@ -12,10 +12,11 @@ const {
 
 const handleNewUser = async (req, res) => {
   const { error, value } = validateUser(req.body);
+  console.log(value);
   if (error) {
     // 400 Bad requiset
     res.status(400).send({
-      error: "The name is required and sould be minimum 3 characters.",
+      error: "Registration failed",
     });
     return;
   }
@@ -40,6 +41,7 @@ const handleNewUser = async (req, res) => {
   const user = {
     firstName: value.firstName,
     lastName: value.lastName,
+    birth_date: value.birth_date,
     userName: value.userName,
     email: value.email,
     password: hashedPassword,

@@ -23,6 +23,7 @@ const users = [
     longitude: -6.84165,
     tags: ["#music", "#sport"],
     profileImage: "https://i.pravatar.cc/300?img=1",
+    birth_date: getRandomBirthDate(),
   },
   {
     firstName: "Bob",
@@ -37,6 +38,7 @@ const users = [
     longitude: -6.843322,
     tags: ["#sport", "#movies"],
     profileImage: "https://i.pravatar.cc/300?img=2",
+    birth_date: getRandomBirthDate(),
   },
   {
     firstName: "Charlie",
@@ -51,6 +53,7 @@ const users = [
     longitude: -6.838201,
     tags: ["#vegan", "#music"],
     profileImage: "https://i.pravatar.cc/300?img=3",
+    birth_date: getRandomBirthDate(),
   },
   {
     firstName: "Diana",
@@ -65,6 +68,7 @@ const users = [
     longitude: -6.839823,
     tags: ["#movies", "#music"],
     profileImage: "https://i.pravatar.cc/300?img=4",
+    birth_date: getRandomBirthDate(),
   },
   {
     firstName: "Ethan",
@@ -79,6 +83,7 @@ const users = [
     longitude: -6.842876,
     tags: ["#sport", "#vegan"],
     profileImage: "https://i.pravatar.cc/300?img=5",
+    birth_date: getRandomBirthDate(),
   },
   {
     firstName: "Fiona",
@@ -93,6 +98,7 @@ const users = [
     longitude: -6.837215,
     tags: ["#vegan", "#music"],
     profileImage: "https://i.pravatar.cc/300?img=6",
+    birth_date: getRandomBirthDate(),
   },
   {
     firstName: "George",
@@ -107,6 +113,7 @@ const users = [
     longitude: -6.840204,
     tags: ["#sport", "#music"],
     profileImage: "https://i.pravatar.cc/300?img=7",
+    birth_date: getRandomBirthDate(),
   },
   {
     firstName: "Hannah",
@@ -121,6 +128,7 @@ const users = [
     longitude: -6.844329,
     tags: ["#movies", "#vegan"],
     profileImage: "https://i.pravatar.cc/300?img=8",
+    birth_date: getRandomBirthDate(),
   },
   {
     firstName: "Ian",
@@ -135,6 +143,7 @@ const users = [
     longitude: -6.840014,
     tags: ["#music", "#vegan"],
     profileImage: "https://i.pravatar.cc/300?img=9",
+    birth_date: getRandomBirthDate(),
   },
   {
     firstName: "Julia",
@@ -149,8 +158,19 @@ const users = [
     longitude: -6.843211,
     tags: ["#music", "#movies"],
     profileImage: "https://i.pravatar.cc/300?img=10",
+    birth_date: getRandomBirthDate(),
   },
 ];
+
+function getRandomBirthDate() {
+  const start = new Date(1970, 0, 1);
+  const end = new Date(2005, 11, 31);
+  const randomDate = new Date(
+    start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+  );
+  return randomDate.toISOString().split("T")[0];
+}
+
 const seedUsers = async () => {
   try {
     await client.connect();
@@ -190,6 +210,7 @@ const seedUsers = async () => {
         longitude,
         tags,
         profileImage,
+        birth_date,
       } = user;
 
       const { rows } = await client.query(
@@ -197,9 +218,9 @@ const seedUsers = async () => {
         INSERT INTO users (
           firstName, lastName, username, email, password,
           gender, sexual_preferences, fame_rating,
-          location_latitude, location_longitude,
+          location_latitude, location_longitude, birth_date,
           isProfileComplete, isEmailVerified
-        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,true,true)
+        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,true,true)
         RETURNING id
         `,
         [
@@ -213,6 +234,7 @@ const seedUsers = async () => {
           fame_rating,
           latitude,
           longitude,
+          birth_date,
         ],
       );
 
