@@ -2,6 +2,10 @@
 
 import { useState, useTransition } from "react";
 import axios from "@/api/axios.js";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { DatePicker } from "@/components/ui/date-picker";
 
 import CardWrapper from "./card-wrapper";
 
@@ -19,7 +23,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+
 import { Button } from "@/components/ui/button";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
@@ -37,6 +49,7 @@ const RegisterForm = () => {
       firstName: "",
       userName: "",
       lastName: "",
+      birth_date: "",
       email: "",
       password: "",
     },
@@ -44,10 +57,12 @@ const RegisterForm = () => {
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     setError("");
     setSuccess("");
+    values = {
+      ...values,
+      birth_date: format(new Date(values.birth_date), "yyyy-MM-dd"),
+    };
     axios
-      .post("/register", {
-        ...values,
-      })
+      .post("/register", values)
       .then(function (response) {
         console.log(response);
       })
@@ -121,6 +136,21 @@ const RegisterForm = () => {
                   <FormControl>
                     <Input {...field} disabled={isPending} placeholder="zoro" />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="birth_date"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Date of birth</FormLabel>
+                  <DatePicker value={field.value} onChange={field.onChange} />
+                  <FormDescription>
+                    Your date of birth is used to calculate your age.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

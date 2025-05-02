@@ -1,11 +1,11 @@
-const Joi = require("joi");
+const Joi = require("joi").extend(require("@joi/date"));
 const db = require("../db/db");
 
 const createUser = async (user) => {
   const insertUserQuery = `
-    INSERT INTO users (firstName, lastName,userName, email, password)
-    VALUES ($1, $2, $3, $4, $5)
-    RETURNING id, firstName, LastName, userName, email;
+    INSERT INTO users (firstName, lastName,userName, birth_date, email, password)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING id, firstName, LastName, userName, birth_date, email;
   `;
 
   try {
@@ -13,6 +13,7 @@ const createUser = async (user) => {
       user.firstName,
       user.lastName,
       user.userName,
+      user.birth_date,
       user.email,
       user.password,
     ]);
@@ -82,6 +83,7 @@ const validateUser = (user) => {
     firstName: Joi.string().min(3).required(),
     lastName: Joi.string().min(3).required(),
     userName: Joi.string().min(3).required(),
+    birth_date: Joi.date().format("YYYY-MM-DD").utc(),
     email: Joi.string().min(5).max(255).required(),
     password: Joi.string().min(5).max(255).required(),
   });
