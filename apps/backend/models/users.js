@@ -80,12 +80,15 @@ const findOne = async (userId) => {
 
 const validateUser = (user) => {
   const userSchema = Joi.object({
-    firstName: Joi.string().min(3).required(),
-    lastName: Joi.string().min(3).required(),
-    userName: Joi.string().min(3).required(),
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    userName: Joi.string().required(),
     birth_date: Joi.date().format("YYYY-MM-DD").utc(),
-    email: Joi.string().min(5).max(255).required(),
+    email: Joi.string().email().required(),
     password: Joi.string().min(5).max(255).required(),
+    // password: Joi.string()
+    //   .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
+    //   .required(),
   });
   return userSchema.validate(user);
 };

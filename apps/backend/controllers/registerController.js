@@ -12,8 +12,8 @@ const {
 
 const handleNewUser = async (req, res) => {
   const { error, value } = validateUser(req.body);
-  console.log(value);
   if (error) {
+    console.error("Registration failed", error);
     // 400 Bad requiset
     res.status(400).send({
       error: "Registration failed",
