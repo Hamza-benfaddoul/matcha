@@ -37,9 +37,7 @@ require("./services/socketServiceExample").socketServiceExample(
   io.of("/example"),
 );
 require("./services/socketServiceExample").testConnection(io.of("/test"));
-require("./services/socketServiceChat").socketServiceChat(
-  io.of("/chat"),
-);
+require("./services/socketServiceChat").socketServiceChat(io.of("/chat"));
 
 // Express Middleware (unchanged from your original)
 app.use(logger);
@@ -55,12 +53,21 @@ console.log("uploadsDir: ", uploadsDir, __dirname);
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
 }
+
 app.use("/api/uploads", express.static(uploadsDir));
 
 // Routes (completely unchanged from your original)
 app.use("/api/login", require("./routes/api/auth/login"));
 app.use("/api/register", require("./routes/api/auth/register"));
 app.use("/api/logout", require("./routes/api/auth/logout"));
+router.post(
+  "/reset-password",
+  require("../../../controllers/auth/resetPasswordController"),
+);
+router.post(
+  "/reset-password/confirm",
+  require("../../../controllers/auth/resetPasswordController"),
+);
 app.use("/api/refresh", require("./routes/api/auth/refresh"));
 app.use(
   "/api/new-verification",
@@ -69,6 +76,10 @@ app.use(
 
 // Protected routes (unchanged)
 app.use(verifyJWT);
+router.post(
+  "/change-password",
+  require("../../../controllers/auth/changePasswordController"),
+);
 app.use("/api/users", user);
 app.use("/api/profile", user);
 app.use("/api/images", images);
@@ -81,10 +92,7 @@ app.use(
   "/api/matching-profiles",
   require("./routes/api/browsing/matching-profiles"),
 );
-app.use(
-  "/api/location",
-  require("./routes/api/user/gps"),
-);
+app.use("/api/location", require("./routes/api/user/gps"));
 
 app.use("/api/search", require("./routes/api/search/searchRoutes"));
 

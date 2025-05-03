@@ -98,8 +98,6 @@ CREATE TABLE IF NOT EXISTS reports (
 );
 `;
 
-
-
 const VerificationTokenTableQuery = `
 CREATE TABLE IF NOT EXISTS verification_tokens (
 id SERIAL PRIMARY KEY,
@@ -120,6 +118,15 @@ CREATE TABLE IF NOT EXISTS messages (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
+const PasswordResetTokenTableQuery = `
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token VARCHAR(255) NOT NULL,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  used BOOLEAN DEFAULT FALSE
+)`;
 
 const insertDefaultTags = async (client) => {
   const tags = ["#vegan", "#sport", "#music", "#movies"];
@@ -144,6 +151,7 @@ const createTables = async () => {
     console.log("Connected to database");
     await client.query(UserTableQuery);
     await client.query(VerificationTokenTableQuery);
+    await client.query(PasswordResetTokenTableQuery); // Add this new table
     await client.query(UserPhotosTableQuery);
     await client.query(ViewsTableQuery);
     await client.query(LikeTableQuery);
@@ -152,6 +160,15 @@ const createTables = async () => {
     await client.query(BlockTableQuery);
     await client.query(ReportsTableQuery);
     await client.query(MessagesTableQuery);
+    // Create indexes for better performance
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token 
+      ON password_reset_tokens(token)
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_user 
+      ON password_reset_tokens(user_id)
+    `);
 
     // always keep this line at the end :)
     await insertDefaultTags(client);

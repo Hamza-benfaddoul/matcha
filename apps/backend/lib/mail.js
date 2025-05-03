@@ -21,17 +21,6 @@ const sendTwoFactorTokenEmail = async (email, token) => {
   });
 };
 
-const sendPasswordResetEmail = async (email, token) => {
-  const resetLink = `${process.env.CLIENT_URL}/auth/new-password?token=${token}`;
-
-  await transporter.sendMail({
-    from: "benfaddoul01@gmail.com",
-    to: email,
-    subject: "Reset  your password",
-    html: `<p>Click <a href="${resetLink}">here</a> to reset password`,
-  });
-};
-
 const sendVerificationEmail = async (email, token) => {
   const confirmLink = `${process.env.CLIENT_URL}/new-verification?token=${token}`;
   await transporter.sendMail({
@@ -40,6 +29,23 @@ const sendVerificationEmail = async (email, token) => {
     subject: "Confirm your email",
     html: `<p>Click <a href="${confirmLink}">here</a> to confirm email`,
   });
+};
+
+const sendPasswordResetEmail = async (email, resetToken) => {
+  const confirmLink = `${process.env.CLIENT_URL}/new-verification?token=${resetToken}`;
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Password Reset Request",
+    html: `
+      <p>You requested a password reset. Click the link below to set a new password:</p>
+      <a href="${confirmLink}">Reset Password</a>
+      <p>This link will expire in 1 hour.</p>
+    `,
+  };
+
+  // Send email using your email transport
+  await transporter.sendMail(mailOptions);
 };
 
 module.exports = {

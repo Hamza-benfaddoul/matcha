@@ -1,14 +1,14 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const db = require("../db/db");
-const { sendVerificationEmail } = require("../lib/mail");
+const db = require("../../db/db");
+const { sendVerificationEmail } = require("../../lib/mail");
 
 const {
   createUser,
   findUserByEmail,
   findUserbyUserName,
   validateUser,
-} = require("../models/users");
+} = require("../../models/users");
 
 const handleNewUser = async (req, res) => {
   const { error, value } = validateUser(req.body);

@@ -2,9 +2,9 @@ const {
   getVerificationTokenByToken,
   deleteVerificationToken,
   updateNewVerificationToken,
-} = require("../models/verification_tokens");
+} = require("../../models/verification_tokens");
 
-const { findUserByEmail } = require("../models/users");
+const { findUserByEmail } = require("../../models/users");
 
 const handleNewVerificationToken = async (req, res) => {
   const existingToken = await getVerificationTokenByToken(req.body.token);
