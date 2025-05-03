@@ -1,17 +1,21 @@
+const db = require("../../db/db");
 const bcrypt = require("bcrypt");
 const { changePasswordSchema } = require("../../schemas/password-schemas");
-const { findUserById } = require("../../models/users");
+const { findUserByEmail } = require("../../models/users");
 
 const handleChangePassword = async (req, res) => {
+  console.log("Change password request received", req.body);
   // Validate request body
-  const { error, value } = changePasswordSchema.validate(req.body);
+  const { email, ...rest } = req.body;
+  const { error, value } = changePasswordSchema.validate(rest);
+  console.log("Validation result:", error, value);
   if (error) {
     return res.status(400).send({ error: error.details[0].message });
   }
 
   try {
     // Get user from JWT (assuming verifyJWT middleware was used)
-    const user = await findUserById(req.userId);
+    const user = await findUserByEmail(email);
     if (!user) {
       return res.status(404).send({ error: "User not found" });
     }

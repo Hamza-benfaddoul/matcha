@@ -18,6 +18,7 @@ import NewVerificationPage from "./auth/new-verification/page.tsx";
 import BlockLists from "./pages/BlockLists.tsx";
 import Chat from "./pages/Chat.tsx";
 import NewPasswordPage from "./auth/new-password/page.tsx";
+import ChangePasswordPage from "./auth/change-passowrd/page.tsx";
 
 // Or use plain objects
 const router = createBrowserRouter([
@@ -45,6 +46,11 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <ProtectedRoute element={<LoginPage />} />,
+  },
+
+  {
+    path: "/change-password",
+    element: <ProtectedRoute element={<ChangePasswordPage />} />,
   },
   {
     path: "/complete-profile",

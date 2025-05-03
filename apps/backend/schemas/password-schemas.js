@@ -6,7 +6,7 @@ const resetPasswordSchema = Joi.object({
 
 const changePasswordSchema = Joi.object({
   currentPassword: Joi.string().required(),
-  newPassword: Joi.string().min(8).required(),
+  newPassword: Joi.string().min(6).required(),
   confirmNewPassword: Joi.string().valid(Joi.ref("newPassword")).required(),
 });
 
