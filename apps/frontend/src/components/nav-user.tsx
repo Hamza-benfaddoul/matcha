@@ -87,42 +87,43 @@ export function NavUser() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Link
-              to="/change-password"
-              className="flex w-full items-center gap-1"
-            >
-              <LockIcon className="w-4 h-4" />
-              Change password
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Link
-              to={`/profile/${user.id}`}
-              className="flex w-full items-center gap-1"
-            >
-              <BadgeCheck className="w-4 h-4" />
-              Profile
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Link
-              to={`/blocks`}
-              className="flex w-full items-center gap-1"
-            >
-              <GoBlocked className="w-4 h-4" />
-              Blocked Users
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        {user?.isprofilecomplete && (
+          <>
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <Link
+                  to="/change-password"
+                  className="flex w-full items-center gap-1"
+                >
+                  <LockIcon className="w-4 h-4" />
+                  Change password
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <Link
+                  to={`/profile/${user.id}`}
+                  className="flex w-full items-center gap-1"
+                >
+                  <BadgeCheck className="w-4 h-4" />
+                  Profile
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <Link to={`/blocks`} className="flex w-full items-center gap-1">
+                  <GoBlocked className="w-4 h-4" />
+                  Blocked Users
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+          </>
+        )}
         <DropdownMenuItem>
           <LogoutButton>
             <Button

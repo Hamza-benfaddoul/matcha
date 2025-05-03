@@ -24,7 +24,7 @@ const PUBLIC_ROUTES = [
   "/new-verification",
   "/new-password",
 ];
-const AUTH_REDIRECT_ROUTES = [...PUBLIC_ROUTES];
+
 const PROFILE_ONLY_ROUTES = ["/complete-profile"];
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
@@ -79,23 +79,31 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
 
   // User is authenticated
   if (auth?.accessToken) {
-    // Redirect if trying to access public routes while logged in
-    if (AUTH_REDIRECT_ROUTES.includes(pathname)) {
+    console.log("User is authenticated", auth.user);
+    const isProfileCompleted = auth.user?.isprofilecomplete;
+    console.log("isProfileCompleted", isProfileCompleted);
+
+    // BLOCK ALL ROUTES except profile completion if profile isn't completed
+    if (!isProfileCompleted && !PROFILE_ONLY_ROUTES.includes(pathname)) {
+      return <Navigate to="/complete-profile" replace />;
+    }
+
+    // Prevent access to complete-profile if already completed
+    if (isProfileCompleted && PROFILE_ONLY_ROUTES.includes(pathname)) {
       return <Navigate to="/dashboard" replace />;
     }
 
-    // Handle profile completion route
-    if (PROFILE_ONLY_ROUTES.includes(pathname)) {
-      return auth.user.isprofilecomplete ? (
-        <Navigate to="/dashboard" replace />
-      ) : (
-        <div className="flex w-full h-screen justify-center items-center overflow-hidden">
-          {element}
-        </div>
-      );
+    // Redirect away from auth routes if logged in
+    if (PUBLIC_ROUTES.includes(pathname)) {
+      return <Navigate to="/dashboard" replace />;
     }
 
-    // Render protected layout
+    // Special layout for profile completion page
+    if (PROFILE_ONLY_ROUTES.includes(pathname)) {
+      return element;
+    }
+
+    // Normal protected route layout
     return (
       <SidebarProvider>
         <div className="flex w-full h-screen overflow-hidden">
@@ -120,18 +128,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
     );
   }
 
-  // User is not authenticated
+  // Public route handling for unauthenticated users
   if (PUBLIC_ROUTES.includes(pathname)) {
     if (pathname === "/") return element;
-    else
-      return (
-        <div className="flex w-full h-screen justify-center items-center overflow-hidden">
-          {element}
-        </div>
-      );
+    return (
+      <div className="flex w-full h-screen justify-center items-center overflow-hidden">
+        {element}
+      </div>
+    );
   }
 
-  // Default case - redirect to login for any other protected route
+  // Default redirect for unauthenticated users
   return <Navigate to="/login" state={{ from: pathname }} replace />;
 };
 
