@@ -1,9 +1,7 @@
 const express = require("express");
 const app = express();
-const jwt = require("jsonwebtoken"); // Added missing import
 const images = require("./routes/api/user/images.js");
 const user = require("./routes/api/user/user.js");
-const { sendVerificationEmail } = require("./lib/mail.js");
 const { logger } = require("./middleware/logEvent.js");
 const verifyJWT = require("./middleware/verifyJWT");
 const cookieparser = require("cookie-parser");
@@ -39,9 +37,7 @@ require("./services/socketServiceExample").socketServiceExample(
   io.of("/example"),
 );
 require("./services/socketServiceExample").testConnection(io.of("/test"));
-require("./services/socketServiceChat").socketServiceChat(
-  io.of("/chat"),
-);
+require("./services/socketServiceChat").socketServiceChat(io.of("/chat"));
 
 // Express Middleware (unchanged from your original)
 app.use(logger);
@@ -57,16 +53,23 @@ console.log("uploadsDir: ", uploadsDir, __dirname);
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
 }
+
 app.use("/api/uploads", express.static(uploadsDir));
 
 // Routes (completely unchanged from your original)
 app.use("/api/login", require("./routes/api/auth/login"));
 app.use("/api/register", require("./routes/api/auth/register"));
 app.use("/api/logout", require("./routes/api/auth/logout"));
+app.use("/api/reset-password", require("./routes/api/auth/reset-password"));
 app.use("/api/refresh", require("./routes/api/auth/refresh"));
+app.use(
+  "/api/new-verification",
+  require("./routes/api/auth/new-verification-token"),
+);
 
 // Protected routes (unchanged)
 app.use(verifyJWT);
+app.use("/api/change-password", require("./routes/api/auth/change-password"));
 app.use("/api/users", user);
 app.use("/api/profile", user);
 app.use("/api/images", images);
@@ -79,10 +82,7 @@ app.use(
   "/api/matching-profiles",
   require("./routes/api/browsing/matching-profiles"),
 );
-app.use(
-  "/api/location",
-  require("./routes/api/user/gps"),
-);
+app.use("/api/location", require("./routes/api/user/gps"));
 
 app.use("/api/search", require("./routes/api/search/searchRoutes"));
 

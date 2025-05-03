@@ -1,18 +1,13 @@
-const db = require("../db/db");
-
 const {
   getVerificationTokenByToken,
   deleteVerificationToken,
-} = require("../models/verification_tokens");
-
-const {
-  findUserByEmail,
   updateNewVerificationToken,
-} = require("../models/users");
+} = require("../../models/verification_tokens");
+
+const { findUserByEmail } = require("../../models/users");
 
 const handleNewVerificationToken = async (req, res) => {
   const existingToken = await getVerificationTokenByToken(req.body.token);
-  console.log("existingToken", existingToken);
 
   if (!existingToken) {
     return res.status(400).json({ error: "Token does not exist!" });
@@ -30,14 +25,14 @@ const handleNewVerificationToken = async (req, res) => {
     return res.status(400).json({ error: "Email does not exist!" });
   }
 
-  console.log("daz");
-
   const updatedUser = await updateNewVerificationToken(existingUser.email);
+  if (!updatedUser)
+    return res.status(400).json({ error: "Failed to verify your Email!" });
   const deletedVerificationToken = await deleteVerificationToken(
     existingToken.token,
   );
 
-  res.status(200).json({ success: "Email verified!" });
+  res.status(200).json({ message: "Email verified Successfully!" });
 };
 
 module.exports = {

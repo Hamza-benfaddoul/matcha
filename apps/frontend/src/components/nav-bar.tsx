@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 
 import { Bell, MessageCircle } from "lucide-react";
 import { NavUser } from "./nav-user";
+import { Link } from "react-router-dom";
 
 const NavBar = () => {
   return (
@@ -12,15 +13,11 @@ const NavBar = () => {
           3
         </span>
       </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => {
-          window.location.href = "/chat";
-        }}
-      >
-        <MessageCircle className="h-5 w-5" />
-      </Button>
+      <Link to={"/chat"}>
+        <Button variant="outline" size="icon">
+          <MessageCircle className="h-5 w-5" />
+        </Button>
+      </Link>
       <NavUser />
     </div>
   );

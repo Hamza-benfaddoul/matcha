@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const { findUserByEmail } = require("../models/users");
+const { findUserByEmail } = require("../../models/users");
 
 const handleRefreshToken = async (req, res) => {
   const { jwt: refreshToken } = req.cookies;

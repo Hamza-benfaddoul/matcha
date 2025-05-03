@@ -1,7 +1,7 @@
-"use client";
-
 import { useState, useTransition } from "react";
 import axios from "@/api/axios.js";
+import { format } from "date-fns";
+import { DatePicker } from "@/components/ui/date-picker";
 
 import CardWrapper from "./card-wrapper";
 
@@ -19,12 +19,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
+
 import { Button } from "@/components/ui/button";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
-
-//import { register } from '@/actions/register'
 
 const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -41,27 +41,22 @@ const RegisterForm = () => {
       password: "",
     },
   });
-  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+  const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
     setError("");
     setSuccess("");
-    axios
-      .post("/register", {
-        ...values,
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    /*
-        startTransition(() => {
-          register(values).then((data) => {
-            setError(data.error)
-            setSuccess(data.success)
-          })
-        })
-        */
+
+    values = {
+      ...values,
+      birth_date: format(new Date(values.birth_date), "yyyy-MM-dd"),
+    };
+    try {
+      const response = await axios.post("/register", values);
+      console.log(response);
+      setSuccess("Check your email to verify and login");
+    } catch (error) {
+      console.log(error);
+      setError(error.response.data.error);
+    }
   };
 
   return (
@@ -121,6 +116,21 @@ const RegisterForm = () => {
                   <FormControl>
                     <Input {...field} disabled={isPending} placeholder="zoro" />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="birth_date"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Date of birth</FormLabel>
+                  <DatePicker value={field.value} onChange={field.onChange} />
+                  <FormDescription>
+                    Your date of birth is used to calculate your age.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

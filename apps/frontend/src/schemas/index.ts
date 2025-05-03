@@ -19,6 +19,9 @@ export const RegisterSchema = z.object({
   firstName: z.string().min(1, { message: "Frist name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   userName: z.string().min(1, { message: "Last name is required" }),
+  birth_date: z.date({
+    required_error: "A date of birth is required.",
+  }),
   email: z.string().email({ message: "Email is required" }),
   password: z
     .string()
@@ -39,3 +42,24 @@ export const CompleteProfileSchema = z.object({
   longitude: z.number().optional(),
   latitude: z.number().optional(),
 });
+
+export const ChangePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(1, { message: "Current password is required" }),
+    newPassword: z.string().min(6, {
+      message: "Password is required and must be at least 6 characters long",
+    }),
+    confirmNewPassword: z.string().min(6, {
+      message: "Password is required and must be at least 6 characters long",
+    }),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Passwords don't match",
+    path: ["confirmNewPassword"],
+  })
+  .refine((data) => data.newPassword !== data.currentPassword, {
+    message: "New password cannot be the same as the current password",
+    path: ["newPassword"],
+  });

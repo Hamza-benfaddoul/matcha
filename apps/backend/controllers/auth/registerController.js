@@ -1,21 +1,22 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const db = require("../db/db");
-const { sendVerificationEmail } = require("../lib/mail");
+const db = require("../../db/db");
+const { sendVerificationEmail } = require("../../lib/mail");
 
 const {
   createUser,
   findUserByEmail,
   findUserbyUserName,
   validateUser,
-} = require("../models/users");
+} = require("../../models/users");
 
 const handleNewUser = async (req, res) => {
   const { error, value } = validateUser(req.body);
   if (error) {
+    console.error("Registration failed", error);
     // 400 Bad requiset
     res.status(400).send({
-      error: "The name is required and sould be minimum 3 characters.",
+      error: "Registration failed",
     });
     return;
   }
@@ -40,6 +41,7 @@ const handleNewUser = async (req, res) => {
   const user = {
     firstName: value.firstName,
     lastName: value.lastName,
+    birth_date: value.birth_date,
     userName: value.userName,
     email: value.email,
     password: hashedPassword,

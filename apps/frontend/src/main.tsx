@@ -1,7 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./auth/login/page.tsx";
 import RegisterPage from "./auth/register/page.tsx";
@@ -15,8 +14,11 @@ import NotFoundPage from "./pages/404.tsx";
 import Home from "./pages/Home";
 import DashboardPage from "./pages/dashboard.tsx";
 import SearchPage from "./pages/search/page.tsx";
+import NewVerificationPage from "./auth/new-verification/page.tsx";
 import BlockLists from "./pages/BlockLists.tsx";
 import Chat from "./pages/Chat.tsx";
+import NewPasswordPage from "./auth/new-password/page.tsx";
+import ChangePasswordPage from "./auth/change-passowrd/page.tsx";
 
 // Or use plain objects
 const router = createBrowserRouter([
@@ -38,13 +40,21 @@ const router = createBrowserRouter([
     element: <ProtectedRoute element={<DashboardPage />} />,
   },
   {
+    path: "/new-verification",
+    element: <ProtectedRoute element={<NewVerificationPage />} />,
+  },
+  {
     path: "/login",
-    element: <LoginPage />,
+    element: <ProtectedRoute element={<LoginPage />} />,
+  },
+
+  {
+    path: "/change-password",
+    element: <ProtectedRoute element={<ChangePasswordPage />} />,
   },
   {
     path: "/complete-profile",
-    element: <CompleteProfile />,
-    // element: <ProtectedRoute element={<CompleteProfile />} />,
+    element: <ProtectedRoute element={<CompleteProfile />} />,
   },
   {
     path: "/blocks",
@@ -56,11 +66,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/register",
-    element: (
-      <div className="h-screen w-full  flex justify-center items-center ">
-        <RegisterPage />
-      </div>
-    ),
+    element: <ProtectedRoute element={<RegisterPage />} />,
   },
   {
     path: "/profile/:id",
@@ -68,22 +74,22 @@ const router = createBrowserRouter([
   },
   {
     path: "/reset",
-    element: (
-      <div className="h-screen w-full  flex justify-center items-center ">
-        <ResetPage />
-      </div>
-    ),
+    element: <ProtectedRoute element={<ResetPage />} />,
   },
   {
-    path: "/404",
+    path: "/new-password/",
+    element: <ProtectedRoute element={<NewPasswordPage />} />,
+  },
+  {
+    path: "*",
     element: <NotFoundPage />,
   },
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
-  </StrictMode>,
+  //  <StrictMode>
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>,
+  // </StrictMode>,
 );
