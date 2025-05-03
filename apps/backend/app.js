@@ -60,13 +60,10 @@ app.use("/api/uploads", express.static(uploadsDir));
 app.use("/api/login", require("./routes/api/auth/login"));
 app.use("/api/register", require("./routes/api/auth/register"));
 app.use("/api/logout", require("./routes/api/auth/logout"));
-router.post(
-  "/reset-password",
-  require("../../../controllers/auth/resetPasswordController"),
-);
-router.post(
-  "/reset-password/confirm",
-  require("../../../controllers/auth/resetPasswordController"),
+app.use("/api/reset-password", require("./routes/api/auth/reset-password"));
+app.use(
+  "/api/reset-password/confirm",
+  require("./routes/api/auth/reset-password"),
 );
 app.use("/api/refresh", require("./routes/api/auth/refresh"));
 app.use(
@@ -76,10 +73,7 @@ app.use(
 
 // Protected routes (unchanged)
 app.use(verifyJWT);
-router.post(
-  "/change-password",
-  require("../../../controllers/auth/changePasswordController"),
-);
+app.use("/api/change-password", require("./routes/api/auth/change-password"));
 app.use("/api/users", user);
 app.use("/api/profile", user);
 app.use("/api/images", images);
