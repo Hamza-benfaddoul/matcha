@@ -61,10 +61,6 @@ app.use("/api/login", require("./routes/api/auth/login"));
 app.use("/api/register", require("./routes/api/auth/register"));
 app.use("/api/logout", require("./routes/api/auth/logout"));
 app.use("/api/reset-password", require("./routes/api/auth/reset-password"));
-app.use(
-  "/api/reset-password/confirm",
-  require("./routes/api/auth/reset-password"),
-);
 app.use("/api/refresh", require("./routes/api/auth/refresh"));
 app.use(
   "/api/new-verification",

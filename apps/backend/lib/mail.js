@@ -32,7 +32,7 @@ const sendVerificationEmail = async (email, token) => {
 };
 
 const sendPasswordResetEmail = async (email, resetToken) => {
-  const confirmLink = `${process.env.CLIENT_URL}/new-verification?token=${resetToken}`;
+  const confirmLink = `${process.env.CLIENT_URL}/new-password?token=${resetToken}`;
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: email,

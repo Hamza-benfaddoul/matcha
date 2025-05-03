@@ -22,6 +22,7 @@ const PUBLIC_ROUTES = [
   "/register",
   "/reset",
   "/new-verification",
+  "/new-password",
 ];
 const AUTH_REDIRECT_ROUTES = [...PUBLIC_ROUTES];
 const PROFILE_ONLY_ROUTES = ["/complete-profile"];

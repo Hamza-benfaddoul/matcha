@@ -32,15 +32,6 @@ const NewVerificationForm = () => {
         setError(err?.response?.data?.error);
       }
     };
-    /*
-        newVerification(token)
-          .then((data) => {
-            setSuccess(data.success)
-            setError(data.error)
-          }).catch(() => {
-            setError("Something went wrong!")
-          })
-        */
     sendVerificationToken();
   }, [token, success, error]);
 

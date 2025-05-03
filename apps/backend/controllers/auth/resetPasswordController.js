@@ -35,6 +35,10 @@ const handlePasswordResetRequest = async (req, res) => {
       "INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)",
       [user.id, resetToken, expiresAt.toISOString()],
     );
+    const newToken = await db.query(
+      "INSERT INTO verification_tokens (email, token, expires) VALUES ($1, $2, $3)",
+      [user.email, resetToken, expiresAt.toISOString()],
+    );
 
     // Send reset email
     await sendPasswordResetEmail(user.email, resetToken);
@@ -66,7 +70,7 @@ const handlePasswordReset = async (req, res) => {
     );
 
     if (tokenRecord.rows.length === 0) {
-      return res.status(400).send({ error: "Invalid or expired token" });
+      return res.status(400).send({ error: "Invalid token" });
     }
 
     // Hash new password
