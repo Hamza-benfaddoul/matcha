@@ -8,12 +8,13 @@ import { FaCamera } from "react-icons/fa";
 import LocationPicker from "@/components/map/LocationPicker";
 import ProfileSectionContent from "@/components/Profile/ProfileSectionContent";
 import { UserX, Unlock } from 'lucide-react';
+import useSocket from "@/hooks/useSocket"
 // @ts-ignore
 import Modal from "react-modal";
 import UpdateProfileModal from "@/components/Profile/UpdateProfile";
 import { FameStars } from "@/components/Profile/FameStars";
 import { UserActionsDropdown } from "@/components/Profile/UserActionDropDown";
-import { set } from "zod";
+
 // Bind modal to your app root element (important for accessibility)
 Modal.setAppElement("#root");
 
@@ -33,6 +34,9 @@ function Profile() {
   const [isOpen, setIsOpen] = useState(false);
   const fileInputRef = useRef(null);
   const [isConfirming, setIsConfirming] = useState(false);
+  const { socket, isConnected } = useSocket('/chat')
+  const [isOnline, setIsOnline] = useState(false);
+  
 
    // Open and close modal handlers
    const openModal = () => setIsOpen(true);
@@ -45,6 +49,57 @@ function Profile() {
 
   const handleUpdateModal = () => {
     setIsUpdateModalOpen(!isUpdateModalOpen);
+  };
+
+  // Handle socket events
+  // useEffect(() => {
+  //   if (!socket || isMyProfile) return;
+  
+  //   const handleUserOnline = (userId) => {
+  //     if (userId === id) {
+  //       setIsOnline(true);
+  //     }
+  //   };
+  
+  //   const handleUserOffline = (userId) => {
+  //     if (userId === id) {
+  //       setIsOnline(false);
+  //     }
+  //   };
+  
+  //   // Check initial online status when component mounts
+  //   socket.emit("get_online_status", null, (response) => {
+  //     if (response.onlineUsers.includes(id)) {
+  //       setIsOnline(true);
+  //     }
+  //   });
+  
+  //   socket.on("user_online", handleUserOnline);
+  //   socket.on("user_offline", handleUserOffline);
+  
+  //   return () => {
+  //     socket.off("user_online", handleUserOnline);
+  //     socket.off("user_offline", handleUserOffline);
+  //   };
+  // }, [socket, id, isMyProfile]);
+  
+  // Format last login time
+  const formatLastLogin = (lastLogin) => {
+    if (!lastLogin) return "Never logged in";
+    
+    const lastLoginDate = new Date(lastLogin);
+    const now = new Date();
+    const diffInHours = Math.floor((now - lastLoginDate) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) {
+      const diffInMinutes = Math.floor((now - lastLoginDate) / (1000 * 60));
+      return `Last login: ${diffInMinutes} minute${diffInMinutes !== 1 ? 's' : ''} ago`;
+    } else if (diffInHours < 24) {
+      return `Last login: ${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
+    } else {
+      const diffInDays = Math.floor(diffInHours / 24);
+      return `Last login: ${diffInDays} day${diffInDays !== 1 ? 's' : ''} ago`;
+    }
   };
 
   const fetchUser = async () => {
@@ -287,6 +342,14 @@ function Profile() {
           <div className="flex w-full md:flex-row max-sm:flex-col md:justify-between justify-around items-center">
             <div className="md:ml-60 max-sm:items-center max-sm:flex-col max-sm:flex">
           <div className="text-[24px] font-semibold">{user.firstname} {user?.lastname}</div>
+          <div className="flex items-center text-[17px] text-gray-500">
+           {!isMyProfile && (
+              <>
+                <span className={`inline-block w-3 h-3 rounded-full mr-2 ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`}></span>
+                {isOnline ? 'Online' : `Offline - ${formatLastLogin(user.last_login)}`}
+              </>
+            )}
+           </div>
           <div className="text-[17px] text-gray-500">{user?.email}</div>
           <div className="my-3">
             {!isMyProfile ? (

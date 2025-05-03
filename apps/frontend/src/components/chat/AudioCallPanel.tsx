@@ -257,7 +257,7 @@ const AudioCallPanel = ({ contact, onEndCall, socket, currentUser }) => {
   }
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-800 p-4 flex flex-col items-center">
+    <div className="bg-gray-100 dark:bg-gray-800 border-2 m-2 rounded-lg p-4 flex flex-col items-center">
       {/* Hidden audio elements */}
       <audio ref={localAudioRef} muted playsInline />
       <audio ref={remoteAudioRef} autoPlay playsInline />
@@ -284,13 +284,13 @@ const AudioCallPanel = ({ contact, onEndCall, socket, currentUser }) => {
       {callStatus === 'ringing' ? (
         <div className="flex space-x-4">
           <button 
-            className="p-3 rounded-full bg-green-500 text-white"
+            className="px-4 py-2 rounded-full bg-green-500 text-white"
             onClick={acceptCall}
           >
             Accept
           </button>
           <button 
-            className="p-3 rounded-full bg-red-500 text-white"
+            className="px-4 py-2 rounded-full bg-red-500 text-white"
             onClick={rejectCall}
           >
             Reject

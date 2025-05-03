@@ -262,50 +262,36 @@ const ChatWindow = ({ currentUser, activeChat, onSendMessage, onToggleCall, onBa
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSendMessage} className="flex items-center">
-            <input
-                type="text"
-                placeholder="Type a message..."
-                className="flex-1 p-3 rounded-lg bg-gray-100 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={message}
-                onChange={(e) => {
-                  setMessage(e.target.value);
-                  handleTypingDebounced(e.target.value.length > 0);
-                  // Notify when user starts typing
-                  if (e.target.value.length > 0) {
-                    onTyping(true);
-                  } else {
-                    onTyping(false);
-                  }
-                }}
-                onFocus={() => onTyping(true)}
-                onBlur={() => onTyping(false)}
-              />
-            {/* <input
-              type="text"
-              placeholder="Type a message..."
-              className="flex-1 p-3 rounded-lg bg-gray-100 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={message}
-              onChange={(e) => setMessage(e.target.value) }
-            /> */}
-
-              <AudioRecorder onSendAudio={handleSendAudio} />
-
-            {/* <button
-              type="button"
-              className="ml-2 p-2 rounded-full bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500"
-              onClick={toggleRecording}
-            >
-              <Mic size={20} />
-            </button> */}
-            <button
-              type="submit"
-              className="ml-2 p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!message.trim()}
-            >
-              <Send size={20} />
-            </button>
-          </form>
+          <div className="flex items-center">
+            <form onSubmit={handleSendMessage} className="flex flex-1 items-center">
+              <input
+                  type="text"
+                  placeholder="Type a message..."
+                  className="flex-1 p-3 rounded-lg bg-gray-100 mr-4 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={message}
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                    handleTypingDebounced(e.target.value.length > 0);
+                    // Notify when user starts typing
+                    if (e.target.value.length > 0) {
+                      onTyping(true);
+                    } else {
+                      onTyping(false);
+                    }
+                  }}
+                  onFocus={() => onTyping(true)}
+                  onBlur={() => onTyping(false)}
+                />
+              <button
+                type="submit"
+                className="mr-2 p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!message.trim()}
+              >
+                <Send size={20} />
+              </button>
+            </form>
+            <AudioRecorder onSendAudio={handleSendAudio} />
+          </div>
         )}
       </div>
     </div>

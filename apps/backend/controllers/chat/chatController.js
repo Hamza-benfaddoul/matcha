@@ -7,41 +7,93 @@ exports.getContacts = async (req, res) => {
         const userId = req.userId; // Assuming the user ID is available in the request object
 
         const contactsQuery = `
-            SELECT 
-            u.id,
-            u.firstName AS firstname,
-            u.lastName AS lastname,
-            u.username,
-            COALESCE(u.profile_picture, '/placeholder.svg?height=100&width=100') AS profile_picture,
-            FALSE AS isOnline, -- Placeholder for isOnline since last_active column is missing
-            (
-                SELECT content 
-                FROM messages 
-                WHERE (sender_id = u.id AND receiver_id = $1) OR (sender_id = $1 AND receiver_id = u.id)
-                ORDER BY created_at DESC 
-                LIMIT 1
-            ) AS lastMessage,
-            (
-                SELECT created_at 
-                FROM messages 
-                WHERE (sender_id = u.id AND receiver_id = $1) OR (sender_id = $1 AND receiver_id = u.id)
-                ORDER BY created_at DESC 
-                LIMIT 1
-            ) AS lastMessageTime,
-            (
-                SELECT COUNT(*) 
-                FROM messages 
-                WHERE receiver_id = $1 AND sender_id = u.id AND is_read = FALSE
-            ) AS unreadCount
-            FROM users u
-            WHERE u.id != $1
-            AND EXISTS (
-            SELECT 1 
+        SELECT 
+        u.id,
+        u.firstName AS firstname,
+        u.lastName AS lastname,
+        u.username,
+        COALESCE(u.profile_picture, '/placeholder.svg?height=100&width=100') AS profile_picture,
+        FALSE AS isOnline, -- Placeholder for isOnline since last_active column is missing
+        (
+            SELECT content 
             FROM messages 
             WHERE (sender_id = u.id AND receiver_id = $1) OR (sender_id = $1 AND receiver_id = u.id)
-            )
-            ORDER BY lastMessageTime DESC NULLS LAST;
-        `;
+            ORDER BY created_at DESC 
+            LIMIT 1
+        ) AS lastMessage,
+        (
+            SELECT created_at 
+            FROM messages 
+            WHERE (sender_id = u.id AND receiver_id = $1) OR (sender_id = $1 AND receiver_id = u.id)
+            ORDER BY created_at DESC 
+            LIMIT 1
+        ) AS lastMessageTime,
+        (
+            SELECT COUNT(*) 
+            FROM messages 
+            WHERE receiver_id = $1 AND sender_id = u.id AND is_read = FALSE
+        ) AS unreadCount
+        FROM users u
+        WHERE u.id != $1
+        AND NOT EXISTS (
+            SELECT 1 
+            FROM blocks 
+            WHERE (blocker_id = u.id AND blocked_id = $1) OR (blocker_id = $1 AND blocked_id = u.id)
+        )
+        AND EXISTS (
+            SELECT 1 
+            FROM likes l1
+            WHERE l1.liker_id = u.id AND l1.liked_id = $1
+        )
+        AND EXISTS (
+            SELECT 1 
+            FROM likes l2
+            WHERE l2.liker_id = $1 AND l2.liked_id = u.id
+        )
+        ORDER BY lastMessageTime DESC NULLS LAST;
+        `
+
+        // const contactsQuery = `
+        //     SELECT 
+        //     u.id,
+        //     u.firstName AS firstname,
+        //     u.lastName AS lastname,
+        //     u.username,
+        //     COALESCE(u.profile_picture, '/placeholder.svg?height=100&width=100') AS profile_picture,
+        //     FALSE AS isOnline, -- Placeholder for isOnline since last_active column is missing
+        //     (
+        //         SELECT content 
+        //         FROM messages 
+        //         WHERE (sender_id = u.id AND receiver_id = $1) OR (sender_id = $1 AND receiver_id = u.id)
+        //         ORDER BY created_at DESC 
+        //         LIMIT 1
+        //     ) AS lastMessage,
+        //     (
+        //         SELECT created_at 
+        //         FROM messages 
+        //         WHERE (sender_id = u.id AND receiver_id = $1) OR (sender_id = $1 AND receiver_id = u.id)
+        //         ORDER BY created_at DESC 
+        //         LIMIT 1
+        //     ) AS lastMessageTime,
+        //     (
+        //         SELECT COUNT(*) 
+        //         FROM messages 
+        //         WHERE receiver_id = $1 AND sender_id = u.id AND is_read = FALSE
+        //     ) AS unreadCount
+        //     FROM users u
+        //     WHERE u.id != $1
+        //     AND NOT EXISTS (
+        //         SELECT 1 
+        //         FROM blocks 
+        //         WHERE (blocker_id = u.id AND blocked_id = $1) OR (blocker_id = $1 AND blocked_id = u.id)
+        //     )
+        //     AND EXISTS (
+        //         SELECT 1 
+        //         FROM messages 
+        //         WHERE (sender_id = u.id AND receiver_id = $1) OR (sender_id = $1 AND receiver_id = u.id)
+        //     )
+        //     ORDER BY lastMessageTime DESC NULLS LAST;
+        // `;
 
         const contacts = await db.query(contactsQuery, [userId]);
         res.status(200).json(contacts.rows);

@@ -11,6 +11,22 @@
   animation: bounce 1s infinite;
 }
 
+.online-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.online-dot.online {
+  background-color: #4CAF50; /* Green */
+}
+
+.online-dot.offline {
+  background-color: #9E9E9E; /* Gray */
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
