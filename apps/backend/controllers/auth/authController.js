@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const { sendVerificationEmail } = require("../../lib/mail");
 const {
   findUserByEmail,
   validateLoginUser,
@@ -21,13 +22,22 @@ const handleLogin = async (req, res) => {
     if (!passwordsMatch)
       return res.status(401).send({ error: "password is incorrect." }); // 401 Unauthorized
 
-    if (!user.isemailverified)
-      return res.status(401).send({ error: "Email is not verified." }); // 401 Unauthorized
+    if (!user.isemailverified) {
+      const verificationToken = jwt.sign(
+        { email: user.email },
+        "verificationToken",
+        { expiresIn: "1h" },
+      );
+      await sendVerificationEmail(user.email, verificationToken);
+
+      return res.status(401).send({
+        error: "Email  not verified check your email for verification.",
+      }); // 401 Unauthorized
+    }
 
     const { password, ...rest } = user;
 
     //creating a access token
-    console.log("------> ", user.isProfileComplete);
     const accessToken = jwt.sign(
       {
         userInfo: {
