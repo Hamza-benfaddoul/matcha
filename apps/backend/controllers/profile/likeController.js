@@ -108,3 +108,32 @@ exports.countLikes = async (req, res) => {
       res.status(500).json({ message: 'Error counting profile likes' });
     }
 }
+
+exports.isConnected = async (req, res) => {
+  const userId = req.userId;
+  const likedId = req.params.likedId; // Profile being liked
+
+  console.log("userId and likedId in connected controller: ", userId, likedId);
+  try {
+    // Check if the user is connected to the liked profile
+    const result = await db.query(`
+      SELECT * 
+      FROM likes 
+      WHERE (liker_id = $1 AND liked_id = $2)
+      AND EXISTS (
+        SELECT 1 
+        FROM likes 
+        WHERE liker_id = $2 AND liked_id = $1
+      )
+    `, [userId, likedId]);
+    let isConnectedVar = false;
+    if (result.rows.length > 0) {
+      isConnectedVar = true;
+    }
+    return res.status(200).json({ message: 'You are connected to this profile', isConnected: isConnectedVar });
+
+  } catch (error) {
+    console.error('Error checking connection:', error);
+    res.status(500).json({ message: 'Error checking connection' });
+  }
+}

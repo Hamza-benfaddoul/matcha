@@ -36,11 +36,9 @@ function Profile() {
   const [isOpen, setIsOpen] = useState(false);
   const fileInputRef = useRef(null);
   const [isConfirming, setIsConfirming] = useState(false);
-  // const { socket, isConnected } = useSocket('/chat')
-  // const [isOnline, setIsOnline] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
   const { isUserOnline } = useOnlineStatus();
   const isOnline = isUserOnline(id || '');
-  console.log("isOnline the user: ", id, isOnline);
 
   
 
@@ -48,50 +46,11 @@ function Profile() {
    const openModal = () => setIsOpen(true);
    const closeModal = () => setIsOpen(false);
 
-   const calculateFameRating = (views: number, likes: number) => {
-    return (likes * 5) + (views * 1); // you can tune 5 and 1 later
-  }
   
 
-  const handleUpdateModal = () => {
-    setIsUpdateModalOpen(!isUpdateModalOpen);
-  };
 
-  // Handle socket events
-  // useEffect(() => {
-  //   if (!socket || isMyProfile) return;
+ 
   
-  //   const handleUserOnline = (userId) => {
-  //     console.log("User online:", userId, id);
-  //     if (userId == id) {
-  //       setIsOnline(true);
-  //       console.log("User is online:", isOnline);
-  //     }
-  //   };
-  
-  //   const handleUserOffline = (userId) => {
-  //     console.log("User offline:", userId, id);
-  //     if (userId === id) {
-  //       setIsOnline(false);
-  //     }
-  //   };
-  
-  //   // Check initial online status when component mounts
-  //   socket.emit("get_online_status", null, (response) => {
-  //     console.log("Initial online status response:", response);
-  //     if (response.onlineUsers.includes(id)) {
-  //       setIsOnline(true);
-  //     }
-  //   });
-  
-  //   socket.on("user_online", handleUserOnline);
-  //   socket.on("user_offline", handleUserOffline);
-  
-  //   return () => {
-  //     // socket.off("user_online", handleUserOnline);
-  //     socket.off("user_offline", handleUserOffline);
-  //   };
-  // }, [socket, id, isMyProfile]);
   
   // Format last login time
   const formatLastLogin = (lastLogin) => {
@@ -122,6 +81,22 @@ function Profile() {
         console.error("Error fetching user:", error);
         navigate('/404');
       });
+  }
+
+  const IsUserConnected = async () => {
+    try {
+      const response = await axios.get(`/api/user/likes/isConnected/${id}`);
+      console.log("response in isConnected: ", response.data.isConnected);
+      if (response.data.isConnected) {
+        setIsConnected(true);
+      } else {
+        setIsConnected(false);
+      }
+    }
+    catch (error) {
+      console.error("Error checking if user is connected:", error);
+    }
+
   }
 
   // block user logic case.
@@ -253,6 +228,7 @@ function Profile() {
     if (id != auth.user.id) {
       setIsMyProfile(false);
       isBlockedFunc();
+      IsUserConnected();
     }
     else
       setIsMyProfile(true);
@@ -357,27 +333,45 @@ function Profile() {
           <div className="text-[17px] text-gray-500">{user?.email}</div>
           <div className="my-3">
             {!isMyProfile ? (
-              isLiked ? 
-              <button onClick={removeLikefunc} className="bg-[#F02C56] text-white px-4 py-2 rounded-md mr-2">Unlike</button> 
+              isLiked ?
+                (
+                  <div className="flex items-center px-4 py-2">
+                    <button onClick={removeLikefunc} className="bg-[#F02C56] text-white px-4 py-2 rounded-md mr-2">Unlike</button>
+                    {
+                      isConnected ? (
+                        <div className="bg-green-500 text-white rounded-md flex items-center px-4 py-2">
+                          Connected
+                        </div>
+                      ) : (
+                        null
+                      )
+
+                    }
+                  </div>
+                )
               : 
-              <button onClick={addLike} className="bg-[#F02C56] text-white px-4 py-2 rounded-md mr-2">Like</button>
+                (
+                  <>
+                    <button onClick={addLike} className="bg-[#F02C56] text-white px-4 py-2 rounded-md mr-2">Like</button>
+                  </>
+                )
             ) : null}
               {isMyProfile &&
-              <div>
-            <div className="flex gap-2">
-              <button onClick={openModal} className="bg-[#ff6b4e] text-white px-4 rounded-md"> Edit Profile</button>
-              <LocationPicker />
-            </div>
-            <Modal
-              isOpen={isOpen}
-              onRequestClose={closeModal}
-              contentLabel="Update Profile Modal"
-              overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-              className="bg-white rounded-lg overflow-x-auto max-h-[600px] shadow-lg w-11/12 max-w-md"
-            >
-              <UpdateProfileModal closeModal={closeModal} />
-            </Modal>
-              </div>
+                <div>
+                  <div className="flex gap-2">
+                    <button onClick={openModal} className="bg-[#ff6b4e] text-white px-4 rounded-md"> Edit Profile</button>
+                    <LocationPicker />
+                  </div>
+                  <Modal
+                    isOpen={isOpen}
+                    onRequestClose={closeModal}
+                    contentLabel="Update Profile Modal"
+                    overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                    className="bg-white rounded-lg overflow-x-auto max-h-[600px] shadow-lg w-11/12 max-w-md"
+                  >
+                    <UpdateProfileModal closeModal={closeModal} />
+                  </Modal>
+                </div>
             }
           </div>
             </div>

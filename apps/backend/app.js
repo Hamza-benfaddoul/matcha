@@ -38,6 +38,7 @@ require("./services/socketServiceExample").socketServiceExample(
 );
 require("./services/socketServiceExample").testConnection(io.of("/test"));
 require("./services/socketServiceChat").socketServiceChat(io.of("/chat"));
+require("./services/socketOnlineService").socketOnlineService(io.of("/online"));
 
 // Express Middleware (unchanged from your original)
 app.use(logger);

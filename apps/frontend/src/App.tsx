@@ -8,7 +8,7 @@ interface AppProps {
 }
 
 export default function App({ children }: AppProps) {
-  const { socket } = useSocket('/chat');
+  const { socket } = useSocket('/online');
   console.log("App component rendered"); // This should now log
   
   return (

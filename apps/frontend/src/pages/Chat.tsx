@@ -7,6 +7,7 @@ import ChatWindow from "@/components/chat/ChatWindow"
 import useAuth from "@/hooks/useAuth"
 import useSocket from "@/hooks/useSocket"
 import axios from "axios"
+import { useOnlineStatus } from "@/context/OnlineStatusContext"
 
 
 function Chat() {
@@ -20,13 +21,25 @@ function Chat() {
   const { auth } = useAuth()
   const { socket, isConnected } = useSocket('/chat')
   const [typingStatus, setTypingStatus] = useState({});
+  const { isUserOnline } = useOnlineStatus();
+
 
   // Initialize socket connection
   useEffect(() => {
-    // In a real app, you would get the user from your auth system
-    fetchContacts();
-    setCurrentUser(auth.user)
+      // In a real app, you would get the user from your auth system
+      fetchContacts();
+      setCurrentUser(auth.user)
+     
   }, [])
+
+  useEffect(() => {
+    setContacts((prev) =>
+      prev.map((contact) => ({
+      ...contact,
+        isOnline: isUserOnline(contact.id || ""),
+      }))
+    );
+  }, [isUserOnline])
 
   // Handle socket events
   useEffect(() => {
@@ -42,15 +55,15 @@ function Chat() {
       console.log("Disconnected from socket server")
     })
 
-    socket.on("user_online", (userId) => {
-      console.log("User online:", userId)
-      setContacts((prev) => prev.map((contact) => (contact.id === userId ? { ...contact, isOnline: true } : contact)))
-    })
+    // socket.on("user_online", (userId) => {
+    //   console.log("User online:", userId)
+    //   setContacts((prev) => prev.map((contact) => (contact.id === userId ? { ...contact, isOnline: true } : contact)))
+    // })
 
-    socket.on("user_offline", (userId) => {
-      console.log("User offline:", userId)
-      setContacts((prev) => prev.map((contact) => (contact.id === userId ? { ...contact, isOnline: false } : contact)))
-    })
+    // socket.on("user_offline", (userId) => {
+    //   console.log("User offline:", userId)
+    //   setContacts((prev) => prev.map((contact) => (contact.id === userId ? { ...contact, isOnline: false } : contact)))
+    // })
 
     socket.on("user_typing", ({ userId, isTyping }) => {
       setTypingStatus(prev => ({
@@ -97,7 +110,7 @@ function Chat() {
       socket.off("connect")
       socket.off("disconnect")
       // socket.off("user_online")
-      socket.off("user_offline")
+      // socket.off("user_offline")
       socket.off("new_message")
       socket.off("user_typing");
       socket.off("incoming_call")
