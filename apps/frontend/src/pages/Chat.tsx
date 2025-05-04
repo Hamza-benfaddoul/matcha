@@ -21,7 +21,7 @@ function Chat() {
   const { auth } = useAuth()
   const { socket, isConnected } = useSocket('/chat')
   const [typingStatus, setTypingStatus] = useState({});
-  const { isUserOnline } = useOnlineStatus();
+  const { isUserOnline, onlineUsers } = useOnlineStatus();
 
 
   // Initialize socket connection
@@ -33,13 +33,17 @@ function Chat() {
   }, [])
 
   useEffect(() => {
-    setContacts((prev) =>
-      prev.map((contact) => ({
-      ...contact,
-        isOnline: isUserOnline(contact.id || ""),
-      }))
-    );
-  }, [isUserOnline])
+    if (contacts.length > 0) {
+      console.log("contacts before ========> :", contacts);
+        setContacts((prev) =>
+          prev.map((contact) => ({
+            ...contact,
+            isonline: isUserOnline(contact.id || ""),
+          }))
+        );
+        console.log("contacts after ========> :", contacts);
+    }
+  }, [onlineUsers, contacts.length]);
 
   // Handle socket events
   useEffect(() => {
@@ -47,23 +51,21 @@ function Chat() {
 
     // Fetch contacts/conversations when socket connects
     socket.on("connect", () => {
-      console.log("Connected to socket server")
       // fetchContacts()
     })
 
     socket.on("disconnect", () => {
-      console.log("Disconnected from socket server")
     })
 
-    // socket.on("user_online", (userId) => {
-    //   console.log("User online:", userId)
-    //   setContacts((prev) => prev.map((contact) => (contact.id === userId ? { ...contact, isOnline: true } : contact)))
-    // })
+    socket.on("user_online", (userId) => {
+      console.log("User online:", userId)
+      setContacts((prev) => prev.map((contact) => (contact.id === userId ? { ...contact, isonline: true } : contact)))
+    })
 
-    // socket.on("user_offline", (userId) => {
-    //   console.log("User offline:", userId)
-    //   setContacts((prev) => prev.map((contact) => (contact.id === userId ? { ...contact, isOnline: false } : contact)))
-    // })
+    socket.on("user_offline", (userId) => {
+      console.log("User offline:", userId)
+      setContacts((prev) => prev.map((contact) => (contact.id === userId ? { ...contact, isonline: false } : contact)))
+    })
 
     socket.on("user_typing", ({ userId, isTyping }) => {
       setTypingStatus(prev => ({

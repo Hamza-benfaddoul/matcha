@@ -191,7 +191,7 @@ const ChatWindow = ({ currentUser, activeChat, onSendMessage, onToggleCall, onBa
         />
         <div className="ml-3 flex-1">
           <h3 className="font-semibold">{`${activeChat.firstname} ${activeChat.lastname}`}</h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{activeChat.isOnline ? "Online" : "Offline"}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{activeChat.isonline ? "Online" : "Offline"}</p>
         </div>
         <button
           className={`p-2 rounded-full ${

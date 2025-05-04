@@ -15,11 +15,11 @@ const socketServiceChat = (io) => {
     io.use(verifyJWT);
   
     io.on("connection", (socket) => {
-      console.log("New client connected:", socket.id, socket.user?.email);
+      // console.log("New client connected:", socket.id, socket.user?.email);
       
       // Extract userId from auth data
       const userId = socket.handshake.auth.userId;
-      console.log(`Socket connection attempt with userId: ${userId}`);
+      // console.log(`Socket connection attempt with userId: ${userId}`);
       
       if (userId) {
         // Store user connection
@@ -29,25 +29,25 @@ const socketServiceChat = (io) => {
         if (!onlineUsers.has(userId)) {
           onlineUsers.set(userId, new Set());
           // Broadcast user_online event to ALL clients EXCEPT the sender
-          console.log(`Broadcasting user_online event for userId: ${userId}`);
+          // console.log(`Broadcasting user_online event for userId: ${userId}`);
           socket.broadcast.emit("user_online", userId);
         }
         onlineUsers.get(userId).add(socket.id);
         
         // Log current state
-        console.log(`User ${userId} connected with socket ${socket.id}`);
-        console.log(`Total online users: ${onlineUsers.size}`);
-        console.log(`Online user IDs: ${Array.from(onlineUsers.keys())}`);
+        // console.log(`User ${userId} connected with socket ${socket.id}`);
+        // console.log(`Total online users: ${onlineUsers.size}`);
+        // console.log(`Online user IDs: ${Array.from(onlineUsers.keys())}`);
         
         // Send the current online users to the newly connected client
         const onlineUserIds = Array.from(onlineUsers.keys());
-        console.log(`Sending online_users event to socket ${socket.id} with data:`, onlineUserIds);
+        // console.log(`Sending online_users event to socket ${socket.id} with data:`, onlineUserIds);
         socket.emit("online_users", onlineUserIds);
         
         // Send initial status to the newly connected user about all other users
         onlineUserIds.forEach(onlineUserId => {
           if (onlineUserId !== userId) {
-            console.log(`Sending user_online event to new user ${userId} for existing user ${onlineUserId}`);
+            // console.log(`Sending user_online event to new user ${userId} for existing user ${onlineUserId}`);
             socket.emit("user_online", onlineUserId);
           }
         });
@@ -267,16 +267,16 @@ const socketServiceChat = (io) => {
     });
     
     // Log the current state every minute for debugging
-    setInterval(() => {
-      console.log("===== SOCKET SERVER STATUS =====");
-      console.log(`Online users count: ${onlineUsers.size}`);
-      console.log(`Total connected sockets: ${socketToUser.size}`);
-      console.log("Online users:");
-      onlineUsers.forEach((sockets, userId) => {
-        console.log(`- User ${userId}: ${sockets.size} connections`);
-      });
-      console.log("================================");
-    }, 60000); // Log every minute
+    // setInterval(() => {
+    //   console.log("===== SOCKET SERVER STATUS =====");
+    //   console.log(`Online users count: ${onlineUsers.size}`);
+    //   console.log(`Total connected sockets: ${socketToUser.size}`);
+    //   console.log("Online users:");
+    //   onlineUsers.forEach((sockets, userId) => {
+    //     console.log(`- User ${userId}: ${sockets.size} connections`);
+    //   });
+    //   console.log("================================");
+    // }, 60000); // Log every minute
   };
 
 

@@ -39,6 +39,7 @@ function Profile() {
   const [isConnected, setIsConnected] = useState(false);
   const { isUserOnline } = useOnlineStatus();
   const isOnline = isUserOnline(id || '');
+  console.log("is user online: ", isOnline);  
 
   
 
