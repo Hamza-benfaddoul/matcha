@@ -19,6 +19,7 @@ import BlockLists from "./pages/BlockLists.tsx";
 import Chat from "./pages/Chat.tsx";
 import NewPasswordPage from "./auth/new-password/page.tsx";
 import ChangePasswordPage from "./auth/change-passowrd/page.tsx";
+import App from "./App.tsx";
 
 // Or use plain objects
 const router = createBrowserRouter([
@@ -89,7 +90,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")!).render(
   //  <StrictMode>
   <AuthProvider>
-    <RouterProvider router={router} />
+    <App >
+      <RouterProvider router={router} />
+    </App>
   </AuthProvider>,
   // </StrictMode>,
 );

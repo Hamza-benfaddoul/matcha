@@ -79,9 +79,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
 
   // User is authenticated
   if (auth?.accessToken) {
-    console.log("User is authenticated", auth.user);
+    // console.log("User is authenticated", auth.user);
     const isProfileCompleted = auth.user?.isprofilecomplete;
-    console.log("isProfileCompleted", isProfileCompleted);
+    // console.log("isProfileCompleted", isProfileCompleted);
 
     // BLOCK ALL ROUTES except profile completion if profile isn't completed
     if (!isProfileCompleted && !PROFILE_ONLY_ROUTES.includes(pathname)) {

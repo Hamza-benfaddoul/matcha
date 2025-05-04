@@ -1,13 +1,21 @@
-import { Outlet } from "react-router-dom"
+// App.tsx
+import { Outlet } from "react-router-dom";
+import useSocket from "@/hooks/useSocket";
+import { OnlineStatusProvider } from "@/context/OnlineStatusContext";
 
-export default function App() {
+interface AppProps {
+  children?: React.ReactNode;
+}
+
+export default function App({ children }: AppProps) {
+  const { socket } = useSocket('/chat');
+  console.log("App component rendered"); // This should now log
+  
   return (
-    <>
-      <h1 className="text-3xl text-center text-red-400 font-bold underline">
-        Hello From Matcha!
-      </h1>
-      <Outlet />
-
-    </>
-  )
+    <div className="app">
+      <OnlineStatusProvider socket={socket}>
+        {children || <Outlet />}
+      </OnlineStatusProvider>
+    </div>
+  );
 }

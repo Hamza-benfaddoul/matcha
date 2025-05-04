@@ -22,7 +22,6 @@ const ProfilePicture = ({idUser, IsProfilePicture} : ProfilePictureProps) => {
     const fetchImages = async (userId: string) => {
         try {
             const response = await axios.get(`/api/images/${userId}`);
-            console.log("Fetched images:", response.data);
             setImages(response.data);
         } catch (error) {
             console.error("Error fetching images:", error);

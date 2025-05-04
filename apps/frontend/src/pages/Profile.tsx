@@ -14,6 +14,8 @@ import Modal from "react-modal";
 import UpdateProfileModal from "@/components/Profile/UpdateProfile";
 import { FameStars } from "@/components/Profile/FameStars";
 import { UserActionsDropdown } from "@/components/Profile/UserActionDropDown";
+import { useOnlineStatus } from "@/context/OnlineStatusContext";
+
 
 // Bind modal to your app root element (important for accessibility)
 Modal.setAppElement("#root");
@@ -34,8 +36,12 @@ function Profile() {
   const [isOpen, setIsOpen] = useState(false);
   const fileInputRef = useRef(null);
   const [isConfirming, setIsConfirming] = useState(false);
-  const { socket, isConnected } = useSocket('/chat')
-  const [isOnline, setIsOnline] = useState(false);
+  // const { socket, isConnected } = useSocket('/chat')
+  // const [isOnline, setIsOnline] = useState(false);
+  const { isUserOnline } = useOnlineStatus();
+  const isOnline = isUserOnline(id || '');
+  console.log("isOnline the user: ", id, isOnline);
+
   
 
    // Open and close modal handlers
@@ -56,12 +62,15 @@ function Profile() {
   //   if (!socket || isMyProfile) return;
   
   //   const handleUserOnline = (userId) => {
-  //     if (userId === id) {
+  //     console.log("User online:", userId, id);
+  //     if (userId == id) {
   //       setIsOnline(true);
+  //       console.log("User is online:", isOnline);
   //     }
   //   };
   
   //   const handleUserOffline = (userId) => {
+  //     console.log("User offline:", userId, id);
   //     if (userId === id) {
   //       setIsOnline(false);
   //     }
@@ -69,6 +78,7 @@ function Profile() {
   
   //   // Check initial online status when component mounts
   //   socket.emit("get_online_status", null, (response) => {
+  //     console.log("Initial online status response:", response);
   //     if (response.onlineUsers.includes(id)) {
   //       setIsOnline(true);
   //     }
@@ -78,7 +88,7 @@ function Profile() {
   //   socket.on("user_offline", handleUserOffline);
   
   //   return () => {
-  //     socket.off("user_online", handleUserOnline);
+  //     // socket.off("user_online", handleUserOnline);
   //     socket.off("user_offline", handleUserOffline);
   //   };
   // }, [socket, id, isMyProfile]);
@@ -103,10 +113,8 @@ function Profile() {
   };
 
   const fetchUser = async () => {
-    console.log("user id fetched successfuly :)")
     axios.get(`/api/users/${id}`)
       .then(response => {
-        console.log("user in fetch with id: ", response.data);
         setUser(response.data);
         // setMicroSeconds(new Date().getTime() * 1000);
       })
@@ -153,7 +161,6 @@ function Profile() {
             "Content-Type": "multipart/form-data",
           },
         });
-        console.log("Profile image updated successfully:", response.data);
         // Optionally reset the input
         e.target.value = '';
         // Update the user's profile picture in the state
@@ -196,11 +203,9 @@ function Profile() {
   const isBlockedFunc = async () => {
     const reponse = await axios.get(`/api/user/block/isBlocked/`, { params: {blocker_id: auth.user.id ,blocked_id: id } });
     if (reponse.data.isBlocked) {
-      console.log("user is blocked");
       setIsBlocked(true);
     }
     else {
-      console.log("user is not blocked");
       setIsBlocked(false);
     }
   }
@@ -220,7 +225,6 @@ function Profile() {
       await axios.post(`/api/user/likes/remove/`,  { likedId: id });
       fetchCountLikes();
       isLikedFunc();
-      console.log("unlike user with id: ", id);
     } catch (error) {
       console.error("Error unliking user:", error);
     }
