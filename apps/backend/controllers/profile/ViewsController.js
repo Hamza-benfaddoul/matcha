@@ -1,6 +1,24 @@
 const db =  require('../../db/db');
 const { sendNotification } = require('../../services/notificationHelper');
 
+
+const isUserBlocked = async (blockerId, blockedId) => {
+  const query = `
+    SELECT * FROM blocks
+    WHERE (blocker_id = $1 AND blocked_id = $2)
+    OR (blocker_id = $2 AND blocked_id = $1)
+  `;
+  const values = [blockerId, blockedId];
+  try {
+    const result = await db.query(query, values);
+    return result.rowCount > 0;
+  } catch (error) {
+    console.error('Error checking if user is blocked:', error);
+    throw new Error('Error checking block status');
+  }
+};
+
+
 exports.getViewsProfile = async (req, res) => {
   const userId = req.params.id;
   console.log('userId inside view profile controller: ', userId);
@@ -53,15 +71,17 @@ exports.addViewProfile = async (req, res) => {
       VALUES ($1, $2)
     `, [viewerId, viewedId]);
 
-    await sendNotification(notificationNamespace, viewedId, {
-      type: 'View Profile',
-      title: 'You have a new profile view',
-      message: `User has viewed your profile`,
-      metadata: {
+    if (await isUserBlocked(viewedId, viewerId) == false) {
+      await sendNotification(notificationNamespace, viewedId, {
+        type: 'View Profile',
+        title: 'You have a new profile view',
+        message: `User has viewed your profile`,
+        metadata: {
           viewerId: viewerId,
           timestamp: new Date().toISOString()
-      }
-  });
+        }
+      });
+    }
 
     res.status(201).json({ message: 'View added successfully' });
   } catch (error) {

@@ -3,6 +3,26 @@ const { sendNotification } = require('../../services/notificationHelper');
 
 
 
+const isUserBlocked = async (blockerId, blockedId) => {
+  const query = `
+    SELECT * FROM blocks
+    WHERE (blocker_id = $1 AND blocked_id = $2)
+    OR (blocker_id = $2 AND blocked_id = $1)
+  `;
+  const values = [blockerId, blockedId];
+  try {
+    const result = await db.query(query, values);
+    console.log('isUserBlocked result=======================================>: ', result.rowCount);
+
+    return result.rowCount > 0;
+  } catch (error) {
+    console.error('Error checking if user is blocked:', error);
+    throw new Error('Error checking block status');
+  }
+};
+
+
+
 exports.getLikesProfile = async (req, res) => {
     const userId = req.params.id;
 
@@ -52,7 +72,7 @@ exports.addLikeProfile = async (req, res) => {
       const fameRating = calculateFameRating(views, likes);
       // Update the fame rating in the database
       await db.query('UPDATE users SET fame_rating = $1 WHERE id = $2', [fameRating, likedId]);
-      if (existingLike.rows.length > 0) {
+      if (existingLike.rows.length > 0 && await isUserBlocked(likerId, likedId) == false) {
         await sendNotification(notificationNamespace, likedId, {
           type: 'Like',
           title: 'You have a new like',
@@ -63,15 +83,17 @@ exports.addLikeProfile = async (req, res) => {
           }
         });
       } else {
-        await sendNotification(notificationNamespace, likedId, {
-          type: 'Like',
-          title: 'You have a new like',
-          message: `${user.firstname} ${user.lastname}  has liked your profile`,
-          metadata: {
-            likerId: likerId,
-            timestamp: new Date().toISOString()
-          }
-        });
+        if (await isUserBlocked(likerId, likedId) == false) {
+          await sendNotification(notificationNamespace, likedId, {
+            type: 'Like',
+            title: 'You have a new like',
+            message: `${user.firstname} ${user.lastname}  has liked your profile`,
+            metadata: {
+              likerId: likerId,
+              timestamp: new Date().toISOString()
+            }
+          });
+        }
       }
       // res.status(200).json({ message: 'Profile liked successfully', fameRating });
       res.status(200).json({ message: 'Profile liked successfully' });
@@ -122,7 +144,7 @@ exports.removeLikeProfile = async (req, res) => {
       `, [likerId, likedId]);
       const userResult = await db.query('SELECT * FROM users WHERE id = $1', [likerId]);
       const user = userResult.rows[0];
-      if (result.rows.length > 0) {
+      if (result.rows.length > 0 && await isUserBlocked(likerId, likedId) == false) {
           await sendNotification(notificationNamespace, likedId, {
             type: 'Unlike',
             title: 'User has unliked your profile',
