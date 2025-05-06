@@ -15,6 +15,8 @@ import UpdateProfileModal from "@/components/Profile/UpdateProfile";
 import { FameStars } from "@/components/Profile/FameStars";
 import { UserActionsDropdown } from "@/components/Profile/UserActionDropDown";
 import { useOnlineStatus } from "@/context/OnlineStatusContext";
+import { useNotifications } from "@/context/NotificationContext";
+
 
 
 // Bind modal to your app root element (important for accessibility)
@@ -39,6 +41,8 @@ function Profile() {
   const [isConnected, setIsConnected] = useState(false);
   const { isUserOnline } = useOnlineStatus();
   const isOnline = isUserOnline(id || '');
+  const { addNotification } = useNotifications();
+
   console.log("is user online: ", isOnline);  
 
   
@@ -189,6 +193,12 @@ function Profile() {
   const addLike = async () => {
     try {
       await axios.post(`/api/user/likes/`, { likedId: id, views: viewsCount, likes: likesCount });
+      // addNotification({
+      //     type: "Like",
+      //     message: "New like from " + auth.user.firstname,
+      //     metadata: { userId: "123" },
+      //     isRead: false,
+      //   });
       fetchCountLikes();
       isLikedFunc();
     } catch (error) {

@@ -32,13 +32,24 @@ const io = new Server(server, {
 // Use the same verifyJWT middleware for WebSockets
 io.use(verifyJWT);
 
+
+
 // Initialize socket services
+const notificationNamespace = io.of('/notifications');
+
 require("./services/socketServiceExample").socketServiceExample(
   io.of("/example"),
 );
 require("./services/socketServiceExample").testConnection(io.of("/test"));
-require("./services/socketServiceChat").socketServiceChat(io.of("/chat"));
+require("./services/socketServiceChat").socketServiceChat(io.of("/chat"), notificationNamespace);
 require("./services/socketOnlineService").socketOnlineService(io.of("/online"));
+require("./services/socketNotificationService").socketNotificationService(
+  io.of("/notifications"),
+);
+
+// In your app.js, after creating the namespaces:
+// Store the namespace in app for easy access
+app.set('notificationNamespace', notificationNamespace);
 
 // Express Middleware (unchanged from your original)
 app.use(logger);

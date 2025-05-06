@@ -1,10 +1,12 @@
 const verifyJWT = require("../middleware/verifyJWT");
 const db =  require('../db/db');
+const { sendNotification } = require('../services/notificationHelper');
+
 
 
 
 // services/socketService.js
-const socketServiceChat = (io) => {
+const socketServiceChat = (io, notificationNamespace) => {
     // Store online users with multiple connections
     // Map structure: userId -> Set of socket IDs
     const onlineUsers = new Map();
@@ -143,8 +145,49 @@ const socketServiceChat = (io) => {
             });
             }
         });
+
+
+        // Add this helper function inside the connection handler
+      //   const sendNotification = async (receiverId, notificationData) => {
+      //     try {
+      //         // Save to database
+      //         const query = `
+      //             INSERT INTO notifications (
+      //                 user_id, 
+      //                 type, 
+      //                 title, 
+      //                 message, 
+      //                 metadata
+      //             )
+      //             VALUES ($1, $2, $3, $4, $5)
+      //             RETURNING *
+      //         `;
+              
+      //         const result = await db.query(query, [
+      //             receiverId,
+      //             notificationData.type,
+      //             notificationData.title,
+      //             notificationData.message,
+      //             JSON.stringify(notificationData.metadata || {})
+      //         ]);
+              
+      //         const notification = result.rows[0];
+              
+      //         // Send via socket if user is online
+      //         const recipientSocketIds = onlineUsers.get(receiverId);
+      //         if (recipientSocketIds && recipientSocketIds.size > 0) {
+      //             io.of('/notifications').to(`user-${receiverId}`).emit('new_notification', notification);
+      //         }
+              
+      //         return notification;
+      //     } catch (error) {
+      //         console.error('Error sending notification:', error);
+      //         throw error;
+      //     }
+      // };
+
       // Handle chat messages
-      socket.on("send_message", (messageData) => {
+      socket.on("send_message", async (messageData) => {
         // console.log(`Received message from user ${userId}:`, messageData);
         // Save message to database here if needed
         // ...
@@ -165,12 +208,25 @@ const socketServiceChat = (io) => {
         ];
 
         db.query(saveMessageQuery, messageValues)
-          .then((result) => {
+          .then(async (result) => {
             console.log("Message saved to database:", result.rows[0]);
+            // Send notification to receiver
+            await sendNotification(notificationNamespace, messageData.receiverId, {
+              type: 'message',
+              title: 'New message',
+              message: `You have a new message from ${socket.user.name || 'a user'}`,
+              metadata: {
+                  senderId: userId,
+                  messageId: result.rows[0].id,
+                  timestamp: new Date().toISOString()
+              }
+            });
           })
           .catch((error) => {
             console.error("Error saving message to database:", error);
           });
+        
+          
         
         // Find all recipient's sockets if they're online
         const recipientSocketIds = onlineUsers.get(messageData.receiverId);

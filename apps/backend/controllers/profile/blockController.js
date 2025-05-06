@@ -1,5 +1,6 @@
 const db =  require('../../db/db');
 
+
 exports.addBlock = async (req, res) => {
     // const blocker_id = req.params.id;
 
@@ -10,6 +11,7 @@ exports.addBlock = async (req, res) => {
     try {
         const result = await db.query(query, values);
         const newBlock = result.rows[0];
+        
         res.status(201).json({
             message: 'User blocked successfully',
             block: newBlock,

@@ -28,3 +28,25 @@ poetry.lock
 # backend logs file
 apps/backend/logs
 apps/backend/uploads
+
+
+# // Example of sending a notification from anywhere in your app
+# import { useNotifications } from "@/context/NotificationContext";
+
+# const SomeComponent = () => {
+#   const { addNotification } = useNotifications();
+
+#   const handleSomethingImportant = () => {
+#     addNotification({
+#       type: "New Message",
+#       message: "You have received a new message from John",
+#       metadata: { userId: "123" }
+#     });
+#   };
+
+#   return (
+#     <button onClick={handleSomethingImportant}>
+#       Trigger Notification
+#     </button>
+#   );
+# };

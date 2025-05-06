@@ -1,4 +1,5 @@
 const db =  require('../../db/db');
+const { sendNotification } = require('../../services/notificationHelper');
 
 exports.getViewsProfile = async (req, res) => {
   const userId = req.params.id;
@@ -24,6 +25,8 @@ exports.getViewsProfile = async (req, res) => {
 exports.addViewProfile = async (req, res) => {
     const viewerId = req.userId;
     const { viewedId } = req.body; // Profile being viewed
+    const notificationNamespace = req.app.get('notificationNamespace');
+
   
   try {
     // Check if a view already exists
@@ -49,6 +52,16 @@ exports.addViewProfile = async (req, res) => {
       INSERT INTO views (viewer_id, viewed_id) 
       VALUES ($1, $2)
     `, [viewerId, viewedId]);
+
+    await sendNotification(notificationNamespace, viewedId, {
+      type: 'View Profile',
+      title: 'You have a new profile view',
+      message: `User has viewed your profile`,
+      metadata: {
+          viewerId: viewerId,
+          timestamp: new Date().toISOString()
+      }
+  });
 
     res.status(201).json({ message: 'View added successfully' });
   } catch (error) {

@@ -36,6 +36,22 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )`;
 
+
+const NotificationsTableQuery = `
+CREATE TABLE IF NOT EXISTS notifications (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  type VARCHAR(50) NOT NULL, -- e.g., 'message', 'like', 'visit', 'match'
+  title VARCHAR(255) NOT NULL,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE,
+  metadata JSONB, -- For storing additional data like sender_id, post_id, etc.
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  expires_at TIMESTAMP -- Optional: for temporary notifications
+);
+`;
+
 const TagsListTableQuery = `
 CREATE TABLE IF NOT EXISTS tags_list (
   id SERIAL PRIMARY KEY,
@@ -161,6 +177,7 @@ const createTables = async () => {
     await client.query(BlockTableQuery);
     await client.query(ReportsTableQuery);
     await client.query(MessagesTableQuery);
+    await client.query(NotificationsTableQuery);
     // Create indexes for better performance
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token 

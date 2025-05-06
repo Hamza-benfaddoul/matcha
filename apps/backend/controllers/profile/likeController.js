@@ -1,4 +1,7 @@
 const db =  require('../../db/db');
+const { sendNotification } = require('../../services/notificationHelper');
+
+
 
 exports.getLikesProfile = async (req, res) => {
     const userId = req.params.id;
@@ -28,6 +31,7 @@ const calculateFameRating = (views, likes) => {
 exports.addLikeProfile = async (req, res) => {
     const likerId = req.userId;
     const { likedId } = req.body; // Profile being liked
+    const notificationNamespace = req.app.get('notificationNamespace');
 
     // Fetch the number of views and likes for the likedId
     const viewsResult = await db.query('SELECT COUNT(*) AS views FROM views WHERE viewed_id = $1', [likedId]);
@@ -38,6 +42,7 @@ exports.addLikeProfile = async (req, res) => {
 
     try {
       // Record the like in the database
+      const existingLike = await db.query('SELECT * FROM likes WHERE liker_id = $1 AND liked_id = $2', [likedId, likerId]);
       await db.query('INSERT INTO likes (liker_id, liked_id) VALUES ($1, $2)', [likerId, likedId]);
 
   
@@ -45,7 +50,27 @@ exports.addLikeProfile = async (req, res) => {
       const fameRating = calculateFameRating(views, likes);
       // Update the fame rating in the database
       await db.query('UPDATE users SET fame_rating = $1 WHERE id = $2', [fameRating, likedId]);
-  
+      if (existingLike.rows.length > 0) {
+        await sendNotification(notificationNamespace, likedId, {
+          type: 'Like',
+          title: 'You have a new like',
+          message: `User that you like also has liked your profile`,
+          metadata: {
+            likerId: likerId,
+            timestamp: new Date().toISOString()
+          }
+        });
+      } else {
+        await sendNotification(notificationNamespace, likedId, {
+          type: 'Like',
+          title: 'You have a new like',
+          message: `User has liked your profile`,
+          metadata: {
+            likerId: likerId,
+            timestamp: new Date().toISOString()
+          }
+        });
+      }
       // res.status(200).json({ message: 'Profile liked successfully', fameRating });
       res.status(200).json({ message: 'Profile liked successfully' });
     } catch (error) {
@@ -77,16 +102,36 @@ exports.isLiked = async (req, res) => {
 exports.removeLikeProfile = async (req, res) => {
     const likerId = req.userId;
     const { likedId } = req.body; // Profile being liked
+    const notificationNamespace = req.app.get('notificationNamespace');
+
 
     console.log("likerid and likedid: ", likerId, likedId);
     try {
       // Remove the like
+      const result = await db.query(`
+        SELECT * 
+        FROM likes 
+        WHERE (liker_id = $1 AND liked_id = $2)
+        AND EXISTS (
+          SELECT 1 
+          FROM likes 
+          WHERE liker_id = $2 AND liked_id = $1
+        )
+      `, [likerId, likedId]);
+      if (result.rows.length > 0) {
+          await sendNotification(notificationNamespace, likedId, {
+            type: 'Unlike',
+            title: 'User has unliked your profile',
+            message: `A user who you were connected with has unliked you`,
+            metadata: {
+                likerId: likerId,
+                timestamp: new Date().toISOString()
+            }
+        });
+      }
       await db.query('DELETE FROM likes WHERE liker_id = $1 AND liked_id = $2', [likerId, likedId]);
       // Optionally, you can also remove the like from the likes table
       
-      // Recalculate fame rating
-      // const fameRating = await calculateFameRating(likedId);
-  
       res.status(200).json({ message: 'Profile unliked' });
       // res.status(200).json({ message: 'Profile unliked', fameRating });
     } catch (error) {
