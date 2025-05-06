@@ -44,7 +44,9 @@ exports.addLikeProfile = async (req, res) => {
       // Record the like in the database
       const existingLike = await db.query('SELECT * FROM likes WHERE liker_id = $1 AND liked_id = $2', [likedId, likerId]);
       await db.query('INSERT INTO likes (liker_id, liked_id) VALUES ($1, $2)', [likerId, likedId]);
-
+      // Fetch the user with the given likerId
+      const userResult = await db.query('SELECT * FROM users WHERE id = $1', [likerId]);
+      const user = userResult.rows[0];
   
       // Update fame rating (calculateFameRating is called)
       const fameRating = calculateFameRating(views, likes);
@@ -54,7 +56,7 @@ exports.addLikeProfile = async (req, res) => {
         await sendNotification(notificationNamespace, likedId, {
           type: 'Like',
           title: 'You have a new like',
-          message: `User that you like also has liked your profile`,
+          message: `${user.firstname} ${user.lastname} that you like also has liked your profile`,
           metadata: {
             likerId: likerId,
             timestamp: new Date().toISOString()
@@ -64,7 +66,7 @@ exports.addLikeProfile = async (req, res) => {
         await sendNotification(notificationNamespace, likedId, {
           type: 'Like',
           title: 'You have a new like',
-          message: `User has liked your profile`,
+          message: `${user.firstname} ${user.lastname}  has liked your profile`,
           metadata: {
             likerId: likerId,
             timestamp: new Date().toISOString()
@@ -118,11 +120,13 @@ exports.removeLikeProfile = async (req, res) => {
           WHERE liker_id = $2 AND liked_id = $1
         )
       `, [likerId, likedId]);
+      const userResult = await db.query('SELECT * FROM users WHERE id = $1', [likerId]);
+      const user = userResult.rows[0];
       if (result.rows.length > 0) {
           await sendNotification(notificationNamespace, likedId, {
             type: 'Unlike',
             title: 'User has unliked your profile',
-            message: `A user who you were connected with has unliked you`,
+            message: `${user.firstname} ${user.lastname} who you were connected with has unliked you`,
             metadata: {
                 likerId: likerId,
                 timestamp: new Date().toISOString()

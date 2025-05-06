@@ -147,44 +147,7 @@ const socketServiceChat = (io, notificationNamespace) => {
         });
 
 
-        // Add this helper function inside the connection handler
-      //   const sendNotification = async (receiverId, notificationData) => {
-      //     try {
-      //         // Save to database
-      //         const query = `
-      //             INSERT INTO notifications (
-      //                 user_id, 
-      //                 type, 
-      //                 title, 
-      //                 message, 
-      //                 metadata
-      //             )
-      //             VALUES ($1, $2, $3, $4, $5)
-      //             RETURNING *
-      //         `;
-              
-      //         const result = await db.query(query, [
-      //             receiverId,
-      //             notificationData.type,
-      //             notificationData.title,
-      //             notificationData.message,
-      //             JSON.stringify(notificationData.metadata || {})
-      //         ]);
-              
-      //         const notification = result.rows[0];
-              
-      //         // Send via socket if user is online
-      //         const recipientSocketIds = onlineUsers.get(receiverId);
-      //         if (recipientSocketIds && recipientSocketIds.size > 0) {
-      //             io.of('/notifications').to(`user-${receiverId}`).emit('new_notification', notification);
-      //         }
-              
-      //         return notification;
-      //     } catch (error) {
-      //         console.error('Error sending notification:', error);
-      //         throw error;
-      //     }
-      // };
+   
 
       // Handle chat messages
       socket.on("send_message", async (messageData) => {
@@ -207,6 +170,23 @@ const socketServiceChat = (io, notificationNamespace) => {
           messageData.timestamp,
         ];
 
+        // Fetch the user details from the database
+        const fetchUserQuery = `
+          SELECT id, firstName, lastName FROM users WHERE id = $1;
+        `;
+
+        let user;
+        try {
+          const userResult = await db.query(fetchUserQuery, [userId]);
+          user = userResult.rows[0];
+          if (userResult.rows.length > 0) {
+            console.log("Fetched user details:", userResult.rows[0]);
+          } else {
+            console.log("User not found for userId:", userId);
+          }
+        } catch (error) {
+          console.error("Error fetching user details from database:", error);
+        }
         db.query(saveMessageQuery, messageValues)
           .then(async (result) => {
             console.log("Message saved to database:", result.rows[0]);
@@ -214,7 +194,7 @@ const socketServiceChat = (io, notificationNamespace) => {
             await sendNotification(notificationNamespace, messageData.receiverId, {
               type: 'message',
               title: 'New message',
-              message: `You have a new message from ${socket.user.name || 'a user'}`,
+              message: `You have a new message from ${user.firstname} ${user.lastname}`,
               metadata: {
                   senderId: userId,
                   messageId: result.rows[0].id,
