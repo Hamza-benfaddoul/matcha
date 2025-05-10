@@ -57,10 +57,12 @@ exports.addViewProfile = async (req, res) => {
     if (existingView.rows.length > 0) {
       const lastViewedAt = new Date(existingView.rows[0].viewed_at);
       const now = new Date();
-
+      const differenceInMs = now.getTime() - lastViewedAt.getTime();
       // Check if one day has passed
       const oneDayInMs = 24 * 60 * 60 * 1000;
-      if (now - lastViewedAt < oneDayInMs) {
+      
+      console.log("difference i ms, oneDayInMs: =-=-=-=> ", differenceInMs, oneDayInMs, now, lastViewedAt);
+      if (differenceInMs < oneDayInMs) {
         return res.status(200).json({ message: 'View already exists and is less than one day old' });
       }
     }
