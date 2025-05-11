@@ -13,7 +13,7 @@ const AudioCallPanel = ({ contact, onEndCall, socket, currentUser }) => {
   const remoteAudioRef = useRef(null)
   const localStreamRef = useRef(null)
   const pcRef = useRef(null)
-  const isCallerRef = useRef(true) // Track if we initiated the call
+  const isCallerRef = useRef(true)
 
   // Initialize media and call
   useEffect(() => {
@@ -24,10 +24,25 @@ const AudioCallPanel = ({ contact, onEndCall, socket, currentUser }) => {
         localStreamRef.current = stream
         localAudioRef.current.srcObject = stream
         
-        // Create peer connection
+        // Create peer connection with better ICE servers
         pcRef.current = new RTCPeerConnection({
-          iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' }
+          ]
         })
+        
+        // Debugging handlers
+        pcRef.current.onconnectionstatechange = () => {
+          console.log('Connection state:', pcRef.current.connectionState)
+        }
+        pcRef.current.oniceconnectionstatechange = () => {
+          console.log('ICE connection state:', pcRef.current.iceConnectionState)
+          if (pcRef.current.iceConnectionState === 'disconnected') {
+            endCall()
+          }
+        }
         
         // Add local tracks to connection
         stream.getTracks().forEach(track => {
@@ -48,6 +63,7 @@ const AudioCallPanel = ({ contact, onEndCall, socket, currentUser }) => {
         pcRef.current.ontrack = (e) => {
           if (e.streams[0]) {
             remoteAudioRef.current.srcObject = e.streams[0]
+            console.log('Received remote stream:', e.streams[0])
           }
         }
         
@@ -61,7 +77,6 @@ const AudioCallPanel = ({ contact, onEndCall, socket, currentUser }) => {
             offer
           })
           
-          // Also emit start_call event to notify recipient
           socket.emit('start_call', {
             callerId: currentUser.id,
             receiverId: contact.id
@@ -74,7 +89,6 @@ const AudioCallPanel = ({ contact, onEndCall, socket, currentUser }) => {
       }
     }
     
-    // Determine if we're the caller or receiver
     isCallerRef.current = !contact.isIncomingCall
     
     if (contact.isIncomingCall) {
@@ -259,8 +273,20 @@ const AudioCallPanel = ({ contact, onEndCall, socket, currentUser }) => {
   return (
     <div className="bg-gray-100 dark:bg-gray-800 border-2 m-2 rounded-lg p-4 flex flex-col items-center">
       {/* Hidden audio elements */}
-      <audio ref={localAudioRef} muted playsInline />
-      <audio ref={remoteAudioRef} autoPlay playsInline />
+      <audio 
+        ref={localAudioRef} 
+        muted={isMuted} 
+        playsInline 
+        autoPlay  // Add autoPlay for local audio
+      />
+      <audio 
+        ref={remoteAudioRef} 
+        autoPlay 
+        playsInline 
+        muted={!isSpeakerOn} // This should control speaker
+      />
+      {/* <audio ref={localAudioRef} muted playsInline />
+      <audio ref={remoteAudioRef} autoPlay playsInline /> */}
       
       <div className="mb-4">
         <img
