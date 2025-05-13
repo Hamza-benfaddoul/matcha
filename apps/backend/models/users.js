@@ -180,6 +180,19 @@ const updateProfile = async (userId, profileData) => {
   }
 };
 
+// Add to your existing exports
+const findOrCreateUser = async (userData) => {
+  try {
+    let user = await findUserByEmail(userData.email);
+    if (!user) {
+      user = await createUser(userData);
+    }
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   validateUser,
   findAll,
@@ -192,4 +205,5 @@ module.exports = {
   updateRefreshToken,
   updateProfile,
   completeProfile,
+  findOrCreateUser,
 };

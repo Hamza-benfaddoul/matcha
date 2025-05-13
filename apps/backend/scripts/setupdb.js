@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
   lastName VARCHAR(255) NOT NULL,
   username VARCHAR(255) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
+  password VARCHAR(255) DEFAULT NULL,
   refreshToken VARCHAR(255),
   isEmailVerified BOOLEAN DEFAULT FALSE,
   gender VARCHAR(10),
@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS users (
   last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )`;
-
 
 const NotificationsTableQuery = `
 CREATE TABLE IF NOT EXISTS notifications (
