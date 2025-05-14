@@ -14,6 +14,7 @@ const CalendarPage = () => {
   const { auth } = useAuth();
   const [view, setView] = useState(Views.WEEK);
   const [date, setDate] = useState(new Date());
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     const fetchDates = async () => {
@@ -60,12 +61,16 @@ const CalendarPage = () => {
 
     const style = {
       backgroundColor,
-      borderRadius: "4px",
+      borderRadius: "6px",
       opacity: 0.9,
       color: "white",
       border: "0px",
       display: "block",
       fontSize: "0.875rem",
+      padding: "2px 4px",
+      marginBottom: "2px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
     };
     return { style };
   };
@@ -95,11 +100,31 @@ const CalendarPage = () => {
       <div className="p-1 h-full">
         <div className="font-medium truncate">{event.title}</div>
         <div className="text-xs opacity-80 truncate">
-          {moment(event.start).format("h:mm A")} -{" "}
-          {moment(event.end).format("h:mm A")}
+          {moment(event.start).format("h:mm A")}
         </div>
       </div>
     </Tooltip>
+  );
+
+  const CustomWeekViewEvent = ({ event }) => (
+    <Tooltip content={<CustomTooltip event={event} />}>
+      <div className="p-1 h-full">
+        <div className="font-medium truncate text-sm">{event.title}</div>
+      </div>
+    </Tooltip>
+  );
+
+  const CustomAgendaViewEvent = ({ event }) => (
+    <div className="p-2 border-b border-gray-100">
+      <h4 className="font-medium text-gray-900">{event.title}</h4>
+      <p className="text-sm text-gray-600">
+        {moment(event.start).format("h:mm A")} -{" "}
+        {moment(event.end).format("h:mm A")}
+      </p>
+      <p className="text-sm text-gray-500">
+        With {event.resource.with} at {event.resource.location}
+      </p>
+    </div>
   );
 
   return (
@@ -155,15 +180,15 @@ const CalendarPage = () => {
                 onNavigate={setDate}
                 defaultView={Views.WEEK}
                 components={{
-                  event: CustomEvent,
+                  event:
+                    view === Views.AGENDA
+                      ? CustomAgendaViewEvent
+                      : view === Views.WEEK
+                        ? CustomWeekViewEvent
+                        : CustomEvent,
                 }}
                 onSelectEvent={(event) => {
-                  alert(
-                    `Date with ${event.resource.with}\n` +
-                      `When: ${moment(event.start).format("LLLL")}\n` +
-                      `Location: ${event.resource.location}\n` +
-                      `Details: ${event.resource.description || "None"}`,
-                  );
+                  setSelectedEvent(event);
                 }}
               />
             </div>
@@ -171,11 +196,55 @@ const CalendarPage = () => {
         )}
       </div>
 
+      {selectedEvent && (
+        <div className="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">
+                {selectedEvent.title}
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                {moment(selectedEvent.start).format("dddd, MMMM D [at] h:mm A")}
+              </p>
+              <p className="text-sm text-gray-600">
+                With {selectedEvent.resource.with}
+              </p>
+              <p className="text-sm text-gray-600">
+                Location: {selectedEvent.resource.location}
+              </p>
+              {selectedEvent.resource.description && (
+                <p className="text-sm text-gray-600 mt-2">
+                  {selectedEvent.resource.description}
+                </p>
+              )}
+            </div>
+            <button
+              onClick={() => setSelectedEvent(null)}
+              className="text-gray-400 hover:text-gray-500"
+            >
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
         <h2 className="text-lg font-semibold text-gray-900 mb-3">
-          Upcoming Dates
+          Upcoming Dates ({events.filter((e) => e.start > new Date()).length})
         </h2>
-        {events.length === 0 ? (
+        {events.filter((e) => e.start > new Date()).length === 0 ? (
           <p className="text-gray-500">No upcoming dates scheduled.</p>
         ) : (
           <div className="space-y-3">
@@ -186,7 +255,8 @@ const CalendarPage = () => {
               .map((event) => (
                 <div
                   key={event.id}
-                  className="flex items-start p-3 border border-gray-100 rounded-lg hover:bg-gray-50"
+                  className="flex items-start p-3 border border-gray-100 rounded-lg hover:bg-gray-50 cursor-pointer"
+                  onClick={() => setSelectedEvent(event)}
                 >
                   <div
                     className={`w-3 h-3 rounded-full mt-1.5 mr-3 ${event.resource.status === "accepted" ? "bg-green-500" : "bg-yellow-500"}`}

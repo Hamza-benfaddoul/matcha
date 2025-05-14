@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { getMyDates } from "../../services/dateService";
+import { useEffect, useState } from "react";
+import { getMyDates } from "@/services/dateService";
 import DateProposalItem from "./DateProposalItem";
 import { useAuth } from "@/hooks/useAuth";
-import { Tab } from "@headlessui/react";
+import { Tab, TabGroup, TabList, TabPanels, TabPanel } from "@headlessui/react";
 
 const UserDatesList = () => {
   const [dates, setDates] = useState([]);
@@ -63,8 +63,8 @@ const UserDatesList = () => {
 
   return (
     <div>
-      <Tab.Group>
-        <Tab.List className="flex space-x-1 p-1 bg-gray-50 rounded-lg">
+      <TabGroup className="p-4">
+        <TabList className="flex space-x-1 p-1 bg-gray-50 rounded-lg">
           {Object.entries(categorizedDates).map(([status, dates]) => (
             <Tab
               key={status}
@@ -86,13 +86,13 @@ const UserDatesList = () => {
               </div>
             </Tab>
           ))}
-        </Tab.List>
-        <Tab.Panels className="mt-4">
+        </TabList>
+        <TabPanels className="mt-4">
           {Object.entries(categorizedDates).map(([status, dates]) => (
-            <Tab.Panel key={status}>
+            <TabPanel key={status}>
               <div className="space-y-4">
                 {dates.length === 0 ? (
-                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                  <div className="text-center  py-8 bg-gray-50 rounded-lg">
                     <svg
                       className="mx-auto h-12 w-12 text-gray-400"
                       fill="none"
@@ -127,10 +127,10 @@ const UserDatesList = () => {
                   ))
                 )}
               </div>
-            </Tab.Panel>
+            </TabPanel>
           ))}
-        </Tab.Panels>
-      </Tab.Group>
+        </TabPanels>
+      </TabGroup>
     </div>
   );
 };

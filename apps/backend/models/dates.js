@@ -56,8 +56,8 @@ const respondToDateProposal = async (responseData) => {
 const getDateProposalsForUser = async (userId) => {
   const result = await db.query(
     `SELECT dp.*, 
-     u1.firstName as proposer_first_name, u1.lastName as proposer_last_name,
-     u2.firstName as recipient_first_name, u2.lastName as recipient_last_name
+     u1.firstName as proposer_first_name, u1.lastName as proposer_last_name, u1.profile_picture as proposer_profile_picture,
+     u2.firstName as recipient_first_name, u2.lastName as recipient_last_name, u2.profile_picture as recipient_profile_picture
      FROM date_proposals dp
      JOIN users u1 ON dp.proposer_id = u1.id
      JOIN users u2 ON dp.recipient_id = u2.id

@@ -17,14 +17,6 @@ export const setDateReminder = async (reminderData) => {
 };
 
 export const getMutualMatches = async (userId) => {
-  const page = 0;
-
-  const limit = 5;
-  const offset = page * limit;
-  const response = await api.get(
-    `/matching-profiles/${userId}?limit=${limit}&offset=${offset}`,
-  );
+  const response = await api.get(`/matching-profiles/${userId}`);
   return response;
-  // return api.get("/api/matching-profiles");
-  // `/matching-profiles/${userId}?limit=${limit}&offset=${offset}`,
 };

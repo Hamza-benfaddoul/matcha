@@ -57,17 +57,19 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent mt-2 data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="flex aspect-square min-w-8 bg-muted/50 max-w-16 items-center justify-center rounded-lg ">
-                <Heart className="h-6 w-6 text-rose-500" />
-              </div>
-              <div className="grid flex-1 text-left text-lg leading-tight">
-                <span className="truncate font-semibold">Matcha</span>
-              </div>
-            </SidebarMenuButton>
+            <Link to="/dashboard">
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent mt-2 data-[state=open]:text-sidebar-accent-foreground"
+              >
+                <div className="flex aspect-square min-w-8 bg-muted/50 max-w-16 items-center justify-center rounded-lg ">
+                  <Heart className="h-6 w-6 text-rose-500" />
+                </div>
+                <div className="grid flex-1 text-left text-lg leading-tight">
+                  <span className="truncate font-semibold">Matcha</span>
+                </div>
+              </SidebarMenuButton>
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -94,18 +96,18 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link to="/calendar">
+                <Link to="/dates">
                   <SidebarMenuButton>
-                    <Calendar className="h-4 w-4 text-primary" />
-                    <span>Calendar</span>
+                    <CalendarHeart className="h-4 w-4 text-primary" />
+                    <span>Dates</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <Link to="/dates">
+                <Link to="/calendar">
                   <SidebarMenuButton>
-                    <CalendarHeart className="h-4 w-4 text-primary" />
-                    <span>Schedule dates</span>
+                    <Calendar className="h-4 w-4 text-primary" />
+                    <span>Calendar</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>

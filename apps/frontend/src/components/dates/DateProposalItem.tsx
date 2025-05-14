@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { format } from "date-fns";
 import DateResponseForm from "./DateResponseForm";
 import { useAuth } from "@/hooks/useAuth";
@@ -38,95 +38,126 @@ const DateProposalItem = ({ proposal, onResponse }) => {
 
   return (
     <div className="border border-gray-200 rounded-lg p-4 mb-4 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex justify-between items-start">
-        <div className="flex-1">
-          <div className="flex justify-between items-start">
-            <h3 className="text-lg font-medium text-gray-900">
-              {proposal.title}
-            </h3>
-            <span
-              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                statusColors[proposal.status]
-              }`}
+      <div className="flex flex-col">
+        <div className="flex justify-between items-start flex-wrap">
+          <h3 className="text-lg font-medium text-gray-900 break-words max-w-full">
+            {proposal.title}
+          </h3>
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              statusColors[proposal.status]
+            }`}
+          >
+            {proposal.status.charAt(0).toUpperCase() + proposal.status.slice(1)}
+          </span>
+        </div>
+
+        <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div className="flex items-start">
+            <svg
+              className="h-5 w-5 text-gray-400 mr-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              {proposal.status.charAt(0).toUpperCase() +
-                proposal.status.slice(1)}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span className="text-sm text-gray-600">
+              {format(
+                new Date(proposal.proposed_date),
+                "EEEE, MMMM d, yyyy 'at' h:mm a",
+              )}
             </span>
           </div>
 
-          <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
-            <div className="flex items-start">
-              <svg
-                className="h-5 w-5 text-gray-400 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span className="text-sm text-gray-600">
-                {format(
-                  new Date(proposal.proposed_date),
-                  "EEEE, MMMM d, yyyy 'at' h:mm a",
-                )}
-              </span>
-            </div>
-
-            <div className="flex items-start">
-              <svg
-                className="h-5 w-5 text-gray-400 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              <span className="text-sm text-gray-600">{proposal.location}</span>
-            </div>
+          <div className="flex items-start">
+            <svg
+              className="h-5 w-5 text-gray-400 mr-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            <span className="break-all text-sm text-gray-600 whitespace-pre-wrap">
+              {proposal.location}
+            </span>
           </div>
+        </div>
 
-          {proposal.description && (
-            <div className="mt-3">
-              <p className="text-sm text-gray-700">{proposal.description}</p>
-            </div>
-          )}
+        {proposal.description && (
+          <div className="mt-3 max-h-32 overflow-auto pr-2">
+            <p className="text-sm text-gray-700 whitespace-pre-wrap break-words">
+              {proposal.description}
+            </p>
+          </div>
+        )}
 
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <p className="text-sm text-gray-500">
-              {isRecipient ? (
-                <>
-                  Proposed by:{" "}
-                  <span className="font-medium">
+        <div className="mt-3  pt-3 border-t border-gray-100">
+          <p className="text-sm text-gray-500">
+            {isRecipient ? (
+              <div className="flex items-center w-full ">
+                <div className="flex-1">
+                  <span className="font-medium text-gray-900">
+                    Proposed by:{" "}
+                  </span>
+                  <span className="font-medium ">
                     {proposal.proposer_first_name} {proposal.proposer_last_name}
                   </span>
-                </>
-              ) : (
-                <>
-                  Proposed to:{" "}
-                  <span className="font-medium">
+                </div>
+                <a href={`/profile/${proposal.proposer_id}`} className="block">
+                  <img
+                    src={
+                      proposal.proposer_profile_picture.startsWith("/")
+                        ? `/api${proposal.proposer_profile_picture}`
+                        : proposal.proposer_profile_picture
+                    }
+                    alt={proposal.username}
+                    className="w-16 h-16 shadow-md rounded-full object-cover border-2 border-primary shadow-md"
+                  />
+                </a>
+              </div>
+            ) : (
+              <div className="flex items-center w-full ">
+                <div className="flex-1">
+                  <span className="font-medium text-gray-900">
+                    Proposed to:{" "}
+                  </span>
+                  <span className="font-medium ">
                     {proposal.recipient_first_name}{" "}
                     {proposal.recipient_last_name}
                   </span>
-                </>
-              )}
-            </p>
-          </div>
+                </div>
+                <a href={`/profile/${proposal.recipient_id}`} className="block">
+                  <img
+                    src={
+                      proposal.recipient_profile_picture.startsWith("/")
+                        ? `/api${proposal.recipient_profile_picture}`
+                        : proposal.recipient_profile_picture
+                    }
+                    alt={proposal.username}
+                    className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md"
+                  />
+                </a>
+              </div>
+            )}
+          </p>
         </div>
       </div>
 
@@ -134,7 +165,7 @@ const DateProposalItem = ({ proposal, onResponse }) => {
         {isRecipient && isPending && !showResponseForm && (
           <button
             onClick={() => setShowResponseForm(true)}
-            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
           >
             Respond
           </button>

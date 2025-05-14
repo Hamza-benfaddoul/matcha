@@ -1,7 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, User, MapPin, Filter } from "lucide-react";
+import DateProposalForm from "@/components/dates/DateProposalForm";
+import { Fragment } from "react";
+
+import {
+  Dialog,
+  Transition,
+  TransitionChild,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
+
+import {
+  Heart,
+  MessageCircle,
+  CalendarHeart,
+  MapPin,
+  Filter,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { axiosPrivate } from "@/api/axios";
 import useAuth from "@/hooks/useAuth";
@@ -55,6 +72,19 @@ const MatchingProfiles = () => {
   const user = auth?.user;
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+
+  const [selectedMatch, setSelectedMatch] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleProposalSuccess = () => {
+    setIsModalOpen(false);
+    setSelectedMatch(null);
+  };
+
+  const handleSelectMatch = (match) => {
+    setSelectedMatch(match);
+    setIsModalOpen(true);
+  };
 
   const [filters, setFilters] = useState<Filters>({
     gender: "",
@@ -284,24 +314,20 @@ const MatchingProfiles = () => {
                     className="h-full w-full object-cover"
                   />
                 </Link>
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-bold">{profile.username}</h3>
-                      <div className="flex items-center gap-1 text-xs">
-                        <MapPin className="h-3 w-3" />
-                        <span>
-                          {parseFloat(profile.distance).toFixed(1)} km away
-                        </span>
-                      </div>
-                    </div>
-                    <Badge className="bg-rose-500">
-                      {profile.shared_tags_count} Shared Tags
-                    </Badge>
+                <div className="absolute sapce-y-2 bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white">
+                  <h3 className="font-bold">{profile.username}</h3>
+                  <div className="flex items-center gap-1 text-xs">
+                    <MapPin className="h-3 w-3" />
+                    <span>
+                      {parseFloat(profile.distance).toFixed(1)} km away
+                    </span>
                   </div>
+                  <Badge className="bg-rose-500">
+                    {profile.shared_tags_count} Shared Tags
+                  </Badge>
                 </div>
               </div>
-              <CardFooter className="flex justify-between p-2">
+              <CardFooter className="flex text-primary justify-between p-2">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -320,8 +346,9 @@ const MatchingProfiles = () => {
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 rounded-full"
+                  onClick={() => handleSelectMatch(profile)}
                 >
-                  <User className="h-4 w-4" />
+                  <CalendarHeart className="h-4 w-4" />
                 </Button>
               </CardFooter>
             </Card>
@@ -340,6 +367,58 @@ const MatchingProfiles = () => {
           </Button>
         </div>
       )}
+
+      {/* Proposal Modal */}
+      <Transition appear show={isModalOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => setIsModalOpen(false)}
+          static // Add this to prevent closing on outside click
+        >
+          <TransitionChild
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </TransitionChild>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <TransitionChild
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <DialogTitle
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                    Propose Date to {selectedMatch?.username}
+                  </DialogTitle>
+                  <div className="mt-4">
+                    <DateProposalForm
+                      recipientId={selectedMatch?.id}
+                      onSuccess={handleProposalSuccess}
+                      onCancel={() => setIsModalOpen(false)}
+                    />
+                  </div>
+                </DialogPanel>
+              </TransitionChild>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
     </>
   );
 };

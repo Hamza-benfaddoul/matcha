@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { getMutualMatches } from "../services/dateService";
+import { getMutualMatches } from "@/services/dateService";
 import UserDatesList from "../components/dates/UserDatesList";
 import DateProposalForm from "../components/dates/DateProposalForm";
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Dialog,
+  Transition,
+  TransitionChild,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 import { Fragment } from "react";
-import { Tab } from "@headlessui/react";
 
 const DatesPage = () => {
   const { auth } = useAuth();
@@ -73,7 +78,11 @@ const DatesPage = () => {
                     >
                       <div className="relative mb-2">
                         <img
-                          src={match.profile_picture || "/default-profile.png"}
+                          src={
+                            match.profile_picture.startsWith("/")
+                              ? `/api${match.profile_picture}`
+                              : match.profile_picture
+                          }
                           alt={match.username}
                           className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md"
                         />
@@ -105,7 +114,7 @@ const DatesPage = () => {
           onClose={() => setIsModalOpen(false)}
           static // Add this to prevent closing on outside click
         >
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -115,11 +124,11 @@ const DatesPage = () => {
             leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -128,13 +137,13 @@ const DatesPage = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
+                <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <DialogTitle
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
                     Propose Date to {selectedMatch?.username}
-                  </Dialog.Title>
+                  </DialogTitle>
                   <div className="mt-4">
                     <DateProposalForm
                       recipientId={selectedMatch?.id}
@@ -142,8 +151,8 @@ const DatesPage = () => {
                       onCancel={() => setIsModalOpen(false)}
                     />
                   </div>
-                </Dialog.Panel>
-              </Transition.Child>
+                </DialogPanel>
+              </TransitionChild>
             </div>
           </div>
         </Dialog>
