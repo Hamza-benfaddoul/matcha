@@ -1,8 +1,4 @@
 import type * as React from "react";
-// import Image from "next/image";
-
-// import { NavMain } from "@/components/nav-main";
-// import { NavProjects } from "@/components/nav-projects";
 import { Link } from "react-router-dom";
 import {
   Sidebar,
@@ -25,26 +21,27 @@ import {
   Star,
   Users,
   Calendar,
+  LayoutDashboard,
 } from "lucide-react"; // Import the Help icon
 
 const items = [
   {
     name: "Dashboard",
-    icon: <Users className="h-4 w-4" />,
+    icon: <LayoutDashboard className="h-4 w-4 text-primary" />,
     url: "/dashboard",
   },
   {
     name: "Matches",
-    icon: <Heart className="h-4 w-4" />,
+    icon: <Heart className="h-4 w-4 text-primary" />,
   },
   {
     name: "Messages",
-    icon: <MessageCircle className="h-4 w-4" />,
+    icon: <MessageCircle className="h-4 w-4 text-primary" />,
     url: "/chat",
   },
   {
-    name: "Search",
-    icon: <Search className="h-4 w-4" />,
+    name: "Browse",
+    icon: <Users className="h-4 w-4 text-primary" />,
     url: "/search",
   },
   {
@@ -92,31 +89,21 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Events</SidebarGroupLabel>
+          <SidebarGroupLabel>Schedule</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Calendar className="h-4 w-4" />
-                  <span>Upcoming</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Star className="h-4 w-4" />
-                  <span>Featured</span>
-                </SidebarMenuButton>
+                <Link to="/dates">
+                  <SidebarMenuButton>
+                    <Calendar className="h-4 w-4 text-primary" />
+                    <span>Schedule dates</span>
+                  </SidebarMenuButton>
+                </Link>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      {/* <SidebarFooter> */}
-      {/*   <div className="flex items-center space-x-2 p-4"> */}
-      {/*     <HelpCircle /> */}
-      {/*     <span>Help</span> */}
-      {/*   </div> */}
-      {/* </SidebarFooter> */}
       <SidebarRail />
     </Sidebar>
   );
