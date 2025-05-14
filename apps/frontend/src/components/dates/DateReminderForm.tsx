@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { setDateReminder } from "../../services/dateService";
-// import { useNotification } from "../../context/NotificationContext";
 
 const DateReminderForm = ({ proposalId, proposedDate, onSuccess }) => {
   const [reminderTime, setReminderTime] = useState("");
-  // const { showNotification } = useNotification();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

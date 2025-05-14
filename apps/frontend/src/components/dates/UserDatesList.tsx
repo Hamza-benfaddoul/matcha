@@ -2,14 +2,12 @@ import React, { useEffect, useState } from "react";
 import { getMyDates } from "../../services/dateService";
 import DateProposalItem from "./DateProposalItem";
 import { useAuth } from "@/hooks/useAuth";
-// import { useNotification } from "../../context/NotificationContext";
 
 const UserDatesList = () => {
   const [dates, setDates] = useState([]);
   const [loading, setLoading] = useState(true);
   const { auth } = useAuth();
   const currentUser = auth.user;
-  // const { showNotification } = useNotification();
 
   useEffect(() => {
     const fetchDates = async () => {

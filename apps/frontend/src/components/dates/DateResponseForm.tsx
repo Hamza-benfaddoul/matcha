@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { respondToDate } from "@/services/dateService";
-// import { useNotifications } from "@/context/NotificationContext";
 
 const DateResponseForm = ({ proposalId, onSuccess }) => {
   const [response, setResponse] = useState({
@@ -8,7 +7,6 @@ const DateResponseForm = ({ proposalId, onSuccess }) => {
     response_status: "accepted",
     response_message: "",
   });
-  // const { showNotification } = useNotifications();
 
   const handleChange = (e) => {
     setResponse({ ...response, [e.target.name]: e.target.value });

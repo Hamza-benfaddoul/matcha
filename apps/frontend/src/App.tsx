@@ -10,10 +10,10 @@ interface AppProps {
 
 export default function App({ children }: AppProps) {
   // Main connection for online status
-  const { socket: onlineSocket } = useSocket('/online');
+  const { socket: onlineSocket } = useSocket("/online");
   // Separate connection for notifications
-  const { socket: notificationSocket } = useSocket('/notifications');
-  
+  const { socket: notificationSocket } = useSocket("/notifications");
+
   return (
     <div className="app">
       <OnlineStatusProvider socket={onlineSocket}>
