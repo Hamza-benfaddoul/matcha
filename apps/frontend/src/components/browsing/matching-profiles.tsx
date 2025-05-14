@@ -144,7 +144,7 @@ const MatchingProfiles = () => {
       const limit = 2;
       const offset = page * limit;
       const response = await axiosPrivate(
-        `/matching-profiles/${user?.id}?limit=${limit}&offset=${offset}`,
+        `/matching-profiles?limit=${limit}&offset=${offset}`,
       );
       const fetchedProfiles = response.data.profiles as Profile[];
 

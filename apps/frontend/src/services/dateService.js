@@ -16,7 +16,7 @@ export const setDateReminder = async (reminderData) => {
   return api.post("/dates/reminders", reminderData);
 };
 
-export const getMutualMatches = async (userId) => {
-  const response = await api.get(`/matching-profiles/${userId}`);
+export const getMutualMatches = async () => {
+  const response = await api.get(`/matching-profiles/`);
   return response;
 };
