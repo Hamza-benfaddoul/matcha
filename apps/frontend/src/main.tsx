@@ -22,6 +22,7 @@ import ChangePasswordPage from "./auth/change-passowrd/page.tsx";
 import App from "./App.tsx";
 
 import DatesPage from "./pages/DatesPage";
+import CalendarPage from "./pages/CalendarPage";
 
 // Or use plain objects
 const router = createBrowserRouter([
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
   {
     path: "/dates",
     element: <ProtectedRoute element={<DatesPage />} />,
+  },
+  {
+    path: "/calendar",
+    element: <ProtectedRoute element={<CalendarPage />} />,
   },
   {
     path: "*",

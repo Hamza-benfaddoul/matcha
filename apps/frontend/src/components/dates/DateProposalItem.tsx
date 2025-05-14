@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { format } from "date-fns";
 import DateResponseForm from "./DateResponseForm";
-import DateReminderForm from "./DateReminderForm";
 import { useAuth } from "@/hooks/useAuth";
 
 const statusColors = {
@@ -15,14 +14,26 @@ const DateProposalItem = ({ proposal, onResponse }) => {
   const { auth } = useAuth();
   const currentUser = auth.user;
   const [showResponseForm, setShowResponseForm] = useState(false);
-  const [showReminderForm, setShowReminderForm] = useState(false);
 
   const isRecipient = currentUser.id === proposal.recipient_id;
   const isPending = proposal.status === "pending";
 
-  const handleReminderSuccess = () => {
-    // showToast("Reminder set successfully!", "success");
-    setShowReminderForm(false);
+  const handleAddToCalendar = () => {
+    const startDate = new Date(proposal.proposed_date);
+    const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000); // Add 2 hours
+
+    const calendarEvent = {
+      title: proposal.title,
+      description: proposal.description,
+      location: proposal.location,
+      startTime: startDate.toISOString(),
+      endTime: endDate.toISOString(),
+    };
+
+    // Create Google Calendar link
+    const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(calendarEvent.title)}&dates=${format(startDate, "yyyyMMdd'T'HHmmss")}/${format(endDate, "yyyyMMdd'T'HHmmss")}&details=${encodeURIComponent(calendarEvent.description)}&location=${encodeURIComponent(calendarEvent.location)}`;
+
+    window.open(googleCalendarUrl, "_blank");
   };
 
   return (
@@ -131,10 +142,10 @@ const DateProposalItem = ({ proposal, onResponse }) => {
 
         {proposal.status === "accepted" && (
           <button
-            onClick={() => setShowReminderForm(!showReminderForm)}
-            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            onClick={handleAddToCalendar}
+            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
-            {showReminderForm ? "Cancel" : "Set Reminder"}
+            Add to Calendar
           </button>
         )}
       </div>
@@ -147,16 +158,6 @@ const DateProposalItem = ({ proposal, onResponse }) => {
               setShowResponseForm(false);
               onResponse();
             }}
-          />
-        </div>
-      )}
-
-      {showReminderForm && (
-        <div className="mt-4">
-          <DateReminderForm
-            proposalId={proposal.id}
-            proposedDate={proposal.proposed_date}
-            onSuccess={handleReminderSuccess}
           />
         </div>
       )}

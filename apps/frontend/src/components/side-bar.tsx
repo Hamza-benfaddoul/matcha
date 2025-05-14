@@ -22,6 +22,7 @@ import {
   Users,
   Calendar,
   LayoutDashboard,
+  CalendarHeart,
 } from "lucide-react"; // Import the Help icon
 
 const items = [
@@ -93,9 +94,17 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link to="/dates">
+                <Link to="/calendar">
                   <SidebarMenuButton>
                     <Calendar className="h-4 w-4 text-primary" />
+                    <span>Calendar</span>
+                  </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <Link to="/dates">
+                  <SidebarMenuButton>
+                    <CalendarHeart className="h-4 w-4 text-primary" />
                     <span>Schedule dates</span>
                   </SidebarMenuButton>
                 </Link>
