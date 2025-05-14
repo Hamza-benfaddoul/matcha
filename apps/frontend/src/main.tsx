@@ -21,6 +21,8 @@ import NewPasswordPage from "./auth/new-password/page.tsx";
 import ChangePasswordPage from "./auth/change-passowrd/page.tsx";
 import App from "./App.tsx";
 
+import DatesPage from "./pages/DatesPage";
+
 // Or use plain objects
 const router = createBrowserRouter([
   {
@@ -82,6 +84,10 @@ const router = createBrowserRouter([
     element: <ProtectedRoute element={<NewPasswordPage />} />,
   },
   {
+    path: "/dates",
+    element: <ProtectedRoute element={<DatesPage />} />,
+  },
+  {
     path: "*",
     element: <NotFoundPage />,
   },
@@ -90,7 +96,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")!).render(
   //  <StrictMode>
   <AuthProvider>
-    <App >
+    <App>
       <RouterProvider router={router} />
     </App>
   </AuthProvider>,

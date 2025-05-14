@@ -20,7 +20,6 @@ passport.use(
         if (existingUser) {
           return done(null, existingUser);
         }
-
         // Create new user from Google profile
         const newUser = await createUser({
           firstName: profile.name.givenName,

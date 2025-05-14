@@ -102,6 +102,8 @@ app.use("/api/location", require("./routes/api/user/gps"));
 
 app.use("/api/search", require("./routes/api/search/searchRoutes"));
 
+// Add dates routes
+app.use("/api/dates", require("./routes/api/dates/index"));
 // Error handling (unchanged)
 app.use((err, req, res, next) => {
   console.error(err.stack);

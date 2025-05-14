@@ -160,6 +160,40 @@ const insertDefaultTags = async (client) => {
   }
 };
 
+// Add to your setupdb.js
+const DateProposalsTableQuery = `
+CREATE TABLE IF NOT EXISTS date_proposals (
+  id SERIAL PRIMARY KEY,
+  proposer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  recipient_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title VARCHAR(100) NOT NULL,
+  description TEXT,
+  proposed_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  location VARCHAR(255),
+  status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'declined', 'cancelled')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+)`;
+
+const DateResponsesTableQuery = `
+CREATE TABLE IF NOT EXISTS date_responses (
+  id SERIAL PRIMARY KEY,
+  date_proposal_id INTEGER NOT NULL REFERENCES date_proposals(id) ON DELETE CASCADE,
+  responder_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  response_status VARCHAR(20) NOT NULL CHECK (response_status IN ('accepted', 'declined')),
+  response_message TEXT,
+  responded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+)`;
+
+const DateRemindersTableQuery = `
+CREATE TABLE IF NOT EXISTS date_reminders (
+  id SERIAL PRIMARY KEY,
+  date_proposal_id INTEGER NOT NULL REFERENCES date_proposals(id) ON DELETE CASCADE,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  reminder_sent BOOLEAN DEFAULT FALSE,
+  reminder_time TIMESTAMP WITH TIME ZONE NOT NULL
+)`;
+
 // crate user table
 const createTables = async () => {
   try {
@@ -177,6 +211,9 @@ const createTables = async () => {
     await client.query(ReportsTableQuery);
     await client.query(MessagesTableQuery);
     await client.query(NotificationsTableQuery);
+    await client.query(DateProposalsTableQuery);
+    await client.query(DateResponsesTableQuery);
+    await client.query(DateRemindersTableQuery);
     // Create indexes for better performance
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token 
