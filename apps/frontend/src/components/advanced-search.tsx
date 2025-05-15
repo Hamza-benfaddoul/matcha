@@ -3,6 +3,7 @@ import { Search, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -432,12 +433,14 @@ export default function AdvancedSearch({
                           ))}
                         </div>
                       </div>
-                      <Button
-                        size="sm"
-                        className="bg-gradient-to-r from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 shadow-sm"
-                      >
-                        View Profile
-                      </Button>
+                      <Link to={`/profile/${user.id}`}>
+                        <Button
+                          size="sm"
+                          className="bg-gradient-to-r from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 shadow-sm"
+                        >
+                          View Profile
+                        </Button>
+                      </Link>
                     </div>
                   ))}
                 </div>
