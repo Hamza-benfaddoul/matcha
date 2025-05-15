@@ -124,14 +124,6 @@ export default function AdvancedSearch({
     setIsLoading(true);
 
     try {
-      console.log("Searching users with filters:", {
-        query: searchQuery,
-        ageRange: filters.ageRange,
-        fameRange: filters.fameRange,
-        distance: filters.distance,
-        tags: filters.tags,
-        sort: sortOption,
-      });
       const response = await axiosPrivate.post(`/search/${user?.id}`, {
         query: searchQuery,
         ageRange: filters.ageRange,
@@ -171,6 +163,30 @@ export default function AdvancedSearch({
       setUsers(sortedUsers);
     }
   };
+
+  useEffect(() => {
+    setIsLoading(true);
+    const search = async () => {
+      try {
+        const response = await axiosPrivate.post(`/search/${user?.id}`, {
+          query: searchQuery,
+          ageRange: filters.ageRange,
+          fameRange: filters.fameRange,
+          distance: filters.distance,
+          tags: filters.tags,
+          sort: sortOption,
+        });
+        setUsers(response.data.users);
+        setIsLoading(false);
+        setShowFilterSheet(false);
+      } catch (error) {
+        console.error("Error searching users:", error);
+        setIsLoading(false);
+        setShowFilterSheet(false);
+      }
+    };
+    search();
+  }, []);
 
   return (
     <div className="space-y-6">

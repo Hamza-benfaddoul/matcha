@@ -151,7 +151,8 @@ const MatchingProfiles = () => {
       setProfiles((prev) => [...prev, ...fetchedProfiles]);
       setHasMore(fetchedProfiles.length >= limit);
     } catch (error: any) {
-      setError(error.message);
+      setError("Somting went wrong when fetching date");
+      console.error(error.message);
     } finally {
       setLoading(false);
     }

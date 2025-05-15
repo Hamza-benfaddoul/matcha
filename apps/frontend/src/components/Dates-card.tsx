@@ -37,15 +37,6 @@ const DatesCardList = () => {
     fetchDates();
   }, []);
 
-  if (loading)
-    return (
-      <div className="flex justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-      </div>
-    );
-
-  console.log("dates", dates);
-
   const tabColors = {
     awaiting: "bg-purple-100 text-purple-800",
     pending: "bg-yellow-100 text-yellow-800",
@@ -71,10 +62,17 @@ const DatesCardList = () => {
     window.open(googleCalendarUrl, "_blank");
   };
 
+  if (loading)
+    return (
+      <div className="flex justify-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+
   return (
     <>
-      {dates.map((date) => (
-        <Card>
+      {dates.map((date, index) => (
+        <Card key={index}>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <Badge className={`${tabColors[date.status]} shadow-sm`}>
