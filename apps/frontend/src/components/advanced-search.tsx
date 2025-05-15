@@ -3,6 +3,7 @@ import { Search, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -124,14 +125,6 @@ export default function AdvancedSearch({
     setIsLoading(true);
 
     try {
-      console.log("Searching users with filters:", {
-        query: searchQuery,
-        ageRange: filters.ageRange,
-        fameRange: filters.fameRange,
-        distance: filters.distance,
-        tags: filters.tags,
-        sort: sortOption,
-      });
       const response = await axiosPrivate.post(`/search/${user?.id}`, {
         query: searchQuery,
         ageRange: filters.ageRange,
@@ -171,6 +164,30 @@ export default function AdvancedSearch({
       setUsers(sortedUsers);
     }
   };
+
+  useEffect(() => {
+    setIsLoading(true);
+    const search = async () => {
+      try {
+        const response = await axiosPrivate.post(`/search/${user?.id}`, {
+          query: searchQuery,
+          ageRange: filters.ageRange,
+          fameRange: filters.fameRange,
+          distance: filters.distance,
+          tags: filters.tags,
+          sort: sortOption,
+        });
+        setUsers(response.data.users);
+        setIsLoading(false);
+        setShowFilterSheet(false);
+      } catch (error) {
+        console.error("Error searching users:", error);
+        setIsLoading(false);
+        setShowFilterSheet(false);
+      }
+    };
+    search();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -416,12 +433,14 @@ export default function AdvancedSearch({
                           ))}
                         </div>
                       </div>
-                      <Button
-                        size="sm"
-                        className="bg-gradient-to-r from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 shadow-sm"
-                      >
-                        View Profile
-                      </Button>
+                      <Link to={`/profile/${user.id}`}>
+                        <Button
+                          size="sm"
+                          className="bg-gradient-to-r from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 shadow-sm"
+                        >
+                          View Profile
+                        </Button>
+                      </Link>
                     </div>
                   ))}
                 </div>

@@ -2,7 +2,7 @@ const db = require("../../db/db");
 
 const matchingProfiles = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.userId;
     const { limit = 5, offset = 0 } = req.query; // Default to 5 results per request
 
     // Step 1: Get current user data
