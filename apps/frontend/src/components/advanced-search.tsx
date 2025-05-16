@@ -462,7 +462,7 @@ export default function AdvancedSearch({
             className="mt-4"
             onClick={() =>
               setFilters({
-                ageRange: [0, 50],
+                ageRange: [0, 100],
                 fameRange: [0, 100],
                 distance: -1,
                 tags: [],

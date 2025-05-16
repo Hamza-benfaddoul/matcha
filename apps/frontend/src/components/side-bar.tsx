@@ -16,10 +16,8 @@ import {
 import {
   Heart,
   MessageCircle,
-  Search,
   Settings,
-  Star,
-  Users,
+  UserRoundSearch,
   Calendar,
   LayoutDashboard,
   CalendarHeart,
@@ -42,7 +40,7 @@ const items = [
   },
   {
     name: "Browse",
-    icon: <Users className="h-4 w-4 text-primary" />,
+    icon: <UserRoundSearch className="h-4 w-4 text-primary" />,
     url: "/search",
   },
   {
