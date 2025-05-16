@@ -143,6 +143,7 @@ export default function AdvancedSearch({
       setShowFilterSheet(false);
     }
   };
+
   // Handle sort change
   const handleSortChange = (value: string) => {
     const [field, direction] = value.split("-") as [
@@ -179,7 +180,7 @@ export default function AdvancedSearch({
         });
         setUsers(response.data.users);
         setIsLoading(false);
-        setShowFilterSheet(false);
+        // setShowFilterSheet(false);
       } catch (error) {
         console.error("Error searching users:", error);
         setIsLoading(false);
@@ -264,77 +265,6 @@ export default function AdvancedSearch({
           {isLoading ? "Searching..." : "Search"}
         </Button>
       </div>
-
-      {/* Active Filters Display */}
-      {hasActiveFilters(filters) && (
-        <div className="flex flex-wrap gap-2 items-center p-3 bg-muted/30 rounded-lg border border-muted">
-          <span className="text-sm font-medium">Active filters:</span>
-
-          {filters.ageRange[0] !== 18 || filters.ageRange[1] !== 50 ? (
-            <Badge className="flex items-center gap-1 bg-white shadow-sm border">
-              Age: {filters.ageRange[0]}-{filters.ageRange[1]}
-              <X
-                className="h-3 w-3 cursor-pointer ml-1"
-                onClick={() => setFilters({ ...filters, ageRange: [18, 50] })}
-              />
-            </Badge>
-          ) : null}
-
-          {filters.fameRange[0] !== 0 || filters.fameRange[1] !== 100 ? (
-            <Badge className="flex items-center gap-1 bg-white shadow-sm border">
-              Fame: {filters.fameRange[0]}-{filters.fameRange[1]}
-              <X
-                className="h-3 w-3 cursor-pointer ml-1"
-                onClick={() => setFilters({ ...filters, fameRange: [0, 100] })}
-              />
-            </Badge>
-          ) : null}
-
-          {filters.distance !== 50 ? (
-            <Badge className="flex items-center gap-1 bg-white shadow-sm border">
-              Distance: {filters.distance}km
-              <X
-                className="h-3 w-3 cursor-pointer ml-1"
-                onClick={() => setFilters({ ...filters, distance: 50 })}
-              />
-            </Badge>
-          ) : null}
-
-          {filters.tags.map((tag) => (
-            <Badge
-              key={tag}
-              className="flex items-center gap-1 bg-white shadow-sm border"
-            >
-              {tag}
-              <X
-                className="h-3 w-3 cursor-pointer ml-1"
-                onClick={() =>
-                  setFilters({
-                    ...filters,
-                    tags: filters.tags.filter((t) => t !== tag),
-                  })
-                }
-              />
-            </Badge>
-          ))}
-
-          <Button
-            variant="ghost"
-            size="sm"
-            className="ml-auto text-xs text-muted-foreground hover:text-foreground"
-            onClick={() =>
-              setFilters({
-                ageRange: [0, 100],
-                fameRange: [0, 100],
-                distance: -1,
-                tags: [],
-              })
-            }
-          >
-            Clear all
-          </Button>
-        </div>
-      )}
 
       {/* Results Section */}
       {users.length > 0 && (
@@ -457,20 +387,6 @@ export default function AdvancedSearch({
           <p className="text-muted-foreground mt-1">
             Try adjusting your filters to find more matches
           </p>
-          <Button
-            variant="outline"
-            className="mt-4"
-            onClick={() =>
-              setFilters({
-                ageRange: [0, 100],
-                fameRange: [0, 100],
-                distance: -1,
-                tags: [],
-              })
-            }
-          >
-            Reset Filters
-          </Button>
         </div>
       )}
 
