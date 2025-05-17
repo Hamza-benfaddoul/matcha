@@ -3,8 +3,8 @@ const db = require("../db/db");
 
 const createUser = async (user) => {
   const insertUserQuery = `
-    INSERT INTO users (firstName, lastName,userName, birth_date, email, password)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    INSERT INTO users (firstName, lastName,userName, birth_date, email, password, profile_picture)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
     RETURNING id, firstName, LastName, userName, birth_date, email;
   `;
 
@@ -16,6 +16,7 @@ const createUser = async (user) => {
       user.birth_date,
       user.email,
       user.password,
+      user.profile_picture ? user.profile_picture : null,
     ]);
     return res.rows[0];
   } catch (err) {
@@ -180,6 +181,19 @@ const updateProfile = async (userId, profileData) => {
   }
 };
 
+// Add to your existing exports
+const findOrCreateUser = async (userData) => {
+  try {
+    let user = await findUserByEmail(userData.email);
+    if (!user) {
+      user = await createUser(userData);
+    }
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   validateUser,
   findAll,
@@ -192,4 +206,5 @@ module.exports = {
   updateRefreshToken,
   updateProfile,
   completeProfile,
+  findOrCreateUser,
 };

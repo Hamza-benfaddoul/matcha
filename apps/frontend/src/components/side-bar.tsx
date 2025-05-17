@@ -1,8 +1,4 @@
 import type * as React from "react";
-// import Image from "next/image";
-
-// import { NavMain } from "@/components/nav-main";
-// import { NavProjects } from "@/components/nav-projects";
 import { Link } from "react-router-dom";
 import {
   Sidebar,
@@ -20,31 +16,31 @@ import {
 import {
   Heart,
   MessageCircle,
-  Search,
   Settings,
-  Star,
-  Users,
+  UserRoundSearch,
   Calendar,
+  LayoutDashboard,
+  CalendarHeart,
 } from "lucide-react"; // Import the Help icon
 
 const items = [
   {
     name: "Dashboard",
-    icon: <Users className="h-4 w-4" />,
+    icon: <LayoutDashboard className="h-4 w-4 text-primary" />,
     url: "/dashboard",
   },
   {
     name: "Matches",
-    icon: <Heart className="h-4 w-4" />,
+    icon: <Heart className="h-4 w-4 text-primary" />,
   },
   {
     name: "Messages",
-    icon: <MessageCircle className="h-4 w-4" />,
+    icon: <MessageCircle className="h-4 w-4 text-primary" />,
     url: "/chat",
   },
   {
-    name: "Search",
-    icon: <Search className="h-4 w-4" />,
+    name: "Browse",
+    icon: <UserRoundSearch className="h-4 w-4 text-primary" />,
     url: "/search",
   },
   {
@@ -59,17 +55,19 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent mt-2 data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="flex aspect-square min-w-8 bg-muted/50 max-w-16 items-center justify-center rounded-lg ">
-                <Heart className="h-6 w-6 text-rose-500" />
-              </div>
-              <div className="grid flex-1 text-left text-lg leading-tight">
-                <span className="truncate font-semibold">Matcha</span>
-              </div>
-            </SidebarMenuButton>
+            <Link to="/dashboard">
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent mt-2 data-[state=open]:text-sidebar-accent-foreground"
+              >
+                <div className="flex aspect-square min-w-8 bg-muted/50 max-w-16 items-center justify-center rounded-lg ">
+                  <Heart className="h-6 w-6 text-rose-500" />
+                </div>
+                <div className="grid flex-1 text-left text-lg leading-tight">
+                  <span className="truncate font-semibold">Matcha</span>
+                </div>
+              </SidebarMenuButton>
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -92,31 +90,29 @@ export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Events</SidebarGroupLabel>
+          <SidebarGroupLabel>Schedule</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Calendar className="h-4 w-4" />
-                  <span>Upcoming</span>
-                </SidebarMenuButton>
+                <Link to="/dates">
+                  <SidebarMenuButton>
+                    <CalendarHeart className="h-4 w-4 text-primary" />
+                    <span>Dates</span>
+                  </SidebarMenuButton>
+                </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Star className="h-4 w-4" />
-                  <span>Featured</span>
-                </SidebarMenuButton>
+                <Link to="/calendar">
+                  <SidebarMenuButton>
+                    <Calendar className="h-4 w-4 text-primary" />
+                    <span>Calendar</span>
+                  </SidebarMenuButton>
+                </Link>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      {/* <SidebarFooter> */}
-      {/*   <div className="flex items-center space-x-2 p-4"> */}
-      {/*     <HelpCircle /> */}
-      {/*     <span>Help</span> */}
-      {/*   </div> */}
-      {/* </SidebarFooter> */}
       <SidebarRail />
     </Sidebar>
   );

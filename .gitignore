@@ -28,6 +28,7 @@ poetry.lock
 # backend logs file
 apps/backend/logs
 apps/backend/uploads
+.vscode
 
 
 # // Example of sending a notification from anywhere in your app

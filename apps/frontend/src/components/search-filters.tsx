@@ -352,14 +352,14 @@ export default function SearchFilters({
         <Button
           variant="outline"
           className="flex-1"
-          onClick={() =>
+          onClick={() => {
             onFilterChange({
-              ageRange: [18, 50],
+              ageRange: [0, 100],
               fameRange: [0, 100],
-              distance: 50,
+              distance: -1,
               tags: [],
-            })
-          }
+            });
+          }}
         >
           Reset
         </Button>

@@ -124,8 +124,8 @@ export function NavUser() {
             <DropdownMenuSeparator />
           </>
         )}
-        <DropdownMenuItem>
-          <LogoutButton>
+        <LogoutButton>
+          <DropdownMenuItem>
             <Button
               variant="link"
               className="justify-start text-destructive p-0 w-full"
@@ -133,8 +133,8 @@ export function NavUser() {
               <LogOut className="w-4 h-4" />
               Log out
             </Button>
-          </LogoutButton>
-        </DropdownMenuItem>
+          </DropdownMenuItem>
+        </LogoutButton>
       </DropdownMenuContent>
     </DropdownMenu>
   );
