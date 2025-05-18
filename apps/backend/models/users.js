@@ -125,8 +125,9 @@ const completeProfile = async (userId, profileData) => {
         fame_rating = $4,
         location_latitude = $5,
         location_longitude = $6,
-        isprofilecomplete = $7
-    WHERE id = $8
+        isprofilecomplete = $7,
+        birth_date = $8
+    WHERE id = $9
     RETURNING id, firstname, lastname, email, gender, sexual_preferences, biography, fame_rating, location_latitude, location_longitude, isprofilecomplete;
   `;
   try {
@@ -138,6 +139,7 @@ const completeProfile = async (userId, profileData) => {
       profileData.location_latitude || 0,
       profileData.location_longitude || 0,
       true,
+      profileData.birth_date,
       userId,
     ]);
     return res.rows[0];

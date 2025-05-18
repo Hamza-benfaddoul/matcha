@@ -37,6 +37,7 @@ const ProfileForm = ({ initialData = {
   profileImageIndex: 0,
   longitude: 0,
   latitude: 0,
+  birth_date: '',
   
 }, endpoint, closeModal}: ProfileFormProps) => {
     const navigate = useNavigate();
@@ -77,6 +78,7 @@ const ProfileForm = ({ initialData = {
         profileImageIndex: initialData?.profileImageIndex || 0,
         longitude: initialData?.longitude || 0,
         latitude: initialData?.latitude || 0,
+        birth_date: initialData?.birth_date || '',
       },
     });
 
@@ -89,7 +91,8 @@ const ProfileForm = ({ initialData = {
         biography: initialData.biography || '',
         interests: initialData.interests,
         images: initialData.images || [],
-        profileImageIndex: initialData.profileImageIndex || 0
+        profileImageIndex: initialData.profileImageIndex || 0,
+        birth_date: initialData.birth_date || '',
       });
     }, [initialData && initialData.id]);
 
@@ -188,6 +191,7 @@ const ProfileForm = ({ initialData = {
       } else {
         console.error("Unable to retrieve user location.");
       }
+      formData.append('birth_date', values.birth_date || '');
 
       console.log("location: ", location);
       
@@ -332,6 +336,16 @@ const ProfileForm = ({ initialData = {
                   <Label htmlFor="bisexual">Bisexual</Label>
                 </div>
               </RadioGroup>
+            </div>
+            <div>
+              <Label htmlFor="birth_date">Birth Date</Label>
+              <Input
+                type="date"
+                id="birth_date"
+                placeholder="YYYY-MM-DD"
+                {...form.register('birth_date')}
+                className="border-[#F02C56] focus:ring-[#F02C56]"
+              />
             </div>
   
             <div>

@@ -12,4 +12,5 @@ export type User = {
     profileImageIndex?: number | null;  // Index of the profile image
     longitude?: number;  // Longitude of the user's location
     latitude?: number;  // Latitude of the user's location
+    birth_date?: string;  // Birth date of the user
   };

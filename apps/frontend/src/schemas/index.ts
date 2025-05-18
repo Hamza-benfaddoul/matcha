@@ -41,6 +41,10 @@ export const CompleteProfileSchema = z.object({
   profileImageIndex: z.number().nullable().optional(),
   longitude: z.number().optional(),
   latitude: z.number().optional(),
+  birth_date: z
+    .string({
+      required_error: "A date of birth is required.",
+    })
 });
 
 export const ChangePasswordSchema = z
