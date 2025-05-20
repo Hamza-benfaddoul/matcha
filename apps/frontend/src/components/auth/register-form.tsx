@@ -47,7 +47,6 @@ const RegisterForm = () => {
 
     values = {
       ...values,
-      birth_date: format(new Date(values.birth_date), "yyyy-MM-dd"),
     };
     try {
       const response = await axios.post("/register", values);
@@ -122,21 +121,6 @@ const RegisterForm = () => {
                         placeholder="zoro"
                       />
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="birth_date"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Date of birth</FormLabel>
-                    <DatePicker value={field.value} onChange={field.onChange} />
-                    <FormDescription>
-                      Your date of birth is used to calculate your age.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

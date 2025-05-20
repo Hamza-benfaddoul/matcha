@@ -3,9 +3,9 @@ const db = require("../db/db");
 
 const createUser = async (user) => {
   const insertUserQuery = `
-    INSERT INTO users (firstName, lastName,userName, birth_date, email, password, profile_picture)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
-    RETURNING id, firstName, LastName, userName, birth_date, email;
+    INSERT INTO users (firstName, lastName,userName,  email, password, profile_picture)
+    VALUES ($1, $2, $3, $4, $5, $6 )
+    RETURNING id, firstName, LastName, userName, email;
   `;
 
   try {
@@ -13,7 +13,6 @@ const createUser = async (user) => {
       user.firstName,
       user.lastName,
       user.userName,
-      user.birth_date,
       user.email,
       user.password,
       user.profile_picture ? user.profile_picture : null,
@@ -84,7 +83,6 @@ const validateUser = (user) => {
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     userName: Joi.string().required(),
-    birth_date: Joi.date().format("YYYY-MM-DD").utc(),
     email: Joi.string().email().required(),
     password: Joi.string().min(5).max(255).required(),
     // password: Joi.string()

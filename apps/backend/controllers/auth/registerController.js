@@ -41,7 +41,6 @@ const handleNewUser = async (req, res) => {
   const user = {
     firstName: value.firstName,
     lastName: value.lastName,
-    birth_date: value.birth_date,
     userName: value.userName,
     email: value.email,
     password: hashedPassword,
