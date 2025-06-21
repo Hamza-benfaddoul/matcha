@@ -156,6 +156,7 @@ function Profile() {
       console.error("Error fetching images:", error);
     }
   };
+
   const fetchCountLikes = async () => {
     try {
       const response = await axios.get(`/api/user/likes/countLike/${id}`);
@@ -203,26 +204,6 @@ function Profile() {
       isLikedFunc();
     } catch (error) {
       console.error("Error unliking user:", error);
-    }
-  };
-
-  const updateImageProfile = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("image", user.profile_picture);
-      formData.append("isProfileImage", "true");
-      const response = await axios.post(
-        `/api/images/add-image/${user.id}`,
-        formData,
-        {
-          headers: {
-            withCredentials: true,
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
-    } catch (error) {
-      console.error("Error uploading image:", error);
     }
   };
 
@@ -313,9 +294,11 @@ function Profile() {
               <div className="group">
                 <img
                   src={
-                    user.profile_picture.startsWith("/")
-                      ? `/api${user.profile_picture}`
-                      : user.profile_picture
+                    user.profile_picture
+                      ? user.profile_picture.startsWith("/")
+                        ? `/api${user.profile_picture}`
+                        : user.profile_picture
+                      : "https://www.gravatar.com/avatar/"
                   }
                   alt="profile"
                   className="md:absolute mx-auto mb-8 md:-top-14 md:left-4 w-[200px] h-[200px] rounded-3xl"
