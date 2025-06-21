@@ -38,11 +38,9 @@ const ResetForm = () => {
   const onSubmit = (values: z.infer<typeof ResetSchema>) => {
     setError("");
     setSuccess("");
-    console.log(values);
     const reset = async () => {
       try {
         const response = await axiosPrivate.post("/reset-password", values);
-        console.log("RESPONSE", response.data);
         setSuccess(response.data.message);
       } catch (error) {
         console.error(error);

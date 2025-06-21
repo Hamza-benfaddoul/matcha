@@ -78,7 +78,7 @@ const LoginFrom = () => {
       // Redirect to protected route after successful login
       navigate("/dashboard"); // Replace '/prote
     } catch (error) {
-      console.log("logn error", error);
+      console.error("logn error", error);
       const err = error as ErrorResponse;
       if (!err?.response) setError("No Server Response");
       else if (err.response?.status == 500)

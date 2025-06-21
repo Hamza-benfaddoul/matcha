@@ -1,79 +1,81 @@
-"use client"
+"use client";
 
-import axios from "axios"
-import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import { User, X, Shield } from "lucide-react"
-import useAuth from "@/hooks/useAuth"
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { User, X, Shield } from "lucide-react";
+import useAuth from "@/hooks/useAuth";
 
 interface BlockedUser {
-  blocked_id: number
-  user_id: number
-  firstname: string
-  lastname: string
-  username: string
-  email: string
-  profile_picture: string
-  fame_rating: number
-  location_latitude: string
-  location_longitude: string
-  gender: string
-  biography: string
+  blocked_id: number;
+  user_id: number;
+  firstname: string;
+  lastname: string;
+  username: string;
+  email: string;
+  profile_picture: string;
+  fame_rating: number;
+  location_latitude: string;
+  location_longitude: string;
+  gender: string;
+  biography: string;
 }
 
 const BlockLists = () => {
-  const { id } = useParams()
-  const [blockLists, setBlockLists] = useState<BlockedUser[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const { auth } = useAuth()
+  const { id } = useParams();
+  const [blockLists, setBlockLists] = useState<BlockedUser[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { auth } = useAuth();
 
   const fetchBlockLists = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const response = await axios.get(`/api/user/block/lists`)
-      console.log("Response:", response.data.blocks)
-      setBlockLists(response.data.blocks)
+      const response = await axios.get(`/api/user/block/lists`);
+      setBlockLists(response.data.blocks);
     } catch (error) {
-      console.error("Error fetching block lists:", error)
+      console.error("Error fetching block lists:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleUnblock = async (blockedId: number) => {
     try {
       // Make API call to unblock the user
       await axios.post(`/api/user/block/remove`, {
-          blocked_id: blockedId,
-          blocker_id: auth.user.id,
-      })
+        blocked_id: blockedId,
+        blocker_id: auth.user.id,
+      });
 
       // Refresh the block list
-      fetchBlockLists()
+      fetchBlockLists();
     } catch (error) {
-      console.error("Error unblocking user:", error)
+      console.error("Error unblocking user:", error);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchBlockLists()
-  }, [id])
+    fetchBlockLists();
+  }, [id]);
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="w-16 h-16 border-4 border-t-blue-500 border-gray-200 rounded-full animate-spin"></div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Blocked Users</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Blocked Users
+          </h1>
           <p className="text-lg text-gray-600">
-            Users you've blocked cannot view your profile, send you messages, or interact with you.
+            Users you've blocked cannot view your profile, send you messages, or
+            interact with you.
           </p>
         </div>
 
@@ -94,31 +96,38 @@ const BlockLists = () => {
               <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
                 <User className="h-12 w-12 text-gray-400" />
               </div>
-              <h3 className="text-xl font-medium text-gray-900 mb-2">No Blocked Users</h3>
+              <h3 className="text-xl font-medium text-gray-900 mb-2">
+                No Blocked Users
+              </h3>
               <p className="text-gray-500 max-w-md mx-auto">
-                When you block someone, they will appear here. Blocked users cannot view your profile or send you
-                messages.
+                When you block someone, they will appear here. Blocked users
+                cannot view your profile or send you messages.
               </p>
             </div>
           ) : (
             <ul className="divide-y divide-gray-200">
               {blockLists.map((user) => (
-                <li key={user.blocked_id} className="p-6 hover:bg-gray-50 transition-colors">
+                <li
+                  key={user.blocked_id}
+                  className="p-6 hover:bg-gray-50 transition-colors"
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
                         {user.profile_picture ? (
                           <img
                             // src={user.profile_picture || "/placeholder.svg"}
-                            src={user.profile_picture.startsWith("/")
+                            src={
+                              user.profile_picture.startsWith("/")
                                 ? `/api${user.profile_picture}`
                                 : user.profile_picture
                             }
                             alt={`${user.firstname} ${user.lastname}`}
                             className="h-14 w-14 rounded-full object-cover border-2 border-gray-200"
                             onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.src = "/placeholder.svg?height=56&width=56"
+                              const target = e.target as HTMLImageElement;
+                              target.src =
+                                "/placeholder.svg?height=56&width=56";
                             }}
                           />
                         ) : (
@@ -156,12 +165,13 @@ const BlockLists = () => {
           <p>
             Blocking is a safety feature that helps you control your experience.
             <br />
-            If you're experiencing harassment, please report it to our support team.
+            If you're experiencing harassment, please report it to our support
+            team.
           </p>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BlockLists
+export default BlockLists;

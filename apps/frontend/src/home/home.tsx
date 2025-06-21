@@ -13,7 +13,6 @@ export default function Home() {
     if (!socket) return;
 
     const handleResponse = (data: { message: string }) => {
-      console.log("Received message:", data);
       setMessage(data.message);
     };
 

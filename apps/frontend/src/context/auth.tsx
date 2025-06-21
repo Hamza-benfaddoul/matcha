@@ -1,35 +1,34 @@
-'use client'
+"use client";
 import {
   createContext,
   PropsWithChildren,
   useContext,
   useState,
   useEffect,
-} from 'react'
+} from "react";
 
-import { useUserStore } from '@/hooks/use-current-user'
+import { useUserStore } from "@/hooks/use-current-user";
 
-import { User } from '../types/User'
+import { User } from "../types/User";
 
-const AuthContext = createContext<User | undefined>(undefined)
+const AuthContext = createContext<User | undefined>(undefined);
 
 type AuthProviderProps = PropsWithChildren & {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  const currentUser = useUserStore((state) => state.user)
-  const [user, setUser] = useState<User | undefined>(currentUser)
-  console.log('User', currentUser)
+  const currentUser = useUserStore((state) => state.user);
+  const [user, setUser] = useState<User | undefined>(currentUser);
 
   useEffect(() => {
-    setUser(currentUser)
-  }, [currentUser])
+    setUser(currentUser);
+  }, [currentUser]);
 
-  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 }
 
 export const useAuth = () => {
-  const context = useContext(AuthContext)
-  return context
-}
+  const context = useContext(AuthContext);
+  return context;
+};

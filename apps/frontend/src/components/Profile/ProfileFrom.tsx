@@ -62,7 +62,6 @@ const ProfileForm = ({
       }
     });
     setTags(newTags);
-    console.log("last step of tags: ", tags, selectedTags);
   };
   const handleTagsEdited = (selectedTags: any) => {
     // tags that are listed to user and he change them or let them as they are
@@ -120,7 +119,6 @@ const ProfileForm = ({
   const getUserLocation = async () => {
     try {
       if (!navigator.geolocation) {
-        console.log("Geolocation not supported - getting approximate location");
         return await getApproximateLocation();
       }
 
@@ -131,7 +129,7 @@ const ProfileForm = ({
         isPrecise: true,
       };
     } catch (error) {
-      console.log("Geolocation error:", error);
+      console.error("Geolocation error:", error);
       return await getApproximateLocation();
     }
   };
@@ -199,9 +197,6 @@ const ProfileForm = ({
     }
     formData.append("birth_date", values.birth_date || "");
 
-    console.log("location: ", location);
-
-    console.log("FormData interests:", formData.getAll("interests"));
     // Authorization: `Bearer ${auth.accessToken}`
     try {
       const response = await axios.post(`${endpoint}`, formData, {
@@ -210,7 +205,6 @@ const ProfileForm = ({
         },
         withCredentials: true,
       });
-      console.log("response update: --> ", response);
       setAuth({ user: response.data.user, accessToken: auth.accessToken });
       // if (initialData.id)
       closeModal && closeModal();
