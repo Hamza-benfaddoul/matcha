@@ -27,7 +27,6 @@ const StatCards = () => {
 
     fetchState();
   }, []);
-  console.log(state);
 
   if (loading)
     return (

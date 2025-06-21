@@ -45,7 +45,6 @@ export default function SearchResults({ query, filters }: SearchResultsProps) {
       setError(null);
 
       try {
-        console.log("filters", filters);
         const response = await axiosPrivate.post(`/search/${user.id}`, {
           query,
           ageRange: filters?.ageRange || [0, 50],
@@ -54,7 +53,6 @@ export default function SearchResults({ query, filters }: SearchResultsProps) {
           tags: filters?.tags || [],
           sort: { field: "fame_rating", direction: "desc" },
         });
-        console.log("Search results:", response.data);
 
         // Ensure all required fields have fallback values
         const processedResults = response.data.users.map((user: User) => ({
