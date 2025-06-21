@@ -19,13 +19,17 @@ export const RegisterSchema = z.object({
   firstName: z.string().min(1, { message: "Frist name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   userName: z.string().min(1, { message: "Last name is required" }),
-  birth_date: z.date({
-    required_error: "A date of birth is required.",
-  }),
   email: z.string().email({ message: "Email is required" }),
   password: z
     .string()
-    .min(6, "Password is required and must be at least 6 chararcters long"),
+    .min(8, "Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(
+      /[^A-Za-z0-9]/,
+      "Password must contain at least one special character",
+    ),
 });
 
 export const CompleteProfileSchema = z.object({
@@ -41,10 +45,9 @@ export const CompleteProfileSchema = z.object({
   profileImageIndex: z.number().nullable().optional(),
   longitude: z.number().optional(),
   latitude: z.number().optional(),
-  birth_date: z
-    .string({
-      required_error: "A date of birth is required.",
-    })
+  birth_date: z.string({
+    required_error: "A date of birth is required.",
+  }),
 });
 
 export const ChangePasswordSchema = z

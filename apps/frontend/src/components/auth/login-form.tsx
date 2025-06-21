@@ -1,4 +1,5 @@
 "use client";
+
 import axios from "@/api/axios.js";
 import { useNavigate } from "react-router-dom";
 
@@ -25,8 +26,7 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 
-//import { login } from '@/actions/login'
-import { ErrorResponse, Link, useSearchParams } from "react-router-dom";
+import { ErrorResponse, useSearchParams } from "react-router-dom";
 
 import {
   InputOTP,
@@ -34,6 +34,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+
 import useAuth from "@/hooks/useAuth";
 
 const LoginFrom = () => {
@@ -71,7 +72,6 @@ const LoginFrom = () => {
           withCredentials: true,
         },
       );
-      console.log("login respornse", response);
 
       const { accessToken, user } = response?.data;
       setAuth({ user: user, accessToken: accessToken });
@@ -86,39 +86,6 @@ const LoginFrom = () => {
       else setError(err.response?.data?.error || "Something went wrong");
     }
   };
-  /*
-    const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-      setError('')
-      setSuccess('')
-  
-      axios.post('/login', {
-        ...values
-      })
-        .then(function(response) {
-          console.log(response);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-      startTransition(() => {
-        login(values)
-          .then((data) => {
-            if (data?.error) {
-              form.reset();
-              setError(data.error)
-            }
-            if (data?.success) {
-              form.reset();
-              setSuccess(data.success)
-            }
-            if (data?.twoFactor) {
-              setShowTwoFactor(true);
-            }
-          })
-          .catch(() => setError('Something went wrong!'));
-      })
-    }
-  */
 
   return (
     <CardWrapper

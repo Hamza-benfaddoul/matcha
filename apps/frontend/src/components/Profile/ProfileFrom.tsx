@@ -1,364 +1,397 @@
-import { useEffect, useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { X } from 'lucide-react'
-import { Form } from '@/components/ui/form'
-import { CompleteProfileSchema } from '@/schemas'
-import * as z from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import axios from 'axios'
-import useAuth from '@/hooks/useAuth'
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { X } from "lucide-react";
+import { Form } from "@/components/ui/form";
+import { CompleteProfileSchema } from "@/schemas";
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import useAuth from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import TagSelector from "@/components/Profile/TagSelector";
-import { User } from '@/types/User'
-
-
+import { User } from "@/types/User";
 
 interface ProfileFormProps {
-    initialData?: User;
-    endpoint: string;
-    closeModal?: () => void;
+  initialData?: User;
+  endpoint: string;
+  closeModal?: () => void;
 }
 
-const ProfileForm = ({ initialData = {
-  id: '',
-  firstname: '',
-  lastname: '',
-  gender: 'male',
-  sexual_preferences: 'homosexual',
-  biography: '',
-  profile_picture: '',
-  interests: [],
-  images: [],
-  profileImageIndex: 0,
-  longitude: 0,
-  latitude: 0,
-  birth_date: '',
-  
-}, endpoint, closeModal}: ProfileFormProps) => {
-    const navigate = useNavigate();
-    const [images, setImages] = useState<File[]>(initialData.images || [])
-    const {auth, setAuth} = useAuth();
-    const [userTags, setUserTags] = useState<string[]>([]);
-    const [tags, setTags] = useState<string[]>([]);
-    const [tagsEdited, setTagsEdited] = useState<string[]>([]);
-    const [existingTags, setExistingTags] = useState<string[]>([]);
-    const [profileImageIndex, setProfileImageIndex] = useState<number | null>(null)
-    const [errorImages, setErrorImages] = useState<string>("")
-    
-    const handleTagsChange = (selectedTags: any) => {
-        const newTags = [...tags];
-        
-        selectedTags.forEach((tag: string) => {
-            if (!newTags.includes(tag)) {
-              newTags.push(tag);
-            }
-        });
-        setTags(newTags);
-        console.log("last step of tags: ", tags, selectedTags);
-    };
-    const handleTagsEdited = (selectedTags: any) => { // tags that are listed to user and he change them or let them as they are
-        setTagsEdited(selectedTags);
-    };
+const ProfileForm = ({
+  initialData = {
+    id: "",
+    firstname: "",
+    lastname: "",
+    gender: "male",
+    sexual_preferences: "homosexual",
+    biography: "",
+    profile_picture: "",
+    interests: [],
+    images: [],
+    profileImageIndex: 0,
+    longitude: 0,
+    latitude: 0,
+    birth_date: "",
+  },
+  endpoint,
+  closeModal,
+}: ProfileFormProps) => {
+  const navigate = useNavigate();
+  const [images, setImages] = useState<File[]>(initialData.images || []);
+  const { auth, setAuth } = useAuth();
+  const [userTags, setUserTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagsEdited, setTagsEdited] = useState<string[]>([]);
+  const [existingTags, setExistingTags] = useState<string[]>([]);
+  const [profileImageIndex, setProfileImageIndex] = useState<number | null>(
+    null,
+  );
+  const [errorImages, setErrorImages] = useState<string>("");
 
-    const form = useForm<z.infer<typeof CompleteProfileSchema>>({
-      resolver: zodResolver(CompleteProfileSchema),
-      defaultValues: {
-        firstName: initialData?.firstname || '',
-        lastName: initialData?.lastname || '',
-        gender: initialData?.gender || 'male',
-        sexualPreferences: initialData?.sexual_preferences || 'homosexual',
-        biography: initialData?.biography || '',
-        interests: initialData?.interests || [],
-        images: initialData?.images || [],
-        profileImageIndex: initialData?.profileImageIndex || 0,
-        longitude: initialData?.longitude || 0,
-        latitude: initialData?.latitude || 0,
-        birth_date: initialData?.birth_date || '',
-      },
+  const handleTagsChange = (selectedTags: any) => {
+    const newTags = [...tags];
+
+    selectedTags.forEach((tag: string) => {
+      if (!newTags.includes(tag)) {
+        newTags.push(tag);
+      }
     });
+    setTags(newTags);
+    console.log("last step of tags: ", tags, selectedTags);
+  };
+  const handleTagsEdited = (selectedTags: any) => {
+    // tags that are listed to user and he change them or let them as they are
+    setTagsEdited(selectedTags);
+  };
 
-    useEffect(() => {
-      form.reset({
-        firstName: initialData.firstname || '',
-        lastName: initialData.lastname || '',
-        gender: initialData.gender || 'male',
-        sexualPreferences: initialData.sexual_preferences || 'homosexual',
-        biography: initialData.biography || '',
-        interests: initialData.interests,
-        images: initialData.images || [],
-        profileImageIndex: initialData.profileImageIndex || 0,
-        birth_date: initialData.birth_date || '',
-      });
-    }, [initialData && initialData.id]);
+  const form = useForm<z.infer<typeof CompleteProfileSchema>>({
+    resolver: zodResolver(CompleteProfileSchema),
+    defaultValues: {
+      firstName: initialData?.firstname || "",
+      lastName: initialData?.lastname || "",
+      gender: initialData?.gender || "male",
+      sexualPreferences: initialData?.sexual_preferences || "homosexual",
+      biography: initialData?.biography || "",
+      interests: initialData?.interests || [],
+      images: initialData?.images || [],
+      profileImageIndex: initialData?.profileImageIndex || 0,
+      longitude: initialData?.longitude || 0,
+      latitude: initialData?.latitude || 0,
+      birth_date: initialData?.birth_date || "",
+    },
+  });
 
+  useEffect(() => {
+    form.reset({
+      firstName: initialData.firstname || "",
+      lastName: initialData.lastname || "",
+      gender: initialData.gender || "male",
+      sexualPreferences: initialData.sexual_preferences || "homosexual",
+      biography: initialData.biography || "",
+      interests: initialData.interests,
+      images: initialData.images || [],
+      profileImageIndex: initialData.profileImageIndex || 0,
+      birth_date: initialData.birth_date || "",
+    });
+  }, [initialData && initialData.id]);
 
-    // functions for user location ====================================================
-    // Wrapper for getCurrentPosition that returns a Promise
-    const getCurrentPosition = () => {
-      return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-          position => resolve(position),
-          error => reject(error),
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,  // 10 second timeout
-            maximumAge: 0     // Don't use cached position
-          }
-        );
-      });
-    };
+  // functions for user location ====================================================
+  // Wrapper for getCurrentPosition that returns a Promise
+  const getCurrentPosition = () => {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => resolve(position),
+        (error) => reject(error),
+        {
+          enableHighAccuracy: true,
+          timeout: 10000, // 10 second timeout
+          maximumAge: 0, // Don't use cached position
+        },
+      );
+    });
+  };
 
-    // Gets precise location if possible, falls back to approximate
-    const getUserLocation = async () => {
-      try {
-        if (!navigator.geolocation) {
-          console.log("Geolocation not supported - getting approximate location");
-          return await getApproximateLocation();
-        }
-
-        const position = await getCurrentPosition();
-        return {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          isPrecise: true
-        };
-      } catch (error) {
-        console.log("Geolocation error:", error);
+  // Gets precise location if possible, falls back to approximate
+  const getUserLocation = async () => {
+    try {
+      if (!navigator.geolocation) {
+        console.log("Geolocation not supported - getting approximate location");
         return await getApproximateLocation();
       }
-    };
 
-    // Gets approximate location via IP
-    const getApproximateLocation = async () => {
-      try {
-        const response = await fetch('/api/location/approximate');
-        const data = await response.json();
-        
-        if (data.latitude && data.longitude) {
-          return {
-            latitude: data.latitude,
-            longitude: data.longitude,
-            isPrecise: false
-          };
-        }
-        
-        throw new Error('Invalid location data from server');
-      } catch (error) {
-        console.error("Error getting approximate location:", error);
-        // Return default location (e.g., San Francisco)
+      const position = await getCurrentPosition();
+      return {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        isPrecise: true,
+      };
+    } catch (error) {
+      console.log("Geolocation error:", error);
+      return await getApproximateLocation();
+    }
+  };
+
+  // Gets approximate location via IP
+  const getApproximateLocation = async () => {
+    try {
+      const response = await fetch("/api/location/approximate");
+      const data = await response.json();
+
+      if (data.latitude && data.longitude) {
         return {
-          latitude: 37.7749,
-          longitude: -122.4194,
+          latitude: data.latitude,
+          longitude: data.longitude,
           isPrecise: false,
-          isDefault: true
         };
       }
-    };
 
-    // the end ========================================================================
-  
-    const onSubmit = async (values: z.infer<typeof CompleteProfileSchema>) => {
-      const formData = new FormData();
-      values.images = images
-      values.profileImageIndex = profileImageIndex
-      
-      if (values.firstName) {
-        formData.append('firstName', values.firstName);
-      }
-      if (values.lastName) {
-        formData.append('lastName', values.lastName);
-      }
-      formData.append('gender', values.gender);
-      formData.append('sexualPreferences', values.sexualPreferences);
-      formData.append('biography', values.biography || '');
-      tags.forEach((tag) => formData.append('interests', tag));
-      tagsEdited.forEach((tag) => formData.append('interests', tag));
-      values.images.forEach((image) => formData.append('images', image));
-      formData.append('profileImageIndex', values?.profileImageIndex?.toString() || '');
-      let location;
-      while (!location) {
-        location = await getUserLocation();
-      }
-      if (location) {
-        const { latitude, longitude } = location;
-        formData.append('latitude', latitude.toString());
-        formData.append('longitude', longitude.toString());
-      } else {
-        console.error("Unable to retrieve user location.");
-      }
-      formData.append('birth_date', values.birth_date || '');
-
-      console.log("location: ", location);
-      
-
-      console.log('FormData interests:', formData.getAll('interests'));
-        // Authorization: `Bearer ${auth.accessToken}`
-        try {
-        const response = await axios.post(`${endpoint}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          withCredentials: true,
-        });
-        console.log("response update: --> ", response);
-        setAuth({ user: response.data.user, accessToken: auth.accessToken });
-        // if (initialData.id)
-        closeModal && closeModal();
-        navigate(`/dashboard`);
-        // location.href = `/profile/${auth.user?.id}`;
-      } catch (error) {
-        console.error('Error updating profile:', error);
-      }
+      throw new Error("Invalid location data from server");
+    } catch (error) {
+      console.error("Error getting approximate location:", error);
+      // Return default location (e.g., San Francisco)
+      return {
+        latitude: 37.7749,
+        longitude: -122.4194,
+        isPrecise: false,
+        isDefault: true,
+      };
     }
-  
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || [])
-      setImages([...images, ...files])
-      // if (files.length + images.length <= 5) {
-        if (images.length <= 5) {
-          setErrorImages("")
-          if (profileImageIndex === null) {
-            setProfileImageIndex(0)
-          }
-      }
-      else {
-        setErrorImages("You can upload a maximum of 5 images.")
-      }
-    }
-  
-    const fetchTags = async () => {
-      try {
-        const response = await axios.get('/api/user/tags/tagslist');
-        const id = auth.user?.id;
-        if (initialData.id)
-        {
-            const result = await axios.get(`/api/user/tags/${id}`)
-            setUserTags([]);
-            setUserTags(result.data.USER_TAGS);
-            // setTags(result.data.USER_TAGS);
-            setTagsEdited(result.data.USER_TAGS);
-        }
-        
-        setExistingTags([]);
-        setExistingTags(response.data.tags.map((item: any) => item.tag));
-      } catch (error) {
-        console.error('Error fetching tags:', error);
-      }
-    }
-  
-    useEffect(() => {
-          fetchTags()
-          // setImages(initialData.images || []);
+  };
 
-    }, [initialData.id])
+  // the end ========================================================================
 
-    useEffect(() => {
-      if (images.length <= 5)
-        setErrorImages("")
-      else
-        setErrorImages("You can upload a maximum of 5 images.")
-      console.log("images len: ", images.length);
-    }, [images]);
-  
-    return (
-      <div className="max-w-md mt-10 mx-auto p-6 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-6 text-center text-[#F02C56]">Complete Your Personal Information</h1>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {
-                initialData.id && (
-                    <div>
-                        <Label>First Name</Label>
-                        <Input
-                        type="text"
-                        placeholder="First Name"
-                        defaultValue={initialData.firstname}
-                        {...form.register('firstName')}
-                        className="
-                            border-2 border-gray-300 rounded-md
-                            p-2 w-full
-                            focus:outline-none focus:border-blue-500
-                        "/>
-                        <Label>Last Name</Label>
-                        <Input
-                        type="text"
-                        placeholder="Last Name"
-                        defaultValue={initialData.lastname}
-                        {...form.register('lastName')}
-                        className="
-                            border-2 border-gray-300 rounded-md
-                            p-2 w-full
-                            focus:outline-none focus:border-blue-500
-                        "/> 
-                    </div>
-                )
-              }
-              <div>
-              <Label>Gender</Label>
-                <RadioGroup
-                value={form.watch('gender')}
-                className="flex mt-2"
-                onValueChange={(value) => form.setValue('gender', value)}
-                >
-                <div className="flex items-center space-x-2">
-                <RadioGroupItem value="female" id="female" aria-hidden={false} />
-                <Label htmlFor="female">Female</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                <RadioGroupItem value="male" id="male" aria-hidden={false} />
-                <Label htmlFor="male">Male</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                <RadioGroupItem value="other" id="other" aria-hidden={false} />
-                <Label htmlFor="other">Other</Label>
-                </div>
-                </RadioGroup>
-              </div>
-  
+  const onSubmit = async (values: z.infer<typeof CompleteProfileSchema>) => {
+    const formData = new FormData();
+    values.images = images;
+    values.profileImageIndex = profileImageIndex;
+
+    if (values.firstName) {
+      formData.append("firstName", values.firstName);
+    }
+    if (values.lastName) {
+      formData.append("lastName", values.lastName);
+    }
+    formData.append("gender", values.gender);
+    formData.append("sexualPreferences", values.sexualPreferences);
+    formData.append("biography", values.biography || "");
+    tags.forEach((tag) => formData.append("interests", tag));
+    tagsEdited.forEach((tag) => formData.append("interests", tag));
+    values.images.forEach((image) => formData.append("images", image));
+    formData.append(
+      "profileImageIndex",
+      values?.profileImageIndex?.toString() || "",
+    );
+    let location;
+    while (!location) {
+      location = await getUserLocation();
+    }
+    if (location) {
+      const { latitude, longitude } = location;
+      formData.append("latitude", latitude.toString());
+      formData.append("longitude", longitude.toString());
+    } else {
+      console.error("Unable to retrieve user location.");
+    }
+    formData.append("birth_date", values.birth_date || "");
+
+    console.log("location: ", location);
+
+    console.log("FormData interests:", formData.getAll("interests"));
+    // Authorization: `Bearer ${auth.accessToken}`
+    try {
+      const response = await axios.post(`${endpoint}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+      console.log("response update: --> ", response);
+      setAuth({ user: response.data.user, accessToken: auth.accessToken });
+      // if (initialData.id)
+      closeModal && closeModal();
+      navigate(`/dashboard`);
+      // location.href = `/profile/${auth.user?.id}`;
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setImages([...images, ...files]);
+    // if (files.length + images.length <= 5) {
+    if (images.length <= 5) {
+      setErrorImages("");
+      if (profileImageIndex === null) {
+        setProfileImageIndex(0);
+      }
+    } else {
+      setErrorImages("You can upload a maximum of 5 images.");
+    }
+  };
+
+  const fetchTags = async () => {
+    try {
+      const response = await axios.get("/api/user/tags/tagslist");
+      const id = auth.user?.id;
+      if (initialData.id) {
+        const result = await axios.get(`/api/user/tags/${id}`);
+        setUserTags([]);
+        setUserTags(result.data.USER_TAGS);
+        // setTags(result.data.USER_TAGS);
+        setTagsEdited(result.data.USER_TAGS);
+      }
+
+      setExistingTags([]);
+      setExistingTags(response.data.tags.map((item: any) => item.tag));
+    } catch (error) {
+      console.error("Error fetching tags:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTags();
+    // setImages(initialData.images || []);
+  }, [initialData.id]);
+
+  useEffect(() => {
+    if (images.length <= 5) setErrorImages("");
+    else setErrorImages("You can upload a maximum of 5 images.");
+  }, [images]);
+
+  return (
+    <div className="max-w-md mt-10 mx-auto p-6 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-6 text-center text-[#F02C56]">
+        Complete Your Personal Information
+      </h1>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {initialData.id && (
             <div>
-              <Label>Sexual Preferences</Label>
-              <RadioGroup value={form.watch('sexualPreferences')} className="flex mt-2" onValueChange={(value: "other" | "heterosexual" | "homosexual" | "bisexual") => form.setValue('sexualPreferences', value)}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="heterosexual" id="heterosexual" aria-hidden={false} />
-                  <Label htmlFor="heterosexual">Heterosexual</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="homosexual" id="homosexual" aria-hidden={false} />
-                  <Label htmlFor="homosexual">Homosexual</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="bisexual" id="bisexual" aria-hidden={false} />
-                  <Label htmlFor="bisexual">Bisexual</Label>
-                </div>
-              </RadioGroup>
-            </div>
-            <div>
-              <Label htmlFor="birth_date">Birth Date</Label>
+              <Label>First Name</Label>
               <Input
-                type="date"
-                id="birth_date"
-                placeholder="YYYY-MM-DD"
-                {...form.register('birth_date')}
-                className="border-[#F02C56] focus:ring-[#F02C56]"
+                type="text"
+                placeholder="First Name"
+                defaultValue={initialData.firstname}
+                {...form.register("firstName")}
+                className="
+                            border-2 border-gray-300 rounded-md
+                            p-2 w-full
+                            focus:outline-none focus:border-blue-500
+                        "
+              />
+              <Label>Last Name</Label>
+              <Input
+                type="text"
+                placeholder="Last Name"
+                defaultValue={initialData.lastname}
+                {...form.register("lastName")}
+                className="
+                            border-2 border-gray-300 rounded-md
+                            p-2 w-full
+                            focus:outline-none focus:border-blue-500
+                        "
               />
             </div>
-  
-            <div>
-              <Label htmlFor="biography">Biography</Label>
-              <Textarea id="biography" placeholder="Tell us about yourself..." className="border-[#F02C56] focus:ring-[#F02C56]" {...form.register('biography')} />
-            </div>
-  
-            <div>
-              <Label>Interests (Tags):</Label>
-              <TagSelector existingTags={existingTags} userTags={userTags} onTagsChange={handleTagsChange} onTagsEdited={handleTagsEdited} />
-            </div>
-  
-              { !initialData.id && 
+          )}
+          <div>
+            <Label>Gender</Label>
+            <RadioGroup
+              value={form.watch("gender")}
+              className="flex mt-2"
+              onValueChange={(value) => form.setValue("gender", value)}
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value="female"
+                  id="female"
+                  aria-hidden={false}
+                />
+                <Label htmlFor="female">Female</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="male" id="male" aria-hidden={false} />
+                <Label htmlFor="male">Male</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="other" id="other" aria-hidden={false} />
+                <Label htmlFor="other">Other</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          <div>
+            <Label>Sexual Preferences</Label>
+            <RadioGroup
+              value={form.watch("sexualPreferences")}
+              className="flex mt-2"
+              onValueChange={(
+                value: "other" | "heterosexual" | "homosexual" | "bisexual",
+              ) => form.setValue("sexualPreferences", value)}
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value="heterosexual"
+                  id="heterosexual"
+                  aria-hidden={false}
+                />
+                <Label htmlFor="heterosexual">Heterosexual</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value="homosexual"
+                  id="homosexual"
+                  aria-hidden={false}
+                />
+                <Label htmlFor="homosexual">Homosexual</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value="bisexual"
+                  id="bisexual"
+                  aria-hidden={false}
+                />
+                <Label htmlFor="bisexual">Bisexual</Label>
+              </div>
+            </RadioGroup>
+          </div>
+          <div>
+            <Label htmlFor="birth_date">Birth Date</Label>
+            <Input
+              type="date"
+              id="birth_date"
+              placeholder="YYYY-MM-DD"
+              {...form.register("birth_date")}
+              className="border-[#F02C56] focus:ring-[#F02C56]"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="biography">Biography</Label>
+            <Textarea
+              id="biography"
+              placeholder="Tell us about yourself..."
+              className="border-[#F02C56] focus:ring-[#F02C56]"
+              {...form.register("biography")}
+            />
+          </div>
+
+          <div>
+            <Label>Interests (Tags):</Label>
+            <TagSelector
+              existingTags={existingTags}
+              userTags={userTags}
+              onTagsChange={handleTagsChange}
+              onTagsEdited={handleTagsEdited}
+            />
+          </div>
+
+          {!initialData.id && (
             <div>
               <Label htmlFor="images">Upload Images (Max 5)</Label>
               <Input
@@ -370,7 +403,9 @@ const ProfileForm = ({ initialData = {
                 disabled={images.length >= 5}
                 className="border-[#F02C56] focus:ring-[#F02C56]"
               />
-              {errorImages && <p className="text-red-500 text-sm">{errorImages}</p>}
+              {errorImages && (
+                <p className="text-red-500 text-sm">{errorImages}</p>
+              )}
               <div className="mt-2 flex flex-wrap gap-2">
                 {images.map((image, index) => (
                   <div key={index} className="relative">
@@ -378,25 +413,33 @@ const ProfileForm = ({ initialData = {
                       src={URL.createObjectURL(image)}
                       alt={`Uploaded ${index + 1}`}
                       className="w-20 h-20 object-cover rounded"
-                      />
+                    />
                     <div
                       onClick={() => {
-                        const updatedImages = images.filter((_, i) => i !== index);
+                        const updatedImages = images.filter(
+                          (_, i) => i !== index,
+                        );
                         setImages(updatedImages);
                         if (profileImageIndex === index) {
-                          setProfileImageIndex(updatedImages.length > 0 ? 0 : null);
+                          setProfileImageIndex(
+                            updatedImages.length > 0 ? 0 : null,
+                          );
                         }
 
                         // Update the file input value
                         const dataTransfer = new DataTransfer();
-                        updatedImages.forEach((file) => dataTransfer.items.add(file));
-                        const inputElement = document.getElementById("images") as HTMLInputElement;
+                        updatedImages.forEach((file) =>
+                          dataTransfer.items.add(file),
+                        );
+                        const inputElement = document.getElementById(
+                          "images",
+                        ) as HTMLInputElement;
                         if (inputElement) {
                           inputElement.files = dataTransfer.files;
                         }
                       }}
                       className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
-                      >
+                    >
                       <X size={12} />
                     </div>
                     <input
@@ -405,26 +448,24 @@ const ProfileForm = ({ initialData = {
                       checked={profileImageIndex === index}
                       onChange={() => setProfileImageIndex(index)}
                       className="absolute bottom-0 right-0 accent-[#F02C56]"
-                      />
+                    />
                   </div>
                 ))}
               </div>
             </div>
-          }
-  
-            <Button 
-              type="submit" 
-              className="w-full bg-[#F02C56] hover:bg-[#d02548]" 
-              disabled={images.length > 5}
-              onSubmit={form.handleSubmit(onSubmit)}
-            >
-              Save Profile
-            </Button>
-          </form>
-        </Form>
-      </div>
-    )
+          )}
 
-  
-}
+          <Button
+            type="submit"
+            className="w-full bg-[#F02C56] hover:bg-[#d02548]"
+            disabled={images.length > 5}
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            Save Profile
+          </Button>
+        </form>
+      </Form>
+    </div>
+  );
+};
 export default ProfileForm;

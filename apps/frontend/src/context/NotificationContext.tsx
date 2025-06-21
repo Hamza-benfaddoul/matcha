@@ -14,7 +14,9 @@ interface Notification {
 interface NotificationContextType {
   notifications: Notification[];
   unreadCount: number;
-  addNotification: (notification: Omit<Notification, 'id' | 'read' | 'createdAt'>) => void;
+  addNotification: (
+    notification: Omit<Notification, "id" | "read" | "createdAt">,
+  ) => void;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
   clearNotifications: () => void;
@@ -29,12 +31,12 @@ const NotificationContext = createContext<NotificationContextType>({
   clearNotifications: () => {},
 });
 
-export const NotificationProvider = ({ 
-  children, 
-  socket 
-}: { 
-  children: React.ReactNode, 
-  socket: Socket | null 
+export const NotificationProvider = ({
+  children,
+  socket,
+}: {
+  children: React.ReactNode;
+  socket: Socket | null;
 }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -44,22 +46,24 @@ export const NotificationProvider = ({
 
     // Listen for new notifications from server
     const handleNewNotification = (notification: Notification) => {
-      setNotifications(prev => [{
-        ...notification,
-        createdAt: new Date(notification.createdAt)
-      }, ...prev]);
-      setUnreadCount(prev => prev + 1);
+      setNotifications((prev) => [
+        {
+          ...notification,
+          createdAt: new Date(notification.createdAt),
+        },
+        ...prev,
+      ]);
+      setUnreadCount((prev) => prev + 1);
     };
 
     // Listen for initial notifications load
     const handleInitialNotifications = (notifications: Notification[]) => {
-        console.log("Initial notifications received:", notifications);
-      const formatted = notifications.map(n => ({
+      const formatted = notifications.map((n) => ({
         ...n,
-        createdAt: new Date(n.createdAt)
+        createdAt: new Date(n.createdAt),
       }));
       setNotifications(formatted);
-      setUnreadCount(formatted.filter(n => !n.isRead).length);
+      setUnreadCount(formatted.filter((n) => !n.isRead).length);
     };
 
     socket.on("new_notification", handleNewNotification);
@@ -74,31 +78,29 @@ export const NotificationProvider = ({
     };
   }, [socket]);
 
-  const addNotification = (notification: Omit<Notification, 'id' | 'read' | 'createdAt'>) => {
+  const addNotification = (
+    notification: Omit<Notification, "id" | "read" | "createdAt">,
+  ) => {
     const newNotification = {
       ...notification,
       id: Date.now().toString(),
       read: false,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
-    setNotifications(prev => [newNotification, ...prev]);
-    setUnreadCount(prev => prev + 1);
+    setNotifications((prev) => [newNotification, ...prev]);
+    setUnreadCount((prev) => prev + 1);
   };
 
   const markAsRead = (id: string) => {
-    setNotifications(prev => 
-      prev.map(n => 
-        n.id === id ? { ...n, read: true } : n
-      )
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
     );
-    setUnreadCount(prev => prev - 1);
+    setUnreadCount((prev) => prev - 1);
     socket?.emit("mark_as_read", id);
   };
 
   const markAllAsRead = () => {
-    setNotifications(prev => 
-      prev.map(n => ({ ...n, read: true }))
-    );
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     setUnreadCount(0);
     socket?.emit("mark_all_as_read");
   };
@@ -110,14 +112,16 @@ export const NotificationProvider = ({
   };
 
   return (
-    <NotificationContext.Provider value={{ 
-      notifications, 
-      unreadCount,
-      addNotification,
-      markAsRead, 
-      markAllAsRead,
-      clearNotifications
-    }}>
+    <NotificationContext.Provider
+      value={{
+        notifications,
+        unreadCount,
+        addNotification,
+        markAsRead,
+        markAllAsRead,
+        clearNotifications,
+      }}
+    >
       {children}
     </NotificationContext.Provider>
   );

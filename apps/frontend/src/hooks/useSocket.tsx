@@ -29,33 +29,33 @@ export default function useSocket(namespace = "") {
 
     // Use existing socket or create a new one
     if (!socketInstances[instanceKey]) {
-      console.log(`Creating new socket connection for namespace: ${namespace}`);
-      
       const socket = io(`${BASE_URL}${namespace}`, {
         path: "/ws/socket.io",
         withCredentials: true,
         transports: ["websocket"],
-        auth: { 
-          token, 
-          userId 
+        auth: {
+          token,
+          userId,
         },
         autoConnect: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
       });
-      
+
       socketInstances[instanceKey] = socket;
     } else {
       console.log(`Reusing existing socket for namespace: ${namespace}`);
     }
-    
+
     socketRef.current = socketInstances[instanceKey];
 
     const onConnect = () => {
       setIsConnected(true);
-      console.log(`Socket connected to ${namespace} with ID: ${socketRef.current?.id}`);
-      
+      console.log(
+        `Socket connected to ${namespace} with ID: ${socketRef.current?.id}`,
+      );
+
       // Notify server of reconnection to maintain user presence
       if (socketRef.current && userId) {
         console.log(`Sending user_reconnect event for userId: ${userId}`);
@@ -79,15 +79,15 @@ export default function useSocket(namespace = "") {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
       socket.off("connect_error", onConnectError);
-      
+
       // Add listeners
       socket.on("connect", onConnect);
       socket.on("disconnect", onDisconnect);
       socket.on("connect_error", onConnectError);
-      
+
       // Update connection state
       setIsConnected(socket.connected);
-      
+
       // If already connected, trigger reconnect manually
       if (socket.connected && userId) {
         console.log(`Socket already connected, sending user_reconnect event`);
@@ -121,7 +121,6 @@ export default function useSocket(namespace = "") {
     disconnect,
   };
 }
-
 
 // import { useEffect, useRef, useState } from "react";
 // import { io, Socket } from "socket.io-client";
