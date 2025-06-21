@@ -141,9 +141,11 @@ export default function SearchResults({ query, filters }: SearchResultsProps) {
               <Avatar className="h-10 w-10 border">
                 <AvatarImage
                   src={
-                    user.profile_picture.startsWith("/")
-                      ? `/api${user.profile_picture}`
-                      : user.profile_picture
+                    user.profile_picture
+                      ? user.profile_picture.startsWith("/")
+                        ? `/api${user.profile_picture}`
+                        : user.profile_picture
+                      : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                   }
                   alt={user.username}
                 />

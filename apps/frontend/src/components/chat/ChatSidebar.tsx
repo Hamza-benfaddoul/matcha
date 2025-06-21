@@ -1,30 +1,38 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Search, Plus } from "lucide-react"
+import { useState } from "react";
+import { Search, Plus } from "lucide-react";
 
-const ChatSidebar = ({ currentUser, contacts, activeChat, onSelectChat, isLoading }) => {
-  const [searchQuery, setSearchQuery] = useState("")
+const ChatSidebar = ({
+  currentUser,
+  contacts,
+  activeChat,
+  onSelectChat,
+  isLoading,
+}) => {
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredContacts = contacts.filter(
     (contact) =>
       contact.firstname.toLowerCase().includes(searchQuery.toLowerCase()) ||
       contact.lastname.toLowerCase().includes(searchQuery.toLowerCase()) ||
       contact.username.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  );
 
- 
   const formatTime = (isoString) => {
-    const date = new Date(isoString)
-    const now = new Date()
-    const isToday = date.toDateString() === now.toDateString()
+    const date = new Date(isoString);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
 
     if (isToday) {
-      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      return date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
     } else {
-      return date.toLocaleDateString([], { month: "short", day: "numeric" })
+      return date.toLocaleDateString([], { month: "short", day: "numeric" });
     }
-  }
+  };
 
   return (
     <>
@@ -64,15 +72,20 @@ const ChatSidebar = ({ currentUser, contacts, activeChat, onSelectChat, isLoadin
               <li
                 key={contact.id}
                 className={`p-3 flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer ${
-                  activeChat && activeChat.id === contact.id ? "bg-gray-100 dark:bg-gray-700" : ""
+                  activeChat && activeChat.id === contact.id
+                    ? "bg-gray-100 dark:bg-gray-700"
+                    : ""
                 }`}
                 onClick={() => onSelectChat(contact)}
               >
                 <div className="relative">
                   <img
-                    src={contact.profile_picture.startsWith("/")
-                        ? `/api${contact.profile_picture}`
-                        : contact.profile_picture
+                    src={
+                      contact.profile_picture
+                        ? contact.profile_picture.startsWith("/")
+                          ? `/api${contact.profile_picture}`
+                          : contact.profile_picture
+                        : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                     }
                     alt={`${contact.firstname} ${contact.lastname}`}
                     className="w-12 h-12 rounded-full object-cover"
@@ -89,7 +102,9 @@ const ChatSidebar = ({ currentUser, contacts, activeChat, onSelectChat, isLoadin
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{contact.lastMessage}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                      {contact.lastMessage}
+                    </p>
                     {contact.unreadCount > 0 && (
                       <span className="ml-2 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {contact.unreadCount}
@@ -107,21 +122,26 @@ const ChatSidebar = ({ currentUser, contacts, activeChat, onSelectChat, isLoadin
       {currentUser && (
         <div className="p-3 border-t border-gray-200 dark:border-gray-700 flex items-center">
           <img
-            src={currentUser.profile_picture.startsWith("/")
-              ? `/api${currentUser.profile_picture}`
-              : currentUser.profile_picture
-          }
+            src={
+              currentUser.profile_picture
+                ? currentUser.profile_picture.startsWith("/")
+                  ? `/api${currentUser.profile_picture}`
+                  : currentUser.profile_picture
+                : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+            }
             alt={`${currentUser.firstname} ${currentUser.lastname}`}
             className="w-10 h-10 rounded-full object-cover"
           />
           <div className="ml-3">
             <h3 className="font-semibold">{`${currentUser.firstname} ${currentUser.lastname}`}</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">@{currentUser.username}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              @{currentUser.username}
+            </p>
           </div>
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default ChatSidebar
+export default ChatSidebar;

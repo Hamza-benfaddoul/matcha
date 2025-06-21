@@ -31,9 +31,11 @@ export default function UserCard({ user }: UserCardProps) {
       <div className="relative h-60 overflow-hidden">
         <img
           src={
-            user.profile_picture.startsWith("/")
-              ? `/api${user.profile_picture}`
-              : user.profile_picture
+            user.profile_picture
+              ? user.profile_picture.startsWith("/")
+                ? `/api${user.profile_picture}`
+                : user.profile_picture
+              : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
           }
           alt={user.username}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

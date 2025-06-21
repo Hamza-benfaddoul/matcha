@@ -31,9 +31,11 @@ export function NavUser() {
             {user?.profile_picture ? (
               <AvatarImage
                 src={
-                  user.profile_picture.startsWith("/")
-                    ? `/api${user.profile_picture}`
-                    : user.profile_picture
+                  user.profile_picture
+                    ? user.profile_picture.startsWith("/")
+                      ? `/api${user.profile_picture}`
+                      : user.profile_picture
+                    : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                 }
                 alt={user?.firstname}
               />
@@ -64,9 +66,11 @@ export function NavUser() {
               {user?.profile_picture ? (
                 <AvatarImage
                   src={
-                    user.profile_picture.startsWith("/")
-                      ? `/api${user.profile_picture}`
-                      : user.profile_picture
+                    user.profile_picture
+                      ? user.profile_picture.startsWith("/")
+                        ? `/api${user.profile_picture}`
+                        : user.profile_picture
+                      : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                   }
                   alt={user?.firstname}
                 />

@@ -102,9 +102,11 @@ const DatesCardList = () => {
                   <Avatar className="h-6 w-6">
                     <AvatarImage
                       src={
-                        date.recipient_profile_picture.startsWith("/")
-                          ? `/api${date.recipient_profile_picture}`
-                          : date.recipient_profile_picture
+                        date.recipient_profile_picture
+                          ? date.recipient_profile_picture.startsWith("/")
+                            ? `/api${date.recipient_profile_picture}`
+                            : date.recipient_profile_picture
+                          : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                       }
                       alt="@shadcn"
                     />
@@ -121,9 +123,11 @@ const DatesCardList = () => {
                   <Avatar className="h-6 w-6">
                     <AvatarImage
                       src={
-                        date.proposer_profile_picture.startsWith("/")
-                          ? `/api${date.proposer_profile_picture}`
-                          : date.proposer_profile_picture
+                        date.proposer_profile_picture
+                          ? date.proposer_profile_picture.startsWith("/")
+                            ? `/api${date.proposer_profile_picture}`
+                            : date.proposer_profile_picture
+                          : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                       }
                       alt="@shadcn"
                     />

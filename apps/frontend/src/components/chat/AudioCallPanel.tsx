@@ -1,321 +1,335 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Mic, MicOff, Volume2, VolumeX, PhoneOff } from "lucide-react"
+import { useState, useEffect, useRef } from "react";
+import { Mic, MicOff, Volume2, VolumeX, PhoneOff } from "lucide-react";
 
 const AudioCallPanel = ({ contact, onEndCall, socket, currentUser }) => {
-  const [isMuted, setIsMuted] = useState(false)
-  const [isSpeakerOn, setIsSpeakerOn] = useState(true)
-  const [callDuration, setCallDuration] = useState(0)
-  const [callStatus, setCallStatus] = useState('calling') // 'calling', 'ringing', 'active', 'ended'
-  
-  const localAudioRef = useRef(null)
-  const remoteAudioRef = useRef(null)
-  const localStreamRef = useRef(null)
-  const pcRef = useRef(null)
-  const isCallerRef = useRef(true)
+  const [isMuted, setIsMuted] = useState(false);
+  const [isSpeakerOn, setIsSpeakerOn] = useState(true);
+  const [callDuration, setCallDuration] = useState(0);
+  const [callStatus, setCallStatus] = useState("calling"); // 'calling', 'ringing', 'active', 'ended'
+
+  const localAudioRef = useRef(null);
+  const remoteAudioRef = useRef(null);
+  const localStreamRef = useRef(null);
+  const pcRef = useRef(null);
+  const isCallerRef = useRef(true);
 
   // Initialize media and call
   useEffect(() => {
     const initCall = async () => {
       try {
         // Get local audio stream
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-        localStreamRef.current = stream
-        localAudioRef.current.srcObject = stream
-        
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        localStreamRef.current = stream;
+        localAudioRef.current.srcObject = stream;
+
         // Create peer connection with better ICE servers
         pcRef.current = new RTCPeerConnection({
           iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:19302' }
-          ]
-        })
-        
+            { urls: "stun:stun.l.google.com:19302" },
+            { urls: "stun:stun1.l.google.com:19302" },
+            { urls: "stun:stun2.l.google.com:19302" },
+          ],
+        });
+
         // Debugging handlers
         pcRef.current.onconnectionstatechange = () => {
-          console.log('Connection state:', pcRef.current.connectionState)
-        }
+          console.log("Connection state:", pcRef.current.connectionState);
+        };
         pcRef.current.oniceconnectionstatechange = () => {
-          console.log('ICE connection state:', pcRef.current.iceConnectionState)
-          if (pcRef.current.iceConnectionState === 'disconnected') {
-            endCall()
+          console.log(
+            "ICE connection state:",
+            pcRef.current.iceConnectionState,
+          );
+          if (pcRef.current.iceConnectionState === "disconnected") {
+            endCall();
           }
-        }
-        
+        };
+
         // Add local tracks to connection
-        stream.getTracks().forEach(track => {
-          pcRef.current.addTrack(track, stream)
-        })
-        
+        stream.getTracks().forEach((track) => {
+          pcRef.current.addTrack(track, stream);
+        });
+
         // Set up ICE candidate handler
         pcRef.current.onicecandidate = (e) => {
           if (e.candidate) {
-            socket.emit('webrtc_ice_candidate', {
+            socket.emit("webrtc_ice_candidate", {
               to: contact.id,
-              candidate: e.candidate
-            })
+              candidate: e.candidate,
+            });
           }
-        }
-        
+        };
+
         // Set up remote stream handler
         pcRef.current.ontrack = (e) => {
           if (e.streams[0]) {
-            remoteAudioRef.current.srcObject = e.streams[0]
-            console.log('Received remote stream:', e.streams[0])
+            remoteAudioRef.current.srcObject = e.streams[0];
+            console.log("Received remote stream:", e.streams[0]);
           }
-        }
-        
+        };
+
         // If we're the caller, create offer
         if (isCallerRef.current) {
-          const offer = await pcRef.current.createOffer()
-          await pcRef.current.setLocalDescription(offer)
-          
-          socket.emit('webrtc_offer', {
+          const offer = await pcRef.current.createOffer();
+          await pcRef.current.setLocalDescription(offer);
+
+          socket.emit("webrtc_offer", {
             to: contact.id,
-            offer
-          })
-          
-          socket.emit('start_call', {
+            offer,
+          });
+
+          socket.emit("start_call", {
             callerId: currentUser.id,
-            receiverId: contact.id
-          })
+            receiverId: contact.id,
+          });
         }
-        
       } catch (err) {
-        console.error('Error initializing call:', err)
-        endCall()
+        console.error("Error initializing call:", err);
+        endCall();
       }
-    }
-    
-    isCallerRef.current = !contact.isIncomingCall
-    
+    };
+
+    isCallerRef.current = !contact.isIncomingCall;
+
     if (contact.isIncomingCall) {
-      setCallStatus('ringing')
+      setCallStatus("ringing");
     } else {
-      initCall()
+      initCall();
     }
-    
+
     return () => {
-      endCall()
-    }
-  }, [contact.id, contact.isIncomingCall, socket, currentUser.id])
+      endCall();
+    };
+  }, [contact.id, contact.isIncomingCall, socket, currentUser.id]);
 
   // Handle incoming WebRTC signals
   useEffect(() => {
-    if (!socket) return
-    
+    if (!socket) return;
+
     const handleOffer = async ({ from, offer }) => {
-      if (from !== contact.id) return
-      
+      if (from !== contact.id) return;
+
       try {
         if (!pcRef.current) {
-          throw new Error('PeerConnection not initialized')
+          throw new Error("PeerConnection not initialized");
         }
-        
-        await pcRef.current.setRemoteDescription(new RTCSessionDescription(offer))
-        
-        const answer = await pcRef.current.createAnswer()
-        await pcRef.current.setLocalDescription(answer)
-        
-        socket.emit('webrtc_answer', {
+
+        await pcRef.current.setRemoteDescription(
+          new RTCSessionDescription(offer),
+        );
+
+        const answer = await pcRef.current.createAnswer();
+        await pcRef.current.setLocalDescription(answer);
+
+        socket.emit("webrtc_answer", {
           to: from,
-          answer
-        })
-        
-        setCallStatus('active')
+          answer,
+        });
+
+        setCallStatus("active");
       } catch (err) {
-        console.error('Error handling offer:', err)
-        endCall()
+        console.error("Error handling offer:", err);
+        endCall();
       }
-    }
-    
+    };
+
     const handleAnswer = async ({ from, answer }) => {
-      if (from !== contact.id) return
-      
+      if (from !== contact.id) return;
+
       try {
         if (!pcRef.current) {
-          throw new Error('PeerConnection not initialized')
+          throw new Error("PeerConnection not initialized");
         }
-        
-        await pcRef.current.setRemoteDescription(new RTCSessionDescription(answer))
-        setCallStatus('active')
+
+        await pcRef.current.setRemoteDescription(
+          new RTCSessionDescription(answer),
+        );
+        setCallStatus("active");
       } catch (err) {
-        console.error('Error handling answer:', err)
-        endCall()
+        console.error("Error handling answer:", err);
+        endCall();
       }
-    }
-    
+    };
+
     const handleICECandidate = ({ from, candidate }) => {
-      if (from !== contact.id || !pcRef.current) return
-      
+      if (from !== contact.id || !pcRef.current) return;
+
       try {
         if (candidate) {
-          pcRef.current.addIceCandidate(new RTCIceCandidate(candidate))
+          pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
         }
       } catch (err) {
-        console.error('Error adding ICE candidate:', err)
+        console.error("Error adding ICE candidate:", err);
       }
-    }
-    
+    };
+
     const handleIncomingCall = ({ callerId, callerName }) => {
-      if (callerId !== contact.id) return
-      setCallStatus('ringing')
-    }
-    
+      if (callerId !== contact.id) return;
+      setCallStatus("ringing");
+    };
+
     const handleCallAccepted = () => {
-      setCallStatus('active')
-    }
-    
+      setCallStatus("active");
+    };
+
     const handleCallRejected = () => {
-      setCallStatus('ended')
-      setTimeout(() => onEndCall(), 2000)
-    }
-    
+      setCallStatus("ended");
+      setTimeout(() => onEndCall(), 2000);
+    };
+
     const handleCallEnded = () => {
-      setCallStatus('ended')
-      setTimeout(() => onEndCall(), 2000)
-    }
-    
-    socket.on('webrtc_offer', handleOffer)
-    socket.on('webrtc_answer', handleAnswer)
-    socket.on('webrtc_ice_candidate', handleICECandidate)
-    socket.on('incoming_call', handleIncomingCall)
-    socket.on('call_accepted', handleCallAccepted)
-    socket.on('call_rejected', handleCallRejected)
-    socket.on('call_ended', handleCallEnded)
-    
+      setCallStatus("ended");
+      setTimeout(() => onEndCall(), 2000);
+    };
+
+    socket.on("webrtc_offer", handleOffer);
+    socket.on("webrtc_answer", handleAnswer);
+    socket.on("webrtc_ice_candidate", handleICECandidate);
+    socket.on("incoming_call", handleIncomingCall);
+    socket.on("call_accepted", handleCallAccepted);
+    socket.on("call_rejected", handleCallRejected);
+    socket.on("call_ended", handleCallEnded);
+
     return () => {
-      socket.off('webrtc_offer', handleOffer)
-      socket.off('webrtc_answer', handleAnswer)
-      socket.off('webrtc_ice_candidate', handleICECandidate)
-      socket.off('incoming_call', handleIncomingCall)
-      socket.off('call_accepted', handleCallAccepted)
-      socket.off('call_rejected', handleCallRejected)
-      socket.off('call_ended', handleCallEnded)
-    }
-  }, [socket, contact.id, onEndCall])
+      socket.off("webrtc_offer", handleOffer);
+      socket.off("webrtc_answer", handleAnswer);
+      socket.off("webrtc_ice_candidate", handleICECandidate);
+      socket.off("incoming_call", handleIncomingCall);
+      socket.off("call_accepted", handleCallAccepted);
+      socket.off("call_rejected", handleCallRejected);
+      socket.off("call_ended", handleCallEnded);
+    };
+  }, [socket, contact.id, onEndCall]);
 
   // Call duration timer
   useEffect(() => {
-    let interval
-    if (callStatus === 'active') {
+    let interval;
+    if (callStatus === "active") {
       interval = setInterval(() => {
-        setCallDuration(prev => prev + 1)
-      }, 1000)
+        setCallDuration((prev) => prev + 1);
+      }, 1000);
     }
-    return () => clearInterval(interval)
-  }, [callStatus])
+    return () => clearInterval(interval);
+  }, [callStatus]);
 
   const endCall = () => {
     if (pcRef.current) {
-      pcRef.current.close()
-      pcRef.current = null
+      pcRef.current.close();
+      pcRef.current = null;
     }
-    
+
     if (localStreamRef.current) {
-      localStreamRef.current.getTracks().forEach(track => track.stop())
-      localStreamRef.current = null
+      localStreamRef.current.getTracks().forEach((track) => track.stop());
+      localStreamRef.current = null;
     }
-    
+
     if (remoteAudioRef.current) {
-      remoteAudioRef.current.srcObject = null
+      remoteAudioRef.current.srcObject = null;
     }
-    
+
     // Notify the other user if we're ending an active call
-    if (callStatus === 'active' && contact.id) {
-      socket.emit('end_call', {
+    if (callStatus === "active" && contact.id) {
+      socket.emit("end_call", {
         userId: currentUser.id,
-        otherUserId: contact.id
-      })
+        otherUserId: contact.id,
+      });
     }
-  }
+  };
 
   const acceptCall = () => {
-    socket.emit('call_accepted', {
+    socket.emit("call_accepted", {
       callerId: contact.id,
-      receiverId: currentUser.id
-    })
-    setCallStatus('active')
-  }
+      receiverId: currentUser.id,
+    });
+    setCallStatus("active");
+  };
 
   const rejectCall = () => {
-    socket.emit('call_rejected', {
-      callerId: contact.id
-    })
-    setCallStatus('ended')
-    setTimeout(() => onEndCall(), 2000)
-  }
+    socket.emit("call_rejected", {
+      callerId: contact.id,
+    });
+    setCallStatus("ended");
+    setTimeout(() => onEndCall(), 2000);
+  };
 
   const toggleMute = () => {
     if (localStreamRef.current) {
-      localStreamRef.current.getAudioTracks().forEach(track => {
-        track.enabled = !isMuted
-      })
+      localStreamRef.current.getAudioTracks().forEach((track) => {
+        track.enabled = !isMuted;
+      });
     }
-    setIsMuted(!isMuted)
-  }
+    setIsMuted(!isMuted);
+  };
 
   const toggleSpeaker = () => {
     if (remoteAudioRef.current) {
-      remoteAudioRef.current.muted = isSpeakerOn
+      remoteAudioRef.current.muted = isSpeakerOn;
     }
-    setIsSpeakerOn(!isSpeakerOn)
-  }
+    setIsSpeakerOn(!isSpeakerOn);
+  };
 
   const formatDuration = (seconds) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-  }
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
 
   return (
     <div className="bg-gray-100 dark:bg-gray-800 border-2 m-2 rounded-lg p-4 flex flex-col items-center">
       {/* Hidden audio elements */}
-      <audio 
-        ref={localAudioRef} 
-        muted={isMuted} 
-        playsInline 
-        autoPlay  // Add autoPlay for local audio
+      <audio
+        ref={localAudioRef}
+        muted={isMuted}
+        playsInline
+        autoPlay // Add autoPlay for local audio
       />
-      <audio 
-        ref={remoteAudioRef} 
-        autoPlay 
-        playsInline 
+      <audio
+        ref={remoteAudioRef}
+        autoPlay
+        playsInline
         muted={!isSpeakerOn} // This should control speaker
       />
       {/* <audio ref={localAudioRef} muted playsInline />
       <audio ref={remoteAudioRef} autoPlay playsInline /> */}
-      
+
       <div className="mb-4">
         <img
-          src={contact.profile_picture.startsWith("/")
+          src={
+            contact.profile_picture
+              ? contact.profile_picture.startsWith("/")
                 ? `/api${contact.profile_picture}`
                 : contact.profile_picture
-            }
+              : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+          }
           alt={`${contact.firstname} ${contact.lastname}`}
           className="w-20 h-20 rounded-full object-cover"
         />
       </div>
       <h3 className="text-lg font-semibold mb-1">{`${contact.firstname} ${contact.lastname}`}</h3>
-      
+
       <p className="text-gray-500 dark:text-gray-400 mb-4">
-        {callStatus === 'calling' ? 'Calling...' : 
-         callStatus === 'ringing' ? 'Ringing...' : 
-         callStatus === 'ended' ? 'Call ended' :
-         formatDuration(callDuration)}
+        {callStatus === "calling"
+          ? "Calling..."
+          : callStatus === "ringing"
+            ? "Ringing..."
+            : callStatus === "ended"
+              ? "Call ended"
+              : formatDuration(callDuration)}
       </p>
-      
-      {callStatus === 'ringing' ? (
+
+      {callStatus === "ringing" ? (
         <div className="flex space-x-4">
-          <button 
+          <button
             className="px-4 py-2 rounded-full bg-green-500 text-white"
             onClick={acceptCall}
           >
             Accept
           </button>
-          <button 
+          <button
             className="px-4 py-2 rounded-full bg-red-500 text-white"
             onClick={rejectCall}
           >
@@ -330,11 +344,11 @@ const AudioCallPanel = ({ contact, onEndCall, socket, currentUser }) => {
           >
             {isMuted ? <MicOff size={24} /> : <Mic size={24} />}
           </button>
-          <button 
-            className="p-3 rounded-full bg-red-500 text-white" 
+          <button
+            className="p-3 rounded-full bg-red-500 text-white"
             onClick={() => {
-              endCall()
-              onEndCall()
+              endCall();
+              onEndCall();
             }}
           >
             <PhoneOff size={24} />
@@ -348,7 +362,7 @@ const AudioCallPanel = ({ contact, onEndCall, socket, currentUser }) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default AudioCallPanel
+export default AudioCallPanel;

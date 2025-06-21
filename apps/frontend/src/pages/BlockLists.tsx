@@ -118,9 +118,11 @@ const BlockLists = () => {
                           <img
                             // src={user.profile_picture || "/placeholder.svg"}
                             src={
-                              user.profile_picture.startsWith("/")
-                                ? `/api${user.profile_picture}`
-                                : user.profile_picture
+                              user.profile_picture
+                                ? user.profile_picture.startsWith("/")
+                                  ? `/api${user.profile_picture}`
+                                  : user.profile_picture
+                                : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                             }
                             alt={`${user.firstname} ${user.lastname}`}
                             className="h-14 w-14 rounded-full object-cover border-2 border-gray-200"

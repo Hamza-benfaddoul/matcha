@@ -124,9 +124,11 @@ const DateProposalItem = ({ proposal, onResponse }) => {
                 <a href={`/profile/${proposal.proposer_id}`} className="block">
                   <img
                     src={
-                      proposal.proposer_profile_picture.startsWith("/")
-                        ? `/api${proposal.proposer_profile_picture}`
-                        : proposal.proposer_profile_picture
+                      proposal.proposer_profile_picture
+                        ? proposal.proposer_profile_picture.startsWith("/")
+                          ? `/api${proposal.proposer_profile_picture}`
+                          : proposal.proposer_profile_picture
+                        : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                     }
                     alt={proposal.username}
                     className="w-16 h-16 shadow-md rounded-full object-cover border-2 border-primary shadow-md"
@@ -147,9 +149,11 @@ const DateProposalItem = ({ proposal, onResponse }) => {
                 <a href={`/profile/${proposal.recipient_id}`} className="block">
                   <img
                     src={
-                      proposal.recipient_profile_picture.startsWith("/")
-                        ? `/api${proposal.recipient_profile_picture}`
-                        : proposal.recipient_profile_picture
+                      proposal.recipient_profile_picture
+                        ? proposal.recipient_profile_picture.startsWith("/")
+                          ? `/api${proposal.recipient_profile_picture}`
+                          : proposal.recipient_profile_picture
+                        : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                     }
                     alt={proposal.username}
                     className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md"
