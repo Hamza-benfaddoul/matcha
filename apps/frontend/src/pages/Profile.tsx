@@ -298,7 +298,7 @@ function Profile() {
                       ? user.profile_picture.startsWith("/")
                         ? `/api${user.profile_picture}`
                         : user.profile_picture
-                      : "https://www.gravatar.com/avatar/"
+                      : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                   }
                   alt="profile"
                   className="md:absolute mx-auto mb-8 md:-top-14 md:left-4 w-[200px] h-[200px] rounded-3xl"
