@@ -6,9 +6,9 @@ const advancedSearch = async (req, res) => {
     const { userId } = req.params;
     const {
       query = "",
-      ageRange = [18, 50],
+      ageRange = [0, 100],
       fameRange = [0, 100],
-      distance = 50,
+      distance = -1,
       tags = [],
       sort = { field: "fame_rating", direction: "desc" },
     } = req.body;
