@@ -14,9 +14,9 @@ import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex justify-center items-center min-h-screen flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-white">
+      <header className="sticky flex justify-center top-0 z-50  w-full border-b bg-white">
         <div className="container flex h-16 items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-2">
             <Heart className="h-6 w-6 text-rose-500" />
@@ -41,10 +41,10 @@ export default function LandingPage() {
           </nav>
           <div className="flex items-center gap-4">
             <Link to="/login" className="text-sm font-medium hover:underline">
-              Login
+              <Button variant="destructive">Login</Button>
             </Link>
             <Link to="/login">
-              <Button className="bg-rose-500 hover:bg-rose-600">Sign Up</Button>
+              <Button variant="outline">Sign Up</Button>
             </Link>
           </div>
         </div>
@@ -77,9 +77,11 @@ export default function LandingPage() {
               </div>
               <div className="flex justify-center">
                 <img
-                  alt="Dating App"
+                  alt="Happy couple smiling"
                   className="aspect-video overflow-hidden rounded-xl object-cover object-center"
-                  src="/placeholder.svg?height=550&width=750"
+                  src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=750&q=80"
+                  height={550}
+                  width={750}
                 />
               </div>
             </div>
@@ -185,6 +187,11 @@ export default function LandingPage() {
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-rose-500 text-white text-2xl font-bold">
                   1
                 </div>
+                <img
+                  src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&q=80"
+                  alt="Create profile"
+                  className="h-48 w-full rounded-lg object-cover"
+                />
                 <h3 className="text-xl font-bold">Create Your Profile</h3>
                 <p className="text-center text-gray-500">
                   Sign up and complete your profile with photos, interests, and
@@ -195,6 +202,11 @@ export default function LandingPage() {
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-rose-500 text-white text-2xl font-bold">
                   2
                 </div>
+                <img
+                  src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&q=80"
+                  alt="Discover matches"
+                  className="h-48 w-full rounded-lg object-cover"
+                />
                 <h3 className="text-xl font-bold">Discover Matches</h3>
                 <p className="text-center text-gray-500">
                   Browse suggested profiles or use our advanced search to find
@@ -205,6 +217,11 @@ export default function LandingPage() {
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-rose-500 text-white text-2xl font-bold">
                   3
                 </div>
+                <img
+                  src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&q=80"
+                  alt="Connect and chat"
+                  className="h-48 w-full rounded-lg object-cover"
+                />
                 <h3 className="text-xl font-bold">Connect & Chat</h3>
                 <p className="text-center text-gray-500">
                   Like profiles and start chatting when you match with someone.
@@ -231,14 +248,10 @@ export default function LandingPage() {
               <div className="flex flex-col items-start gap-4 rounded-lg border p-6 shadow-sm">
                 <div className="flex items-center gap-4">
                   <img
-                    alt="User"
+                    alt="Sarah & Michael"
                     className="rounded-full"
                     height="40"
-                    src="/placeholder.svg?height=40&width=40"
-                    style={{
-                      aspectRatio: "40/40",
-                      objectFit: "cover",
-                    }}
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=40&q=80"
                     width="40"
                   />
                   <div>
@@ -255,14 +268,10 @@ export default function LandingPage() {
               <div className="flex flex-col items-start gap-4 rounded-lg border p-6 shadow-sm">
                 <div className="flex items-center gap-4">
                   <img
-                    alt="User"
+                    alt="David & Emma"
                     className="rounded-full"
                     height="40"
-                    src="/placeholder.svg?height=40&width=40"
-                    style={{
-                      aspectRatio: "40/40",
-                      objectFit: "cover",
-                    }}
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=40&q=80"
                     width="40"
                   />
                   <div>
@@ -279,14 +288,10 @@ export default function LandingPage() {
               <div className="flex flex-col items-start gap-4 rounded-lg border p-6 shadow-sm">
                 <div className="flex items-center gap-4">
                   <img
-                    alt="User"
+                    alt="Alex & Jamie"
                     className="rounded-full"
                     height="40"
-                    src="/placeholder.svg?height=40&width=40"
-                    style={{
-                      aspectRatio: "40/40",
-                      objectFit: "cover",
-                    }}
+                    src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=40&q=80"
                     width="40"
                   />
                   <div>
@@ -320,10 +325,12 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button className="bg-white text-rose-500 hover:bg-gray-100">
-                  Sign Up Now
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <Link to="/login">
+                  <Button className="bg-white text-rose-500 hover:bg-gray-100">
+                    Sign Up Now
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -331,7 +338,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t py-6 md:py-0">
+      <footer className="w-full  flex justify-center border-t py-6 md:py-0">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row px-4 md:px-6">
           <div className="flex items-center gap-2">
             <Heart className="h-6 w-6 text-rose-500" />

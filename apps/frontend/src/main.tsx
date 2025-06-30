@@ -7,7 +7,6 @@ import RegisterPage from "./auth/register/page.tsx";
 import ResetPage from "./auth/reset/page.tsx";
 import { AuthProvider } from "./context/AuthProvider.tsx";
 import ProtectedRoute from "./components/protected-route.tsx";
-import LandingPage from "./home/home.tsx";
 import Profile from "./pages/Profile.tsx";
 import CompleteProfile from "./components/Profile/CompleteProfile.tsx";
 import NotFoundPage from "./pages/404.tsx";
@@ -35,10 +34,6 @@ const router = createBrowserRouter([
     element: <ProtectedRoute element={<SearchPage />} />,
   },
 
-  {
-    path: "/protected",
-    element: <ProtectedRoute element={<LandingPage />} />,
-  },
   {
     path: "/dashboard",
     element: <ProtectedRoute element={<DashboardPage />} />,
