@@ -21,6 +21,7 @@ services:
     build:
       context: ./apps/
       dockerfile: ./docker/backend/Dockerfile
+    command: ["npm", "run", "dev"]
     env_file:
       - .env-backend
     volumes:

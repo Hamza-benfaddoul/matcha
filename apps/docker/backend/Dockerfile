@@ -1,6 +1,9 @@
 # Use the official Node.js image.
 FROM node:20.16.0-alpine
 
+# Expose the port on which the app will run.
+EXPOSE 5000
+
 # install nodemon
 RUN npm i -g nodemon
 
@@ -11,8 +14,8 @@ WORKDIR /app/backend
 COPY ./backend/package*.json ./
 RUN npm install
 
-# Expose the port on which the app will run.
-EXPOSE 5000
+COPY ./backend/entrypoint /entrypoint
+RUN chmod +x /entrypoint
 
-# Command to run the app.
-CMD ["npm", "run", "dev"]
+ENTRYPOINT ["/entrypoint"]
+

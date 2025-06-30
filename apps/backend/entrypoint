@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# if any of the commands in your code fails for any reason, the entire script fails
+set -o errexit
+# fail exit if one of your pipe command fails
+set -o pipefail
+# exits if any of your variables is not set
+set -o nounset
+
+postgres_ready() {
+	node <<END
+const { Client } = require('pg');
+
+const client = new Client({
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+});
+
+client.connect()
+  .then(() => client.end())
+  .then(() => process.exit(0))
+  .catch(() => process.exit(-1));
+END
+}
+
+until postgres_ready; do
+	>&2 echo 'Waiting for PostgreSQL to become available...'
+	sleep 1
+done
+>&2 echo 'PostgreSQL is available'
+
+node /app/backend/scripts/setupdb.js
+node /app/backend/scripts/seed_users.js
+
+exec "$@"
