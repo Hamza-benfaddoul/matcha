@@ -16,7 +16,6 @@ import {
 import {
   Heart,
   MessageCircle,
-  Settings,
   UserRoundSearch,
   Calendar,
   LayoutDashboard,
@@ -29,24 +28,24 @@ const items = [
     icon: <LayoutDashboard className="h-4 w-4 text-primary" />,
     url: "/dashboard",
   },
-  {
-    name: "Matches",
-    icon: <Heart className="h-4 w-4 text-primary" />,
-  },
-  {
-    name: "Messages",
-    icon: <MessageCircle className="h-4 w-4 text-primary" />,
-    url: "/chat",
-  },
+  // {
+  //   name: "Matches",
+  //   icon: <Heart className="h-4 w-4 text-primary" />,
+  // },
   {
     name: "Browse",
     icon: <UserRoundSearch className="h-4 w-4 text-primary" />,
     url: "/search",
   },
   {
-    name: "Settings",
-    icon: <Settings className="h-4 w-4" />,
+    name: "Messages",
+    icon: <MessageCircle className="h-4 w-4 text-primary" />,
+    url: "/chat",
   },
+  // {
+  //   name: "Settings",
+  //   icon: <Settings className="h-4 w-4" />,
+  // },
 ];
 
 export function SideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
